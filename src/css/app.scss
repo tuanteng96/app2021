@@ -1,0 +1,42 @@
+/* Your app custom styles here */
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600;700&display=swap');
+@import './abstracts/variables';
+@import './base/reset';
+@import './../components/nav/Nav.scss';
+@import './../components/navBar/navBar.scss';
+//Font family
+body,
+html {
+    font-family: $font-app;
+}
+
+//Custom Page
+.page-custom {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    overflow: hidden;
+    &.ezs-nav {
+        .page-render {
+            padding-bottom: $h-nav;
+            height: calc(100vh - 48px);
+        }
+    }
+    &.ezs-navbar {
+        .page-render {
+            padding-top: $h-nav;
+            height: calc(100vh - 48px);
+        }
+    }
+    &.ezs-nav.ezs-navbar {
+        .page-render {
+            height: calc(100vh - 48px*2);
+        }
+    }
+    .page-render {
+        overflow: auto;
+        height: 100vh;
+    }
+}

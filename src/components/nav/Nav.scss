@@ -1,0 +1,11 @@
+.ezs-nav {
+    .page-nav {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: $h-nav;
+        background: $white;
+        box-shadow: $shadow-menu;
+    }
+}

@@ -1,3 +1,36 @@
+.page-nav {
+    z-index: -10;
+    &__menu {
+        @include flexbox;
+        height: 100%;
+        li {
+            @include flexbox;
+            @include align-items(center);
+            @include justify-content(center);
+            @include flex-direction(column);
+            height: 100%;
+            svg {
+                width: 20px;
+            }
+            b {
+                font-size: 12px;
+                line-height: 16px;
+            }
+            &.active {
+                color: $color-app;
+                svg {
+                    fill: $color-app;
+                }
+            }
+        }
+    }
+    &__4 {
+        li {
+            @include flex-width(25%);
+        }
+    }
+}
+
 .ezs-nav {
     .page-nav {
         position: absolute;
@@ -7,5 +40,6 @@
         height: $h-nav;
         background: $white;
         box-shadow: $shadow-menu;
+        z-index: 500;
     }
 }

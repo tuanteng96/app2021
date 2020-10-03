@@ -1,0 +1,150 @@
+.page-news {
+    background: rgb(255, 255, 255);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 0%, rgba(241, 245, 248, 1) 100%);
+    &__header {
+        @include flexbox();
+        @include justify-content(space-between);
+        @include align-items(flex-end);
+        margin-bottom: 10px;
+        &-date {
+            .date {
+                color: $color-gray-app;
+                text-transform: uppercase;
+                font-size: 12px;
+                font-weight: 500;
+            }
+            h3 {
+                margin: 0;
+                font-size: 26px;
+            }
+        }
+        &-user {
+            i {
+                color: $color-app;
+                font-size: 35px;
+            }
+        }
+    }
+    &__dear {
+        background: $white;
+        box-shadow: $shadow-box-top;
+        border-radius: .375rem;
+        overflow: hidden;
+        &-text {
+            padding: 15px;
+            h4 {
+                margin: 0 0 8px 0;
+                font-size: 20px;
+                line-height: 24px;
+                color: $black;
+                text-transform: capitalize;
+            }
+            .desc {
+                color: $color-gray-app;
+                font-size: 14px;
+                line-height: 20px;
+                p {
+                    margin: 0;
+                    @include cut-text;
+                }
+            }
+        }
+    }
+    &__slide {
+        margin-top: 14px;
+        border-radius: .375rem;
+        overflow: hidden;
+        &-item {
+            box-shadow: 0 3px 20px rgba(0, 0, 0, .04);
+        }
+        .slick-dots {
+            bottom: 14px;
+            li {
+                margin: 0 3px;
+                width: auto;
+                height: auto;
+                button {
+                    padding: 0;
+                    width: 8px;
+                    height: 8px;
+                    background: $color-app;
+                    opacity: .5;
+                    border-radius: 100%;
+                    @include transition(all .2s linear);
+                    &::before {
+                        display: none;
+                    }
+                }
+                &.slick-active {
+                    button {
+                        opacity: 1;
+                        width: 22px;
+                        border-radius: 25px;
+                    }
+                }
+            }
+        }
+    }
+    &__list {
+        margin-top: 14px;
+        .slick-track {
+            margin: 0 -7px;
+            >div {
+                padding: 0 7px;
+            }
+        }
+        &-head {
+            @include flexbox;
+            @include justify-content(space-between);
+            @include align-items(flex-end);
+            margin-bottom: 14px;
+            h5 {
+                margin: 0;
+                font-size: 15px;
+                text-transform: uppercase;
+            }
+            .all {
+                a {
+                    color: $color-link-app;
+                    font-size: 13px;
+                    font-weight: 500;
+                }
+            }
+        }
+        &-item {
+            box-shadow: $shadow-menu;
+            background-color: $white;
+            border-radius: .375rem;
+            .text {
+                padding: 14px;
+                a {
+                    display: block;
+                }
+                h6 {
+                    margin: 0 0 8px 0;
+                    font-size: 15px;
+                    color: #000;
+                    font-weight: 500;
+                    @include cut-text-to(2);
+                }
+                .desc {
+                    color: $color-gray-app;
+                    font-size: 13px;
+                    line-height: 20px;
+                    p {
+                        margin: 0;
+                        @include cut-text;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.page-news__list-ul .slick-track {
+    margin: 0 -7px;
+}
+
+.page-news__list-ul .slick-track>div {
+    padding: 0 7px;
+}

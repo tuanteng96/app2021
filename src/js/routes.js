@@ -1,6 +1,9 @@
-import HomeNews from '../pages/news.jsx';
+import HomeNews from '../pages/news/news.jsx';
+import HomeNewsList from '../pages/news/newsList.jsx';
+
 import AboutPage from '../pages/about.jsx';
 import FormPage from '../pages/form.jsx';
+import HomePage from '../pages/home.jsx';
 
 import userDetail from '../pages/userDetail';
 
@@ -21,7 +24,14 @@ var routes = [{
         path: '/form/',
         component: FormPage,
     },
-
+    {
+        path: '/news/',
+        component: HomeNews,
+    },
+    {
+        path: '/news-list/',
+        component: HomeNewsList,
+    },
     {
         path: '/user/:userId',
         component: userDetail,

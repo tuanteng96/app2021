@@ -1,7 +1,7 @@
 import axios from "axios";
-
+import { SERVER_APP } from './../constants/config';
 export default axios.create({
-    baseURL: "http://cser.vn",
+    baseURL: SERVER_APP,
     headers: {
         "Content-type": "application/json"
     }

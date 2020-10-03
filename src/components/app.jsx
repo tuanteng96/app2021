@@ -39,9 +39,6 @@ export default class extends React.Component {
         // App routes
         routes: routes,
       },
-      // Login screen demo data
-      username: '',
-      password: '',
     }
   }
   render() {

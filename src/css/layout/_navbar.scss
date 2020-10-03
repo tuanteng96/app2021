@@ -1,0 +1,6 @@
+.page-nav {
+    width: 100%;
+    &__list {
+        @include flexbox;
+    }
+}

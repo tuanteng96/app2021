@@ -1,10 +1,20 @@
 //Color App
 $color-app: #b99746;
-$white: #fff;
+$color-bg-app: #f1f5f8;
+$color-gray-app: #7f8082;
+$color-link-app: #1c3faa;
+$white: #ffffff;
+$black: #000000;
 //Font Family
 $font-app: 'Archivo Narrow',
 sans-serif;
+$font-app2: 'Roboto',
+sans-serif;
 //px
 $h-nav: 48px;
+//pading
+$pd-app: 15px;
 //Shadow
 $shadow-menu: 0 3px 20px rgba(0, 0, 0, .04);
+$shadow-box-top: 0 20px 25px -5px rgba(0, 0, 0, .1),
+0 10px 10px -5px rgba(0, 0, 0, .04);

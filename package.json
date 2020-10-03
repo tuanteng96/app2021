@@ -33,6 +33,9 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-html-parser": "^2.0.2",
+    "react-id-swiper": "^4.0.0",
+    "react-slick": "^0.27.11",
+    "slick-carousel": "^1.8.1",
     "swiper": "^6.3.2",
     "template7": "^1.4.2"
   },

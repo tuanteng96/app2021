@@ -139,6 +139,15 @@
             }
         }
     }
+    &__all {
+        margin-top: 0;
+        .page-news__list-item {
+            margin-bottom: 14px;
+        }
+        .page-news__list-item:last-child {
+            margin-bottom: 0;
+        }
+    }
 }
 
 .page-news__list-ul .slick-track {

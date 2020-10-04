@@ -1,5 +1,6 @@
-import HomeNews from '../pages/news/news.jsx';
-import HomeNewsList from '../pages/news/newsList.jsx';
+import NewsPage from '../pages/news/news.jsx';
+import NewsListPage from '../pages/news/newsList.jsx';
+import NewsDetailPage from '../pages/news/newsDetail';
 
 import AboutPage from '../pages/about.jsx';
 import FormPage from '../pages/form.jsx';
@@ -14,7 +15,7 @@ import NotFoundPage from '../pages/404.jsx';
 
 var routes = [{
         path: '/',
-        component: HomeNews,
+        component: NewsPage,
     },
     {
         path: '/about/',
@@ -26,11 +27,15 @@ var routes = [{
     },
     {
         path: '/news/',
-        component: HomeNews,
+        component: NewsPage,
     },
     {
         path: '/news-list/',
-        component: HomeNewsList,
+        component: NewsListPage,
+    },
+    {
+        path: '/news/detail/:postId/',
+        component: NewsDetailPage,
     },
     {
         path: '/user/:userId',

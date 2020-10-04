@@ -1,6 +1,43 @@
-.page-nav {
+.page-navbar {
     width: 100%;
-    &__list {
-        @include flexbox;
+    height: 100%;
+    position: relative;
+    @include flexbox;
+    @include justify-content(space-between);
+    &__title {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 100%;
+        width: calc(100vw - 80px);
+        text-align: center;
+        color: $white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .title {
+            font-size: 14px;
+            font-weight: 600;
+            @include cut-text;
+        }
+    }
+    &__back {
+        width: 40px;
+        a.link {
+            width: 40px;
+            @include justify-content(center);
+            color: $white;
+            font-size: 22px;
+        }
+    }
+    &__noti {
+        width: 40px;
+        a.link {
+            width: 40px;
+            @include justify-content(center);
+            color: $white;
+            font-size: 22px;
+        }
     }
 }

@@ -8,7 +8,7 @@ export default class extends React.Component {
   constructor() {
     super();
     this.state = {
-      arrNews: [],
+      arrayItem: [],
     };
   }
 
@@ -17,8 +17,12 @@ export default class extends React.Component {
       NewsDataService.getAll()
         .then((response) => {
           const arrNews = response.data.news;
+          const paramsID = this.$f7route.params.postId;
+          const arrayItem = arrNews.filter((item) => {
+            return item.ID == paramsID;
+          });
           this.setState({
-            arrNews: arrNews,
+            arrayItem: arrayItem,
           });
         })
         .catch((e) => {
@@ -28,9 +32,9 @@ export default class extends React.Component {
   }
 
   render() {
-    const arrNews = this.state.arrNews;
+    console.log(this.state.arrayItem[0]);
     return (
-      <Page name="news-list">
+      <Page name="news-list-detail">
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
@@ -39,7 +43,12 @@ export default class extends React.Component {
               </Link>
             </div>
             <div className="page-navbar__title">
-              <span className="title">Tin tức & Khuyến mại</span>
+              {typeof this.state.arrayItem !== "undefined" &&
+              this.state.arrayItem.length > 0 ? (
+                <span className="title">{this.state.arrayItem[0].Title}</span>
+              ) : (
+                <span className="title">Loadding ...</span>
+              )}
             </div>
             <div className="page-navbar__noti">
               <Link>
@@ -48,37 +57,25 @@ export default class extends React.Component {
             </div>
           </div>
         </Navbar>
-        <div className="page-wrapper">
-          <div className="page-render">
-            <div className="page-news__list page-news__all">
-              <div className="page-news__list-ul">
-                {arrNews &&
-                  arrNews.map((item, index) => {
-                    return (
-                      <div className="page-news__list-item" key={item.ID}>
-                        <div className="images">
-                          <a href="">
-                            <img
-                              src={SERVER_APP + item.Thumbnail_web}
-                              alt={item.Title}
-                            />
-                          </a>
-                        </div>
-                        <div className="text">
-                          <a href="">
-                            <h6>{item.Title}</h6>
-                            <div className="desc">
-                              {ReactHtmlParser(item.Desc)}
-                            </div>
-                          </a>
-                        </div>
-                      </div>
-                    );
-                  })}
+        {typeof this.state.arrayItem !== "undefined" &&
+        this.state.arrayItem.length > 0 ? (
+          <div className="page-render p-0 no-bg">
+            <div className="page-news">
+              <div className="page-news__detail">
+                <div className="page-news__detail-img">
+                  <img
+                    src={SERVER_APP + this.state.arrayItem[0].Thumbnail_web}
+                  />
+                </div>
+                <div className="page-news__detail-content">
+                  {ReactHtmlParser(this.state.arrayItem[0].Content)}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div></div>
+        )}
         <Toolbar tabbar position="bottom">
           <div className="page-toolbar">
             <ul className="page-toolbar__list toolbar-item-4">

@@ -8,6 +8,7 @@
 @import './base/reset';
 // layout
 @import './../css/layout/navbar';
+@import './../css/layout/toolbar';
 // pages
 @import './../css/pages/news.scss';
 //Font family
@@ -16,18 +17,51 @@ html {
     font-family: $font-app2 !important;
 }
 
+.p-0 {
+    padding: 0 !important;
+}
+
+.no-bg {
+    background: transparent !important;
+}
+
 //Reset Framework7
 .toolbar {
     padding: 0;
     background: $white;
-    box-shadow: $shadow-menu;
+    box-shadow: $shadow-box-top;
     &-inner {
         padding: 0;
+    }
+    &:before {
+        height: 0;
     }
 }
 
 .ios-translucent-bars .toolbar {
     background: $white;
+    box-shadow: $shadow-menu;
+}
+
+.navbar {
+    &-bg {
+        background: $color-app;
+        border-bottom: solid 2px rgba(255, 255, 255, 0.3);
+        &:after {
+            background-color: transparent;
+        }
+    }
+    &-inner {
+        padding: 0;
+    }
+}
+
+.navbars .navbar.navbar-current {
+    z-index: 10;
+}
+
+.ios-translucent-bars .navbar-bg {
+    background-color: $color-app;
 }
 
 //Component

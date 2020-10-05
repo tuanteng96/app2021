@@ -2,11 +2,14 @@ import NewsPage from '../pages/news/news.jsx';
 import NewsListPage from '../pages/news/newsList.jsx';
 import NewsDetailPage from '../pages/news/newsDetail';
 
+import ShopPage from '../pages/shop/shop';
+import ShopCatePage from '../pages/shop/shopCate';
+import ShopListProductPage from '../pages/shop/shopListProduct';
+import ShopListServicePage from '../pages/shop/shopListService';
+
 import AboutPage from '../pages/about.jsx';
 import FormPage from '../pages/form.jsx';
 import HomePage from '../pages/home.jsx';
-
-import userDetail from '../pages/userDetail';
 
 
 import DynamicRoutePage from '../pages/dynamic-route.jsx';
@@ -28,6 +31,9 @@ var routes = [{
     {
         path: '/news/',
         component: NewsPage,
+        options: {
+            transition: 'f7-cover',
+        }
     },
     {
         path: '/news-list/',
@@ -38,10 +44,44 @@ var routes = [{
         component: NewsDetailPage,
     },
     {
-        path: '/user/:userId',
-        component: userDetail,
+        path: '/shop/',
+        component: ShopPage,
+        options: {
+            transition: 'f7-cover',
+        }
     },
+    {
+        path: '/shop/:cateId',
+        async(routeTo, routeFrom, resolve, reject) {
+            const cateID = routeTo.params.cateId;
+            if (cateID === "hot") {
+                resolve({
+                    component: ShopListProductPage,
+                });
+            } else {
+                resolve({
+                    component: ShopCatePage,
 
+                });
+            }
+        }
+    },
+    {
+        path: '/shop/list/:parentId/:cateId',
+        async(routeTo, routeFrom, resolve, reject) {
+            const cateParentID = routeTo.params.parentId;
+            if (cateParentID === "795") {
+                resolve({
+                    component: ShopListServicePage,
+                });
+            } else {
+                resolve({
+                    component: ShopListProductPage,
+                });
+            }
+        }
+        //component: ShopListPage,
+    },
     {
         path: '/dynamic-route/blog/:blogId/post/:postId/',
         component: DynamicRoutePage,

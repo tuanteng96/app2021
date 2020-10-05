@@ -155,7 +155,7 @@ export default class extends React.Component {
                       </a>
                     </div>
                     <div className="page-news__dear-text">
-                      <a href="">
+                      <a href={"/news/detail/" + item.ID + "/"}>
                         <h4>{item.Title}</h4>
                         <div className="desc">{ReactHtmlParser(item.Desc)}</div>
                       </a>
@@ -200,7 +200,7 @@ export default class extends React.Component {
                           style={this.handStyle()}
                         >
                           <div className="images">
-                            <a href="">
+                            <a href={"/news/detail/" + item.ID + "/"}>
                               <img
                                 src={SERVER_APP + item.Thumbnail_web}
                                 alt={item.Title}
@@ -208,7 +208,7 @@ export default class extends React.Component {
                             </a>
                           </div>
                           <div className="text">
-                            <a href="">
+                            <a href={"/news/detail/" + item.ID + "/"}>
                               <h6>{item.Title}</h6>
                               <div className="desc">
                                 {ReactHtmlParser(item.Desc)}
@@ -233,9 +233,9 @@ export default class extends React.Component {
                 </Link>
               </li>
               <li>
-                <Link href="/about/">
+                <Link href="/shop/">
                   <i className="las la-shopping-cart"></i>
-                  <span>Dịch vụ</span>
+                  <span>Mua hàng</span>
                 </Link>
               </li>
               <li>

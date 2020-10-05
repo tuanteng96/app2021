@@ -11,6 +11,7 @@
 @import './../css/layout/toolbar';
 // pages
 @import './../css/pages/news.scss';
+@import './../css/pages/shop.scss';
 //Font family
 body,
 html {
@@ -58,6 +59,10 @@ html {
 
 .navbars .navbar.navbar-current {
     z-index: 10;
+}
+
+.navbars .navbar.navbar-previous .page-navbar__back a.link {
+    opacity: 0;
 }
 
 .ios-translucent-bars .navbar-bg {

@@ -8,10 +8,10 @@
             a {
                 span {
                     font-size: 12px;
-                    margin: 0;
+                    margin: 2px 0 0 0;
                 }
                 i {
-                    font-size: 20px;
+                    font-size: 22px;
                 }
             }
         }
@@ -21,4 +21,8 @@
             }
         }
     }
+}
+
+.toolbar .page-toolbar a.link {
+    color: $color-gray2-app;
 }

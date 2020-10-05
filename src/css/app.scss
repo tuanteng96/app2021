@@ -69,6 +69,12 @@ html {
     background-color: $color-app;
 }
 
+.searchbar-product {
+    background: var(--f7-navbar-bg-color) !important;
+    background-image: var(--f7-navbar-bg-image, var(--f7-bars-bg-image))!important;
+    background-color: var(--f7-navbar-bg-color, var(--f7-bars-bg-color))!important;
+}
+
 //Component
 .page-render {
     background: rgb(255, 255, 255);

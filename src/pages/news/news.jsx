@@ -115,8 +115,8 @@ export default class extends React.Component {
       variableWidth: true,
     };
     return (
-      <Page name="news">
-        <Navbar>
+      <Page noNavbar name="news">
+        {/* <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
               <Link>
@@ -132,7 +132,7 @@ export default class extends React.Component {
               </Link>
             </div>
           </div>
-        </Navbar>
+        </Navbar> */}
         <div className="page-wrapper">
           <div className="page-render">
             <div className="page-news__header">

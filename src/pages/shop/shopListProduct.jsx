@@ -1,5 +1,7 @@
 import React from "react";
 import { SERVER_APP } from "./../../constants/config";
+import {formatPriceVietnamese,checkSale} from "../../constants/format";
+import _ from 'lodash';
 import {
   Page,
   Link,
@@ -12,11 +14,13 @@ import {
 } from "framework7-react";
 import ShopDataService from "./../../service/shop.service";
 import ReactHtmlParser from "react-html-parser";
+import ToolBar from "../../components/ToolBar";
 
 export default class extends React.Component {
   constructor() {
     super();
     this.state = {
+      dataNull: false,
       itemView: 8, // Số item hiển thị trên 1 Page
       arrCateList: [],
       countCateList: "",
@@ -24,15 +28,21 @@ export default class extends React.Component {
       titlePage: "",
       showPreloader: true,
       allowInfinite: true,
+      parentCateID: "",
+      CateID: "",
+      CateIDall: 662
     };
+
+    this.delayedCallback = _.debounce(this.inputCallback, 400);
   }
 
-  getDataList = (ID, pi, ps, tag) => {
+  getDataList = (ID, pi, ps, tag, keys) => {
     //ID Cate
     //Trang hiện tại
     //Số sản phẩm trên trang
     // Tag
-    ShopDataService.getList(ID, pi, ps, tag)
+    //keys Từ khóa tìm kiếm
+    ShopDataService.getList(ID, pi, ps, tag, keys)
       .then((response) => {
         const arrCateList = response.data.data.lst;
         const countCateList = response.data.data.pcount;
@@ -44,6 +54,12 @@ export default class extends React.Component {
           totalCateList: totalCateList,
           piCateList: piCateList,
         });
+        if (arrCateList.length === 0) {
+          this.setState({
+            showPreloader: false,
+            dataNull: true
+          })
+        }
       })
       .catch((e) => {
         console.log(e);
@@ -62,57 +78,39 @@ export default class extends React.Component {
         console.log(e);
       });
   };
-  checkSale = (SaleBegin, SaleEnd) => {
-    var SaleBegins = SaleBegin.slice(0, 10);
-    var SaleEnds = SaleEnd.slice(0, 10);
-    var todaydate = new Date();
-    var day = todaydate.getDate();
-    var month = todaydate.getMonth() + 1;
-    var year = todaydate.getFullYear();
-    var datetoday = year + "-" + month + "-" + day;
-
-    if (
-      Date.parse(todaydate) < Date.parse(SaleEnd) &&
-      Date.parse(SaleBegin) <= Date.parse(todaydate)
-    ) {
-      return "sale";
-    } else {
-      return "";
-    }
-  };
-  formatPriceVietnamese = (price) => {
-    return price.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-  };
   componentDidMount() {
     this.$f7ready((f7) => {
       const parentCateID = this.$f7route.params.parentId;
       const CateID = this.$f7route.params.cateId;
       const itemView = this.state.itemView;
 
+      this.setState({
+        parentCateID: parentCateID,
+        CateID: CateID
+      })
+
       if (CateID === "hot") {
         this.setState({
           titlePage: "Hôm nay Sale gì ?",
           isTag: "hot",
         });
-        this.getDataList(CateID, "1", itemView, "hot");
+        this.getDataList(CateID, "1", itemView, "hot", "");
       } else {
-        this.getDataList(CateID, "1", itemView, "");
+        this.getDataList(CateID, "1", itemView, "", "");
         this.getTitleCate();
       }
-
-      
     });
   }
   loadMore = () => {
     const self = this;
     const isState = self.state;
-    const CateID = this.$f7route.params.cateId;
+    const CateID = isState.keySearch ? isState.CateIDall : this.$f7route.params.cateId;
     const itemView = isState.itemView; // Tổng số item trên 1 page
 
-    const tag = isState.isTag ? isState.isTag : "";
+    const tag = (isState.isTag && !isState.keySearch) ? isState.isTag : "";
+    const keys = isState.keySearch ? isState.keySearch : "";
 
     if (!self.state.allowInfinite) return;
-    console.log("1");
     self.setState({ allowInfinite: false });
     setTimeout(() => {
       if (isState.totalCateList <= isState.arrCateList.length) {
@@ -120,7 +118,7 @@ export default class extends React.Component {
         return;
       }
 
-      ShopDataService.getList(CateID, isState.piCateList + 1, itemView, tag)
+      ShopDataService.getList(CateID, isState.piCateList + 1, itemView, tag, keys)
         .then((response) => {
           const arrCateList = response.data.data.lst;
 
@@ -151,9 +149,9 @@ export default class extends React.Component {
           titlePage: "Hôm nay Sale gì ?",
           isTag: "hot",
         });
-        this.getDataList(CateID, "1", itemView, "hot");
+        this.getDataList(CateID, "1", itemView, "hot", "");
       } else {
-        this.getDataList(CateID, "1", itemView, "");
+        this.getDataList(CateID, "1", itemView, "", "");
         this.getTitleCate();
       }
       this.setState({
@@ -163,9 +161,30 @@ export default class extends React.Component {
       done();
     }, 1000);
   }
-
+  inputCallback = (value) => {
+    const key = value;
+    const itemView = this.state.itemView;
+    this.getDataList(662, "1", itemView, "", key);
+  }
   handleInputSearch = (event) => {
-    console.log(event.target.value);
+    const key = event.target.value;
+    event.persist()
+    this.delayedCallback(key);
+  }
+
+  hideSearch = () => {
+    const CateID = this.$f7route.params.cateId;
+    const itemView = this.state.itemView;
+
+    if (CateID === "hot") {
+      this.getDataList(CateID, "1", itemView, "hot", "");
+    } else {
+      this.getDataList(CateID, "1", itemView, "", "");
+    }
+    this.setState({
+      showPreloader: true,
+      dataNull: false
+    });
   }
 
   render() {
@@ -203,7 +222,10 @@ export default class extends React.Component {
             disableButton={!this.$theme.aurora}
             placeholder="Bạn cần tìm ?"
             disableButtonText="Đóng"
+            clearButton={true}
             onChange={this.handleInputSearch}
+            onClickClear={() => this.hideSearch()}
+            onClickDisable={() => this.hideSearch()}
           ></Searchbar>
         </Navbar>
         <div className="page-render no-bg">
@@ -213,7 +235,7 @@ export default class extends React.Component {
                 {arrCateList &&
                   arrCateList.map((item, index) => (
                     <Col width="50" key={index}>
-                      <a href="" className="page-shop__list-item">
+                      <a href={"/shop/detail/" + item.id} className="page-shop__list-item">
                         <div className="page-shop__list-img">
                           <img
                             src={SERVER_APP + "/Upload/image/" + item.photo}
@@ -225,19 +247,19 @@ export default class extends React.Component {
                           <div
                             className={
                               "page-shop__list-price " +
-                              this.checkSale(
+                              (checkSale(
                                 item.source.SaleBegin,
                                 item.source.SaleEnd
-                              )
+                              ) === true ? 'sale' : '')
                             }
                           >
                             <span className="price">
                               <b>₫</b>
-                              {this.formatPriceVietnamese(item.price)}
+                              {formatPriceVietnamese(item.price)}
                             </span>
                             <span className="price-sale">
                               <b>₫</b>
-                              {this.formatPriceVietnamese(item.pricesale)}
+                              {formatPriceVietnamese(item.pricesale)}
                             </span>
                           </div>
                         </div>
@@ -249,34 +271,7 @@ export default class extends React.Component {
           </div>
         </div>
         <Toolbar tabbar position="bottom">
-          <div className="page-toolbar">
-            <ul className="page-toolbar__list toolbar-item-4">
-              <li>
-                <Link href="/news/">
-                  <i className="las la-newspaper"></i>
-                  <span>Ưu đãi</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/shop/">
-                  <i className="las la-shopping-cart"></i>
-                  <span>Mua hàng</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/maps/">
-                  <i className="las la-map-marked-alt"></i>
-                  <span>Liên hệ</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/users/">
-                  <i className="las la-user-circle"></i>
-                  <span>Tài khoản</span>
-                </Link>
-              </li>
-            </ul>
-          </div>
+          <ToolBar />
         </Toolbar>
       </Page>
     );

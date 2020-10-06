@@ -24,7 +24,7 @@
         &-title {
             text-align: center;
             text-transform: uppercase;
-            font-size: 15px;
+            font-size: 16px;
             border: 1px solid #e4eaec;
             padding: 10px 0;
             width: calc(100% - 30px);
@@ -145,6 +145,73 @@
             >div:nth-last-child(1) .page-shop__list-item,
             >div:nth-last-child(2) .page-shop__list-item {
                 margin-bottom: 0;
+            }
+        }
+    }
+    &__detail {
+        &-img {
+            img {
+                width: 100%;
+            }
+        }
+        &-list {
+            ul {
+                li {
+                    @include flexbox();
+                    @include align-items(center);
+                    @include justify-content(space-between);
+                    padding: 10px 10px;
+                    font-size: 14px;
+                    background: $white;
+                    margin-top: 8px;
+                    box-shadow: 0 3px 20px #0000000a;
+                    .title {
+                        color: #5a5a5a;
+                    }
+                    .text {
+                        font-weight: 600;
+                        color: $black;
+                        b {
+                            font-size: 12px;
+                            margin-left: 2px;
+                        }
+                    }
+                    &.content {
+                        line-height: 22px;
+                        margin-bottom: 10px;
+                        .content-post {
+                            p {
+                                margin-bottom: 10px;
+                                margin-top: 0;
+                                &:last-child {
+                                    margin: 0;
+                                }
+                            }
+                        }
+                    }
+                    &.product-sale {
+                        display: none;
+                    }
+                }
+            }
+            &.sale {
+                ul {
+                    li {
+                        &.product {
+                            .text {
+                                color: #5a5a5a;
+                                font-weight: 500;
+                                text-decoration: line-through;
+                                b {
+                                    font-weight: 400;
+                                }
+                            }
+                        }
+                        &.product-sale {
+                            display: block;
+                        }
+                    }
+                }
             }
         }
     }

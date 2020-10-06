@@ -6,6 +6,7 @@ import ShopPage from '../pages/shop/shop';
 import ShopCatePage from '../pages/shop/shopCate';
 import ShopListProductPage from '../pages/shop/shopListProduct';
 import ShopListServicePage from '../pages/shop/shopListService';
+import ShopDetailPage from '../pages/shop/shopDetail';
 
 import AboutPage from '../pages/about.jsx';
 import FormPage from '../pages/form.jsx';
@@ -81,6 +82,11 @@ var routes = [{
             }
         }
         //component: ShopListPage,
+    },
+    {
+        path: '/shop/detail/:cateId',
+        async(routeTo, routeFrom, resolve, reject) {},
+        component: ShopDetailPage,
     },
     {
         path: '/dynamic-route/blog/:blogId/post/:postId/',

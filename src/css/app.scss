@@ -1,6 +1,6 @@
 /* Your app custom styles here */
 
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600;700&family=Roboto:wght@100;300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&family=Archivo+Narrow:wght@400;500;600;700&family=Roboto:wght@100;300;400;500;700&display=swap');
 // abstracts
 @import './abstracts/variables';
 @import './../css/abstracts/mixins';
@@ -15,7 +15,7 @@
 //Font family
 body,
 html {
-    font-family: $font-app2 !important;
+    font-family: $font-app3 !important;
 }
 
 .p-0 {
@@ -44,6 +44,10 @@ html {
     box-shadow: $shadow-menu;
 }
 
+.ios-translucent-bars .photo-browser-page-dark .toolbar {
+    background: var(--f7-photobrowser-dark-bars-bg-color);
+}
+
 .navbar {
     &-bg {
         background: $color-app;
@@ -52,8 +56,10 @@ html {
             background-color: transparent;
         }
     }
-    &-inner {
-        padding: 0;
+    &:not(.navbar-photo-browser.navbar-photo-browser-dark) {
+        .navbar-inner {
+            padding: 0;
+        }
     }
 }
 
@@ -80,4 +86,24 @@ html {
     background: rgb(255, 255, 255);
     background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 5%, rgba(241, 245, 248, 1) 100%);
     padding: $pd-app;
+}
+
+// badges
+.badges {
+    padding-right: .6em;
+    padding-left: .6em;
+    border-radius: 10rem;
+    padding: .25em .4em;
+    font-size: 75%;
+    font-weight: 500;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    display: inline-block;
+}
+
+.badges-danger {
+    color: #fff;
+    background-color: #f54242;
 }

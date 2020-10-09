@@ -9,6 +9,8 @@
 // layout
 @import './../css/layout/navbar';
 @import './../css/layout/toolbar';
+@import './../css/layout/toolbarCustom';
+@import './../css/layout/toolbarBottom';
 // pages
 @import './../css/pages/news.scss';
 @import './../css/pages/shop.scss';
@@ -27,6 +29,11 @@ html {
 }
 
 //Reset Framework7
+.page-content {
+    background: white;
+    background: linear-gradient(180deg, white 0%, white 5%, #f1f5f8 100%);
+}
+
 .toolbar {
     padding: 0;
     background: $white;
@@ -81,10 +88,12 @@ html {
     background-color: var(--f7-navbar-bg-color, var(--f7-bars-bg-color))!important;
 }
 
+.toolbar .toolbar-inner {
+    overflow: inherit;
+}
+
 //Component
 .page-render {
-    background: rgb(255, 255, 255);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 5%, rgba(241, 245, 248, 1) 100%);
     padding: $pd-app;
 }
 

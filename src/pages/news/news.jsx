@@ -4,7 +4,7 @@ import { Page, Link, Toolbar, Navbar } from "framework7-react";
 import ReactHtmlParser from "react-html-parser";
 import NewsDataService from "../../service/news.service";
 import Slider from "react-slick";
-import ToolBar from '../../components/ToolBar';
+import ToolBarBottom from '../../components/ToolBarBottom';
 
 export default class extends React.Component {
   constructor() {
@@ -225,7 +225,7 @@ export default class extends React.Component {
           </div>
         </div>
         <Toolbar tabbar position="bottom">
-          <ToolBar />
+          <ToolBarBottom />
         </Toolbar>
       </Page>
     );

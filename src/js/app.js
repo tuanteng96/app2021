@@ -24,6 +24,8 @@ import '../css/app.scss';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+import "./jquery-3.5.1";
+
 
 // Import App Component
 import App from '../components/app.jsx';

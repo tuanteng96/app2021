@@ -10,7 +10,6 @@ export default class ToolBar extends React.Component {
     }
 
     render() {
-        const setting = this.props.setting;
         return (
             <div className="page-toolbar">
                 <ul className="page-toolbar__list toolbar-item-4">

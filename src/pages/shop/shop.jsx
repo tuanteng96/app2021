@@ -3,7 +3,7 @@ import { SERVER_APP } from "./../../constants/config";
 import { Page, Link, Toolbar, Navbar } from "framework7-react";
 import AdvDataService from '../../service/adv.service';
 import ReactHtmlParser from "react-html-parser";
-import ToolBar from "../../components/ToolBar";
+import ToolBarBottom from "../../components/ToolBarBottom";
 
 export default class extends React.Component {
     constructor() {
@@ -70,7 +70,7 @@ export default class extends React.Component {
                     </div>
                 </div>
                 <Toolbar tabbar position="bottom">
-                    <ToolBar />
+                    <ToolBarBottom />
                 </Toolbar>
             </Page>
         )

@@ -13,6 +13,13 @@ class ShopDataService {
     getDetail(id) {
         return http.get(`/app/index.aspx?id=${id}&cmd=prodid`);
     }
+
+    getServiceParentID(id) {
+        return http.get(`/app/index.aspx?cmd=service_parentid&id=${id}`);
+    }
+    getServiceProdID(id) {
+        return http.get(`/app/index.aspx?cmd=service_prodsid&id=${id}`);
+    }
 }
 
 export default new ShopDataService();

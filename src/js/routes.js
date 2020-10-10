@@ -8,6 +8,8 @@ import ShopListProductPage from '../pages/shop/shopListProduct';
 import ShopListServicePage from '../pages/shop/shopListService';
 import ShopDetailPage from '../pages/shop/shopDetail';
 
+import MapsPage from '../pages/maps/maps';
+
 import AboutPage from '../pages/about.jsx';
 import FormPage from '../pages/form.jsx';
 import HomePage from '../pages/home.jsx';
@@ -87,6 +89,13 @@ var routes = [{
         path: '/shop/detail/:cateId',
         async(routeTo, routeFrom, resolve, reject) {},
         component: ShopDetailPage,
+    },
+    {
+        path: '/maps/',
+        component: MapsPage,
+        options: {
+            transition: 'f7-cover',
+        }
     },
     {
         path: '/dynamic-route/blog/:blogId/post/:postId/',

@@ -20,6 +20,9 @@ class ShopDataService {
     getServiceProdID(id) {
         return http.get(`/app/index.aspx?cmd=service_prodsid&id=${id}`);
     }
+    getSearchService(keys) {
+        return http.get(`/app/index.aspx?cmd=search_prods&key=${keys}&cates=795&pi=1&ps=1000`);
+    }
 }
 
 export default new ShopDataService();

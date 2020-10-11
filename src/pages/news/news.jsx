@@ -4,7 +4,7 @@ import { Page, Link, Toolbar, Navbar } from "framework7-react";
 import ReactHtmlParser from "react-html-parser";
 import NewsDataService from "../../service/news.service";
 import Slider from "react-slick";
-import ToolBarBottom from '../../components/ToolBarBottom';
+import ToolBarBottom from "../../components/ToolBarBottom";
 
 export default class extends React.Component {
   constructor() {
@@ -14,6 +14,7 @@ export default class extends React.Component {
       arrBanner: [],
     };
   }
+  
   getDateVietnamese = () => {
     var d = new Date();
     var s = d.getSeconds();
@@ -63,7 +64,6 @@ export default class extends React.Component {
   };
   componentDidMount() {
     this.$f7ready((f7) => {
-      var $$ = this.Dom7;
       this.setState({ width: window.innerWidth });
       // Call F7 APIs here
       NewsDataService.getBanner()
@@ -89,10 +89,13 @@ export default class extends React.Component {
         });
     });
   }
+  onPageBeforeIn = () => {
 
+  };
   componentDidUpdate(prevProps) {}
 
   render() {
+
     const arrBanner = this.state.arrBanner;
     const arrNews = this.state.arrNews;
     var settingsBanner = {
@@ -116,24 +119,7 @@ export default class extends React.Component {
       variableWidth: true,
     };
     return (
-      <Page noNavbar name="news">
-        {/* <Navbar>
-          <div className="page-navbar">
-            <div className="page-navbar__back">
-              <Link>
-                <i className="las la-map-marked-alt"></i>
-              </Link>
-            </div>
-            <div className="page-navbar__title">
-              <span className="title">Hôm nay có gì mới ?</span>
-            </div>
-            <div className="page-navbar__noti">
-              <Link>
-                <i className="las la-bell"></i>
-              </Link>
-            </div>
-          </div>
-        </Navbar> */}
+      <Page noNavbar name="news" onPageBeforeIn={() => this.onPageBeforeIn()}>
         <div className="page-wrapper">
           <div className="page-render">
             <div className="page-news__header">

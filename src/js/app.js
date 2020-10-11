@@ -18,20 +18,20 @@ import '../assets/libs/animate/animate.min.css';
 
 import './../assets/libs/line-awesome-1.3.0/css/line-awesome.min.css';
 
+import './../assets/libs/linearicons/svgembedder.min.js';
+
 import '../css/app.scss';
 
 // Import css files
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import "./jquery-3.5.1";
-
 
 // Import App Component
 import App from '../components/app.jsx';
 
 // Init F7 React Plugin
-Framework7.use(Framework7React)
+Framework7.use(Framework7React);
 
 // Mount React App
 ReactDOM.render(

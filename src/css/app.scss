@@ -7,6 +7,7 @@
 // base
 @import './base/reset';
 // layout
+@import './../css/layout/button';
 @import './../css/layout/navbar';
 @import './../css/layout/toolbar';
 @import './../css/layout/toolbarCustom';
@@ -15,6 +16,7 @@
 @import './../css/pages/news.scss';
 @import './../css/pages/shop.scss';
 @import './../css/pages/maps.scss';
+@import './../css/pages/login.scss';
 //Font family
 body,
 html {
@@ -91,6 +93,11 @@ html {
 
 .toolbar .toolbar-inner {
     overflow: inherit;
+}
+
+//rootnotify reset
+.Toastify__close-button {
+    width: auto!important;
 }
 
 //Component

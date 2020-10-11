@@ -10,6 +10,10 @@ import ShopDetailPage from '../pages/shop/shopDetail';
 
 import MapsPage from '../pages/maps/maps';
 
+import LoginPage from '../pages/user/login';
+import RegistrationPage from '../pages/user/registration';
+import ProfilePage from '../pages/user/profile';
+
 import AboutPage from '../pages/about.jsx';
 import FormPage from '../pages/form.jsx';
 import HomePage from '../pages/home.jsx';
@@ -19,9 +23,11 @@ import DynamicRoutePage from '../pages/dynamic-route.jsx';
 import RequestAndLoad from '../pages/request-and-load.jsx';
 import NotFoundPage from '../pages/404.jsx';
 
+
+
 var routes = [{
         path: '/',
-        component: NewsPage,
+        component: NewsPage
     },
     {
         path: '/about/',
@@ -93,6 +99,27 @@ var routes = [{
     {
         path: '/maps/',
         component: MapsPage,
+        options: {
+            transition: 'f7-cover',
+        }
+    },
+    {
+        path: '/login/',
+        component: LoginPage,
+        options: {
+            transition: 'f7-cover',
+        }
+    },
+    {
+        path: '/registration/',
+        component: RegistrationPage,
+        options: {
+            transition: 'f7-cover-v',
+        }
+    },
+    {
+        path: '/profile/',
+        component: ProfilePage,
         options: {
             transition: 'f7-cover',
         }

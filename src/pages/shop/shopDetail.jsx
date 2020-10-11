@@ -4,7 +4,6 @@ import { formatPriceVietnamese, checkSale, percentagesSale } from "../../constan
 import ShopDataService from "./../../service/shop.service";
 import { Page, Link, Toolbar, Navbar, PhotoBrowser, Button } from "framework7-react";
 import ReactHtmlParser from "react-html-parser";
-import ToolBar from "../../components/ToolBar";
 
 export default class extends React.Component {
     constructor() {

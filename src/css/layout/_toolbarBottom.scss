@@ -56,6 +56,8 @@
         i {
             font-size: 26px;
             color: $color-gray-menu;
+            position: relative;
+            z-index: 2;
         }
         span {
             font-size: 12px;
@@ -80,6 +82,14 @@
                     color: #fff;
                 }
             }
+        }
+    }
+}
+
+@media (max-width: 320px) {
+    .page-toolbar-bottom {
+        &__link {
+            width: 19%;
         }
     }
 }

@@ -1,0 +1,71 @@
+.btn-me {
+    position: relative;
+    &.loading {
+        pointer-events: none;
+        &:before {
+            margin: -13px 0 0 -13px;
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            content: '';
+            -webkit-border-radius: 24px;
+            -webkit-background-clip: padding-box;
+            -moz-border-radius: 24px;
+            -moz-background-clip: padding;
+            border-radius: 24px;
+            background-clip: padding-box;
+            border: rgba(255, 255, 255, 0.25) 2px solid;
+            border-top-color: #fff;
+            -webkit-animation: animation-rotate 750ms linear infinite;
+            -moz-animation: animation-rotate 750ms linear infinite;
+            -o-animation: animation-rotate 750ms linear infinite;
+            animation: animation-rotate 750ms linear infinite;
+        }
+        span {
+            color: transparent;
+            text-shadow: none;
+        }
+    }
+}
+
+.btn-login {
+    height: 42px;
+    border: 0;
+    background: $color-app;
+    border-radius: .125rem;
+    color: $white;
+    -webkit-box-shadow: 0px 0px 25px 0px rgba(126, 55, 216, 0.05);
+    box-shadow: 0px 0px 25px 0px rgba(126, 55, 216, 0.05);
+    text-transform: uppercase;
+    outline: none;
+    background-image: -webkit-gradient(linear, left top, right bottom, from(#ebd480), to(#d5bb67));
+    background-image: linear-gradient(to bottom right, #e7ce79, #bd9e4a);
+    -webkit-box-shadow: 2px 12px 26px 3px rgba(185, 151, 71, 0.29);
+    box-shadow: 2px 6px 29px 0px rgba(185, 151, 71, 0.29);
+}
+
+@-webkit-keyframes animation-rotate {
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@-moz-keyframes animation-rotate {
+    100% {
+        -moz-transform: rotate(360deg);
+    }
+}
+
+@-o-keyframes animation-rotate {
+    100% {
+        -o-transform: rotate(360deg);
+    }
+}
+
+@keyframes animation-rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}

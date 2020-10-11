@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   App,
   Panel,
@@ -24,6 +23,7 @@ import {
 
 import routes from '../js/routes';
 
+
 export default class extends React.Component {
   constructor() {
     super();
@@ -31,13 +31,27 @@ export default class extends React.Component {
     this.state = {
       // Framework7 Parameters
       f7params: {
-        name: 'demo1', // App name
+        name: 'Cser Beauty', // App name
         theme: 'auto', // Automatic theme detection
-
-
-
+        id: 'vn.cser',
         // App routes
         routes: routes,
+        on: {
+          init: function () {
+            var ACC_ID = localStorage.getItem("ACC_ID");
+            console.log("Mở lần đầu" + ACC_ID);
+          },
+          pageInit: function() {
+            var ACC_ID = localStorage.getItem("ACC_ID");
+            console.log("Khi quay lại" + ACC_ID);
+          }
+        },
+        view: {
+          routesBeforeEnter: function(to, from, resolve, reject) {
+            console.log('check log in here')
+            resolve();
+          }
+        },
       },
     }
   }
@@ -51,8 +65,11 @@ export default class extends React.Component {
   }
   componentDidMount() {
     this.$f7ready((f7) => {
-
-      // Call F7 APIs here
+      const self = this;
+      self.$f7.dialog.preloader('Loading ...');
+      setTimeout(() => {
+        self.$f7.dialog.close();
+      }, 2000);
     });
   }
 }

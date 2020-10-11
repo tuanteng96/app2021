@@ -38,6 +38,7 @@
         "react-html-parser": "^2.0.2",
         "react-id-swiper": "^4.0.0",
         "react-slick": "^0.27.11",
+        "react-toastify": "^6.0.9",
         "slick-carousel": "^1.8.1",
         "swiper": "^6.3.2",
         "template7": "^1.4.2"

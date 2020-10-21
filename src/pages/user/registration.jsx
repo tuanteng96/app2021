@@ -102,10 +102,10 @@ export default class extends React.Component {
             <div className="page-login__logo">
               <img className="logo-reg" src={SERVER_APP + "/app/images/logo.png"} />
             </div>
-            <div className="page-login__title">
-              Tạo tài khoản mới
-            </div>
             <div className="page-login__form">
+              <div className="page-login__title">
+                Tạo tài khoản mới
+              </div>
               <div className="page-login__form-item">
                 <input
                   type="text"
@@ -148,7 +148,7 @@ export default class extends React.Component {
             </div>
           </div>
           <div className="page-login__alert">
-            Bạn chưa có tài khoản ?<Link href="/signin/">Đăng nhập</Link>
+            Bạn chưa có tài khoản ?<Link href="/login/">Đăng nhập</Link>
           </div>
         </div>
       </Page>

@@ -25,11 +25,20 @@
         @include flexbox;
         @include align-items(center);
         @include justify-content(center);
-        margin: 30px 0;
+        margin: 50px 0;
+        @media (max-width: 320px) {
+            margin: 30px 0;
+        }
         img {
-            width: 160px;
-            .logo-reg {
+            width: 200px;
+            @media (max-width: 320px) {
                 width: 150px;
+            }
+            &.logo-reg {
+                width: 180px;
+                @media (max-width: 320px) {
+                    width: 150px;
+                }
             }
         }
     }
@@ -38,6 +47,10 @@
         font-weight: 500;
     }
     &__form {
+        padding: 0 12px;
+        @media (max-width: 320px) {
+            padding: 0 5px;
+        }
         &-item {
             margin-top: 15px;
             input {

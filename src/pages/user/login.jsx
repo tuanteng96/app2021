@@ -81,10 +81,10 @@ export default class extends React.Component {
             <div className="page-login__logo">
               <img src={SERVER_APP + "/app/images/logo.png"} />
             </div>
-            <div className="page-login__title">
-              Hi, Vui lòng đăng nhập vào tài khoản của bạn
-            </div>
             <div className="page-login__form">
+              <div className="page-login__title">
+                Hi, Vui lòng đăng nhập vào tài khoản của bạn
+              </div>
               <div className="page-login__form-item">
                 <input
                   type="text"

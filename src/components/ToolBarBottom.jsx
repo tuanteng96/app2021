@@ -40,7 +40,7 @@ export default class ToolBarCustom extends React.Component {
             </Link>
             <Link
               noLinkClass
-              href="/card-service/"
+              href="/cardservice/"
               className="page-toolbar-bottom__link js-toolbar-link"
             >
               <i className="las la-clipboard-list"></i>

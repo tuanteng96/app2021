@@ -45,11 +45,12 @@ export default class extends React.Component {
           });
         } else {
           const userData = response.data;
-          setUserStorage(password, userData);
+          const token = userData.etoken;
+          setUserStorage(token, userData,password);
           
           setTimeout(() => {
             self.$f7.preloader.hide();
-            this.$f7router.navigate('/news/');
+            this.$f7router.navigate('/');
           }, 1000);
         }
       })

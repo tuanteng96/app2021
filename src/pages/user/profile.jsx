@@ -8,12 +8,11 @@ import imgDiary from '../../assets/images/diary.svg';
 import imgCoupon from '../../assets/images/coupon.svg';
 import imgEvaluate from '../../assets/images/evaluate.svg'
 import { SERVER_APP } from "./../../constants/config";
+import {checkAvt} from "../../constants/format";
 import { removeUserStorage, getUser } from "../../constants/user";
 import { Page, Link, Toolbar,Row, Col } from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import UserService from "../../service/user.service";
-
-const infoUser = getUser();
 
 export default class extends React.Component {
     constructor() {
@@ -27,6 +26,7 @@ export default class extends React.Component {
         this.$f7router.navigate('/login/');
     }
     componentDidMount() {
+        const infoUser = getUser();
         const username = infoUser.MobilePhone;
 
         UserService.getInfo(username)
@@ -41,7 +41,6 @@ export default class extends React.Component {
     }
     render() {
         const member = this.state.memberInfo && this.state.memberInfo;
-        console.log(member);
         return (
             <Page name="profile" noNavbar>
                 <div className="profile-bg">
@@ -57,12 +56,12 @@ export default class extends React.Component {
                 </div>
                 <div className="profile-info">
                     <div className="profile-info__avatar">
-                        <img src={SERVER_APP + "/Upload/image/" + member.Photo} />
+                        <img src={checkAvt(member.Photo)} />
                         <Link noLinkClass href="/"><i className="las la-pen"></i></Link>
                     </div>
                     <div className="profile-info__basic">
                         <div className="name">{member.FullName}</div>
-                        <div className="group">{member.acc_group == "" ? "Khách thường" : member.acc_group}</div>
+                        <div className="group">{member.acc_group > 0 ? (member.MemberGroups[0].Title) : "Khách thường"}</div>
                     </div>
                     <div className="profile-info__shortcuts">
                         <div className="profile-info__shortcut">
@@ -74,7 +73,7 @@ export default class extends React.Component {
                                 </Col>
                                 <Col width="50">
                                     <div className="profile-info__shortcut-item">
-                                        <Link noLinkClass href="/">Check In</Link>
+                                        <Link noLinkClass href="/barcode/">Check In</Link>
                                     </div>
                                 </Col>
                             </Row>

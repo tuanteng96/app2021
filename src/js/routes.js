@@ -13,6 +13,8 @@ import MapsPage from '../pages/maps/maps';
 import LoginPage from '../pages/user/login';
 import RegistrationPage from '../pages/user/registration';
 import ProfilePage from '../pages/user/profile';
+import CardServicePage from '../pages/user/cardService'; //Thẻ dịch vụ
+import BarCodePage from '../pages/user/barcode';
 
 import AboutPage from '../pages/about.jsx';
 import FormPage from '../pages/form.jsx';
@@ -125,54 +127,18 @@ var routes = [{
         }
     },
     {
-        path: '/dynamic-route/blog/:blogId/post/:postId/',
-        component: DynamicRoutePage,
+        path: '/cardservice/', // Thẻ dịch vụ
+        component: CardServicePage,
+        options: {
+            transition: 'f7-cover',
+        }
     },
     {
-        path: '/request-and-load/user/:userId/',
-        async: function(routeTo, routeFrom, resolve, reject) {
-            // Router instance
-            var router = this;
-
-            // App instance
-            var app = router.app;
-
-            // Show Preloader
-            app.preloader.show();
-
-            // User ID from request
-            var userId = routeTo.params.userId;
-
-            // Simulate Ajax Request
-            setTimeout(function() {
-                // We got user data from request
-                var user = {
-                    firstName: 'Vladimir',
-                    lastName: 'Kharlampidi',
-                    about: 'Hello, i am creator of Framework7! Hope you like it!',
-                    links: [{
-                            title: 'Framework7 Website',
-                            url: 'http://framework7.io',
-                        },
-                        {
-                            title: 'Framework7 Forum',
-                            url: 'http://forum.framework7.io',
-                        },
-                    ]
-                };
-                // Hide Preloader
-                app.preloader.hide();
-
-                // Resolve route to load page
-                resolve({
-                    component: RequestAndLoad,
-                }, {
-                    context: {
-                        user: user,
-                    }
-                });
-            }, 1000);
-        },
+        path: '/barcode/', // Check In
+        component: BarCodePage,
+        options: {
+            transition: 'f7-cover',
+        }
     },
     {
         path: '(.*)',

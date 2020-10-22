@@ -10,6 +10,12 @@ class UserService {
     getInfo(username) {
         return http.get(`/app/index.aspx?cmd=getInfo&USN=${username}&PWD=1234`)
     }
+    getListTagService(username, password, memberid) {
+        return http.get(`/services/preview.aspx?a=1&USN=${username}&PWD=${password}&cmd=loadOrderService&MemberID=${memberid}&IsMember=1&fromOrderAdd=0`);
+    }
+    getBarCode(memberid) {
+        return http.get(`/services/preview.aspx?cmd=Barcode&mid=${memberid}`);
+    }
 }
 
 export default new UserService();

@@ -1,7 +1,27 @@
+import { SERVER_APP } from "../constants/config";
+import imgAvatarNull from "./../assets/images/avatar-null.png";
+import imgAvatarNull2 from "./../assets/images/avatar-null2.png";
+import moment from 'moment';
+import 'moment/locale/vi';
+moment.locale('vi');
+
 //Format VNĐ
 export const formatPriceVietnamese = (price) => {
     return price.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
 };
+
+//format date service
+export const formatDateSv = (date) => {
+    const dateSv = date.split("T")[0];
+    const dateTo = dateSv.split("-");
+    return dateTo[2] + "/" + dateTo[1] + "/" + dateTo[0];
+}
+export const formatDateNotYYYY = (date) => {
+    if (date === null) return false;
+    const dateSv = date.split("T")[0];
+    const dateTo = dateSv.split("-");
+    return dateTo[2] + "-" + dateTo[1];
+}
 
 // Check Sale 
 
@@ -28,4 +48,32 @@ export const checkSale = (SaleBegin, SaleEnd) => {
 
 export const percentagesSale = (Price, PriceSale) => {
     return 100 - ((PriceSale / Price) * 100);
+}
+
+//Check avatar Null
+export const checkAvt = (src) => {
+    if (src === "null.gif" || src === "") {
+        return imgAvatarNull
+    } else {
+        return SERVER_APP + "/Upload/image/" + src;
+    }
+}
+export const checkAvt2 = (src) => {
+    if (src === "null.gif" || src === "") {
+        return imgAvatarNull2;
+    } else {
+        return SERVER_APP + "/Upload/image/" + src;
+    }
+}
+
+// Get date max book
+export const maxBookDate = (services) => {
+    var max = '';
+    services && services.map((x) => {
+        if (x.BookDate && x.BookDate > max) max = x.BookDate;
+    })
+    if (max) {
+        return moment(max).fromNow()
+    }
+    return max;
 }

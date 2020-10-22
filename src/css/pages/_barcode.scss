@@ -1,0 +1,23 @@
+.barcode-qr {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &__box {
+        width: 240px;
+        margin: 20px 0;
+        background: $white;
+        padding: 15px;
+        &-text {
+            text-align: center;
+            i {
+                font-size: 35px;
+                color: $color-app;
+            }
+            span {
+                display: block;
+                margin-top: 8px;
+                font-size: 14px;
+            }
+        }
+    }
+}

@@ -13,6 +13,7 @@ import MapsPage from '../pages/maps/maps';
 import LoginPage from '../pages/user/login';
 import RegistrationPage from '../pages/user/registration';
 import ProfilePage from '../pages/user/profile';
+import DetailProfilePage from '../pages/user/DetailProfile';
 import CardServicePage from '../pages/user/cardService'; //Thẻ dịch vụ
 import BarCodePage from '../pages/user/barcode';
 
@@ -122,6 +123,13 @@ var routes = [{
     {
         path: '/profile/',
         component: ProfilePage,
+        options: {
+            transition: 'f7-cover',
+        }
+    },
+    {
+        path: '/detail-profile/',
+        component: DetailProfilePage,
         options: {
             transition: 'f7-cover',
         }

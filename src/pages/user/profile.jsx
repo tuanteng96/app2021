@@ -68,7 +68,7 @@ export default class extends React.Component {
                             <Row>
                                 <Col width="50">
                                     <div className="profile-info__shortcut-item">
-                                        <Link noLinkClass href="/">Thông tin cá nhân</Link>
+                                        <Link noLinkClass href="/detail-profile/">Thông tin cá nhân</Link>
                                     </div>
                                 </Col>
                                 <Col width="50">

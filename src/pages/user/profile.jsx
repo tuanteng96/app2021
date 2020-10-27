@@ -8,9 +8,9 @@ import imgDiary from '../../assets/images/diary.svg';
 import imgCoupon from '../../assets/images/coupon.svg';
 import imgEvaluate from '../../assets/images/evaluate.svg'
 import { SERVER_APP } from "./../../constants/config";
-import {checkAvt} from "../../constants/format";
-import { removeUserStorage, getUser } from "../../constants/user";
-import { Page, Link, Toolbar,Row, Col } from "framework7-react";
+import { checkAvt } from "../../constants/format";
+import { removeUserStorage, getUser,getPassword } from "../../constants/user";
+import { Page, Link, Toolbar, Row, Col } from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import UserService from "../../service/user.service";
 
@@ -18,26 +18,29 @@ export default class extends React.Component {
     constructor() {
         super();
         this.state = {
-            memberInfo : []
+            memberInfo: []
         };
-    }
-    signOut = () => {
-        removeUserStorage();
-        this.$f7router.navigate('/login/');
     }
     componentDidMount() {
         const infoUser = getUser();
         const username = infoUser.MobilePhone;
-
-        UserService.getInfo(username)
-        .then(response => {
-            const memberInfo = response.data.info;
-            this.setState({
-                memberInfo: memberInfo
+        const password = getPassword();
+        UserService.getInfo(username,password)
+            .then(response => {
+                const memberInfo = response.data.info;
+                this.setState({
+                    memberInfo: memberInfo
+                })
             })
-        })
-        .catch(err => console.log(err))
+            .catch(err => console.log(err))
 
+    }
+    signOut = () => {
+        const $$this = this;
+        $$this.$f7.dialog.confirm('Bạn muống đăng xuất khỏi tài khoản ?', () => {
+            removeUserStorage();
+            $$this.$f7router.navigate('/');
+        });
     }
     render() {
         const member = this.state.memberInfo && this.state.memberInfo;
@@ -52,12 +55,17 @@ export default class extends React.Component {
                     <div className="name">
                         {member.FullName}
                     </div>
-                    <img src={bgImage}/>
+                    <div className="profile-bg__logout">
+                        <Link onClick={() => this.signOut()}>
+                            <i className="las la-sign-out-alt"></i>
+                        </Link>
+                    </div>
+                    <img src={bgImage} />
                 </div>
                 <div className="profile-info">
                     <div className="profile-info__avatar">
                         <img src={checkAvt(member.Photo)} />
-                        <Link noLinkClass href="/"><i className="las la-pen"></i></Link>
+                        <Link noLinkClass href="/detail-profile/"><i className="las la-pen"></i></Link>
                     </div>
                     <div className="profile-info__basic">
                         <div className="name">{member.FullName}</div>
@@ -85,7 +93,7 @@ export default class extends React.Component {
                         <Col width="33">
                             <Link noLinkClass href="/">
                                 <div className="image">
-                                    <img src={imgWallet}/>
+                                    <img src={imgWallet} />
                                 </div>
                                 <span>Ví điện tử</span>
                             </Link>
@@ -93,7 +101,7 @@ export default class extends React.Component {
                         <Col width="33">
                             <Link noLinkClass href="/">
                                 <div className="image">
-                                    <img src={imgDiary}/>
+                                    <img src={imgDiary} />
                                 </div>
                                 <span>Nhật ký</span>
                             </Link>
@@ -101,7 +109,7 @@ export default class extends React.Component {
                         <Col width="33">
                             <Link noLinkClass href="/">
                                 <div className="image">
-                                    <img src={imgOrder}/>
+                                    <img src={imgOrder} />
                                 </div>
                                 <span>Đơn hàng</span>
                             </Link>
@@ -109,7 +117,7 @@ export default class extends React.Component {
                         <Col width="33">
                             <Link noLinkClass href="/">
                                 <div className="image">
-                                    <img src={imgCoupon}/>
+                                    <img src={imgCoupon} />
                                 </div>
                                 <span>Mã giảm giá</span>
                             </Link>
@@ -117,7 +125,7 @@ export default class extends React.Component {
                         <Col width="33">
                             <Link noLinkClass href="/">
                                 <div className="image">
-                                    <img src={imgEvaluate}/>
+                                    <img src={imgEvaluate} />
                                 </div>
                                 <span>Đánh giá</span>
                             </Link>
@@ -125,7 +133,7 @@ export default class extends React.Component {
                         <Col width="33">
                             <Link noLinkClass href="/">
                                 <div className="image">
-                                    <img src={imgLocation}/>
+                                    <img src={imgLocation} />
                                 </div>
                                 <span>Liên hệ</span>
                             </Link>

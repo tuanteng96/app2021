@@ -27,7 +27,6 @@ export default class extends React.Component {
     getTagService = (username, password, memberid) => {
         UserService.getListTagService(username, password, memberid)
             .then(response => {
-                console.log(response.data);
                 const cardService = response.data;
                 const countSv = cardService.length;
                 const excessiveSv = [];

@@ -5,9 +5,34 @@ import { getUser } from "../constants/user";
 export default class ToolBarCustom extends React.Component {
   constructor() {
     super();
+    this.state = {
+      currentUrl: ""
+    }
   }
   user = getUser();
-  componentDidMount() {}
+  componentDidMount() {
+    this.$f7ready((f7) => {
+      var href = this.$f7.views.main.router.url;
+      var $$ = this.Dom7;
+      
+      console.log("componentDidMount " + href);
+
+      $$(".js-toolbar-link").each(function () {
+        const _this = $$(this);
+        const hrefLink = _this.attr('href');
+        //console.log(hrefLink + " : " + href);
+      });
+    })
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    var href = this.$f7.views.main.router.url;
+      var $$ = this.Dom7;
+      
+      console.log("componentDidUpdate " + href);
+    
+    //console.log(url);
+  }
 
   menuToolbar = () => {
     const ACC_TYPE = this.user && this.user.acc_type;
@@ -18,7 +43,7 @@ export default class ToolBarCustom extends React.Component {
             <Link
               noLinkClass
               href="/news/"
-              className="page-toolbar-bottom__link js-toolbar-link toolbar-active"
+              className="page-toolbar-bottom__link js-toolbar-link"
             >
               <i className="las la-newspaper"></i>
             </Link>

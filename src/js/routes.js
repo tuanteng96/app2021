@@ -15,7 +15,10 @@ import RegistrationPage from '../pages/user/registration';
 import ProfilePage from '../pages/user/profile';
 import DetailProfilePage from '../pages/user/DetailProfile';
 import CardServicePage from '../pages/user/cardService'; //Thẻ dịch vụ
+import SchedulePage from '../pages/user/schedule'; //Đặt lịch
 import BarCodePage from '../pages/user/barcode';
+import EditEmailPage from '../pages/user/editEmail';
+import EditPasswordPage from '../pages/user/editPassword';
 
 import AboutPage from '../pages/about.jsx';
 import FormPage from '../pages/form.jsx';
@@ -135,8 +138,23 @@ var routes = [{
         }
     },
     {
+        path: '/edit-email/',
+        component: EditEmailPage
+    },
+    {
+        path: '/edit-password/',
+        component: EditPasswordPage
+    },
+    {
         path: '/cardservice/', // Thẻ dịch vụ
         component: CardServicePage,
+        options: {
+            transition: 'f7-cover',
+        }
+    },
+    {
+        path: '/schedule/', // Thẻ dịch vụ
+        component: SchedulePage,
         options: {
             transition: 'f7-cover',
         }

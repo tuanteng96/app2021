@@ -127,3 +127,24 @@ html {
     color: #fff;
     background-color: #f54242;
 }
+
+///datepicker mobile
+.datepicker {
+    font-family: $font-app !important;
+    -webkit-animation-duration: .3s;
+    animation-duration: .3s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-name: fadeInUp;
+    animation-name: fadeInUp;
+}
+
+.datepicker-modal {
+    z-index: 10001 !important;
+    -webkit-animation-duration: .5s;
+    animation-duration: .5s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-name: fadeIn;
+    animation-name: fadeIn;
+}

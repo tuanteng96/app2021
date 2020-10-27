@@ -5,6 +5,7 @@ import ReactHtmlParser from "react-html-parser";
 import NewsDataService from "../../service/news.service";
 import Slider from "react-slick";
 import ToolBarBottom from "../../components/ToolBarBottom";
+import { getUser,getPassword } from "../../constants/user";
 
 export default class extends React.Component {
   constructor() {
@@ -63,6 +64,10 @@ export default class extends React.Component {
     });
   };
   componentDidMount() {
+    const userInfo = getUser();
+    this.setState({
+      userInfo : userInfo
+    })
     this.$f7ready((f7) => {
       this.setState({ width: window.innerWidth });
       // Call F7 APIs here
@@ -92,10 +97,12 @@ export default class extends React.Component {
   onPageBeforeIn = () => {
 
   };
-  componentDidUpdate(prevProps) {}
+  componentDidUpdate(prevProps) {
+
+  }
 
   render() {
-
+    const userInfo = this.state.userInfo;
     const arrBanner = this.state.arrBanner;
     const arrNews = this.state.arrNews;
     var settingsBanner = {
@@ -125,7 +132,12 @@ export default class extends React.Component {
             <div className="page-news__header">
               {this.getDateVietnamese()}
               <div className="page-news__header-user">
-                <i className="las la-user-circle"></i>
+                {
+                  userInfo !== null ? 
+                  (<Link noLinkClass href="/profile/"><i className="las la-user-circle"></i></Link>)
+                  : 
+                  (<Link noLinkClass href="/login/"><i className="las la-user-circle"></i></Link>)
+                }
               </div>
             </div>
             {arrNews &&

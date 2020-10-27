@@ -2,8 +2,8 @@ import React from "react";
 import bgImage from '../../assets/images/headerbottombgapp.png';
 import { SERVER_APP } from "./../../constants/config";
 import { checkAvt } from "../../constants/format";
-import { getUser } from "../../constants/user";
-import { Page, Link, Toolbar, Row, Col } from "framework7-react";
+import { getUser,getPassword } from "../../constants/user";
+import { Page, Link } from "framework7-react";
 import UserService from "../../service/user.service";
 import Barcode from 'react-barcode';
 export default class extends React.Component {
@@ -17,17 +17,17 @@ export default class extends React.Component {
             MemberID: ""
         };
     }
-
-
+    
     componentDidMount() {
         const infoUser = getUser();
+        const password = getPassword();
+        if(!infoUser) return false;
         const username = infoUser.MobilePhone;
-
         this.setState({
             MemberID : infoUser.ID
         })
 
-        UserService.getInfo(username)
+        UserService.getInfo(username,password)
             .then(response => {
                 const memberInfo = response.data.info;
                 this.setState({

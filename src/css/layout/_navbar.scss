@@ -10,7 +10,7 @@
         left: 50%;
         transform: translateX(-50%);
         height: 100%;
-        width: calc(100vw - 80px);
+        width: calc(100vw - 125px);
         text-align: center;
         color: $white;
         @include flexbox();

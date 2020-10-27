@@ -12,6 +12,7 @@ export const formatPriceVietnamese = (price) => {
 
 //format date service
 export const formatDateSv = (date) => {
+    if (date === null) return false;
     const dateSv = date.split("T")[0];
     const dateTo = dateSv.split("-");
     return dateTo[2] + "/" + dateTo[1] + "/" + dateTo[0];
@@ -21,6 +22,18 @@ export const formatDateNotYYYY = (date) => {
     const dateSv = date.split("T")[0];
     const dateTo = dateSv.split("-");
     return dateTo[2] + "-" + dateTo[1];
+}
+export const formatDateBirday = (date) => {
+    if (date === null || date === undefined) return false;
+    const dateSv = date.split("T")[0];
+    const dateTo = dateSv.split("-");
+    return dateTo[2] + "." + dateTo[1] + "." + dateTo[0];
+}
+export const formatDateUTC = (date) => {
+    var date = new Date(date),
+        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+        day = ("0" + date.getDate()).slice(-2);
+    return [day, mnth, date.getFullYear()].join("/");
 }
 
 // Check Sale 
@@ -76,4 +89,10 @@ export const maxBookDate = (services) => {
         return moment(max).fromNow()
     }
     return max;
+}
+
+// validateEmail
+export const validateEmail = (email) => {
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
 }

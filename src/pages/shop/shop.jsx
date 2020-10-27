@@ -58,7 +58,7 @@ export default class extends React.Component {
                                 {
                                     arrCateAdv && arrCateAdv.map(item => (
                                         <li key={item.ID}>
-                                            <a href={"/shop/"+ item.Link}>
+                                            <a href={"/shop/" + item.Link}>
                                                 <img src={SERVER_APP + "/Upload/image/" + item.FileName} alt={item.Title} />
                                                 <div className="page-shop__category-title">{item.Title}</div>
                                             </a>

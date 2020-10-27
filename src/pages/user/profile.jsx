@@ -23,6 +23,7 @@ export default class extends React.Component {
     }
     componentDidMount() {
         const infoUser = getUser();
+        if(!infoUser) return false;
         const username = infoUser.MobilePhone;
         const password = getPassword();
         UserService.getInfo(username,password)

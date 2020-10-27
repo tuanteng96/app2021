@@ -59,6 +59,12 @@
             position: relative;
             z-index: 2;
         }
+        &.js-active {
+            i {
+                color: $color-app;
+                font-size: 24px;
+            }
+        }
         span {
             font-size: 12px;
         }

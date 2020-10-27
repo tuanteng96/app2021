@@ -12,26 +12,27 @@ export default class ToolBarCustom extends React.Component {
   user = getUser();
   componentDidMount() {
     this.$f7ready((f7) => {
-      var href = this.$f7.views.main.router.url;
-      var $$ = this.Dom7;
-      
-      console.log("componentDidMount " + href);
 
-      $$(".js-toolbar-link").each(function () {
-        const _this = $$(this);
-        const hrefLink = _this.attr('href');
-        //console.log(hrefLink + " : " + href);
-      });
     })
   }
 
   componentDidUpdate(prevProps, prevState){
     var href = this.$f7.views.main.router.url;
-      var $$ = this.Dom7;
-      
-      console.log("componentDidUpdate " + href);
-    
-    //console.log(url);
+    var $$ = this.Dom7;
+    $$(".js-toolbar-link").removeClass("js-active");
+    if(prevState.currentUrl !== href) {
+      $$(".js-toolbar-link").each(function(){
+        const _this = $$(this);
+        const hrefLink = _this.attr('href');
+        console.log(hrefLink + "+" + href);
+        if(href === "/") {
+          $$(".js-link-home").addClass("js-active");
+        }
+        if(hrefLink === href) {
+          _this.addClass("js-active");
+        }
+      });
+    }
   }
 
   menuToolbar = () => {
@@ -43,7 +44,7 @@ export default class ToolBarCustom extends React.Component {
             <Link
               noLinkClass
               href="/news/"
-              className="page-toolbar-bottom__link js-toolbar-link"
+              className="page-toolbar-bottom__link js-toolbar-link js-link-home"
             >
               <i className="las la-newspaper"></i>
             </Link>

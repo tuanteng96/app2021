@@ -19,40 +19,40 @@ export default class extends React.Component {
     };
   }
   componentDidMount() {
-    console.log(this.$f7route);
+    
   }
   registrationSubmit = () => {
     const fullname = this.state.fullname;
     const password = this.state.password;
     const phone = this.state.phone;
     const phone_regex = /((09|03|07|08|05)+([0-9]{8})\b)/g;
-    if ( fullname === "" || password === "" || phone === "") {
+    if (fullname === "" || password === "" || phone === "") {
       toast.error("Vui lòng nhập đầy đủ thông tin!", {
         position: toast.POSITION.TOP_LEFT,
         autoClose: 3000,
       });
       this.setState({
-        phone : ""
+        phone: ""
       });
       return;
     }
-    if(phone_regex.test(phone) === false) {
+    if (phone_regex.test(phone) === false) {
       toast.error("Số điện thoại không hợp lệ !", {
         position: toast.POSITION.TOP_LEFT,
         autoClose: 3000,
       });
       this.setState({
-        phone : ""
+        phone: ""
       });
       return;
     }
     const self = this;
     self.$f7.preloader.show();
 
-    UserService.register(fullname,password,phone,0)
+    UserService.register(fullname, password, phone, 0)
       .then((repsonse) => {
         self.$f7.preloader.hide();
-        if(repsonse.data.error) {
+        if (repsonse.data.error) {
           toast.error(repsonse.data.error, {
             position: toast.POSITION.TOP_LEFT,
             autoClose: 3000,
@@ -83,8 +83,8 @@ export default class extends React.Component {
 
   phoneChange = (e) => {
     const val = e.target.value;
-    if (e.target.validity.valid) this.setState({phone: e.target.value});
-    else if (val === '' || val === '-') this.setState({phone: val});
+    if (e.target.validity.valid) this.setState({ phone: e.target.value });
+    else if (val === '' || val === '-') this.setState({ phone: val });
   }
 
   render() {
@@ -103,48 +103,50 @@ export default class extends React.Component {
               <img className="logo-reg" src={SERVER_APP + "/app/images/logo.png"} />
             </div>
             <div className="page-login__form">
-              <div className="page-login__title">
-                Tạo tài khoản mới
+              <form>
+                <div className="page-login__title">
+                  Tạo tài khoản mới
               </div>
-              <div className="page-login__form-item">
-                <input
-                  type="text"
-                  name="fullname"
-                  autoComplete="off"
-                  onChange={this.handleChangeInput}
-                  placeholder="Họ và tên"
-                />
-              </div>
-              <div className="page-login__form-item">
-                <input
-                  type='tel'
-                  value={this.state.phone}
-                  onChange={this.phoneChange}
-                  pattern="^-?[0-9]\d*\.?\d*$"
-                  placeholder="Số điện thoại"
-                />
-              </div>
-              <div className="page-login__form-item">
-                <input
-                  type="password"
-                  value={password}
-                  name="password"
-                  autoComplete="off"
-                  onChange={this.handleChangeInput}
-                  placeholder="Mật khẩu"
-                />
-              </div>
-              <div className="page-login__form-item">
-                <button
-                  type="button"
-                  onClick={() => this.registrationSubmit()}
-                  className={
-                    "btn-login btn-me" + (isLoading === true ? " loading" : "")
-                  }
-                >
-                  <span>Đăng ký</span>
-                </button>
-              </div>
+                <div className="page-login__form-item">
+                  <input
+                    type="text"
+                    name="fullname"
+                    autoComplete="off"
+                    onChange={this.handleChangeInput}
+                    placeholder="Họ và tên"
+                  />
+                </div>
+                <div className="page-login__form-item">
+                  <input
+                    type='tel'
+                    value={this.state.phone}
+                    onChange={this.phoneChange}
+                    pattern="^-?[0-9]\d*\.?\d*$"
+                    placeholder="Số điện thoại"
+                  />
+                </div>
+                <div className="page-login__form-item">
+                  <input
+                    type="password"
+                    value={password}
+                    name="password"
+                    autoComplete="off"
+                    onChange={this.handleChangeInput}
+                    placeholder="Mật khẩu"
+                  />
+                </div>
+                <div className="page-login__form-item">
+                  <button
+                    type="button"
+                    onClick={() => this.registrationSubmit()}
+                    className={
+                      "btn-login btn-me" + (isLoading === true ? " loading" : "")
+                    }
+                  >
+                    <span>Đăng ký</span>
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
           <div className="page-login__alert">

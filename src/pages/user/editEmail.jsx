@@ -2,7 +2,7 @@ import React from "react";
 import { Page, Link, Navbar } from "framework7-react";
 import bgImage from '../../assets/images/headerbottombgapp.png';
 import IconChangeEmail from "../../assets/images/icon-change-email.svg";
-import { getUser,getPassword } from "../../constants/user";
+import { getUser, getPassword } from "../../constants/user";
 import { validateEmail } from "../../constants/format";
 import UserService from "../../service/user.service";
 import { toast } from "react-toastify";
@@ -23,11 +23,11 @@ export default class extends React.Component {
 
     getInfoMember = () => {
         const infoUser = getUser();
-        if(!infoUser) return false;
+        if (!infoUser) return false;
         const username = infoUser.MobilePhone;
         const password = getPassword();
 
-        UserService.getInfo(username,password)
+        UserService.getInfo(username, password)
             .then(response => {
                 const memberInfo = response.data.info;
                 this.setState({
@@ -41,9 +41,9 @@ export default class extends React.Component {
         const target = event.target;
         const value = target.value;
         const name = target.name;
-    
+
         this.setState({
-          [name]: value
+            [name]: value
         });
     }
 
@@ -56,7 +56,7 @@ export default class extends React.Component {
         const PWD = getPassword();
         self.$f7.preloader.show();
 
-        if(!validateEmail(email)) {
+        if (!validateEmail(email)) {
             toast.error("Email bạn nhập không hợp lệ.", {
                 position: toast.POSITION.TOP_LEFT,
                 autoClose: 2000,
@@ -65,28 +65,28 @@ export default class extends React.Component {
         }
         else {
             UserService.updateEmail(email, password, username, PWD)
-            .then(response => {
-                setTimeout(()=> {
-                    self.$f7.preloader.hide();
-                    if(response.data.error) {
-                        toast.error(response.data.error, {
-                            position: toast.POSITION.TOP_LEFT,
-                            autoClose: 2000,
-                        });
-                        self.resetValue();
-                    }
-                    else {
-                        toast.success("Cập nhập Emai mới công !", {
-                            position: toast.POSITION.TOP_CENTER,
-                            autoClose: 1000
-                        });
-                        self.resetValue();
-                        self.getInfoMember();
-                        self.$f7router.back();
-                    }
-                },1000)
-            })
-            .catch(err => console.log(err));
+                .then(response => {
+                    setTimeout(() => {
+                        self.$f7.preloader.hide();
+                        if (response.data.error) {
+                            toast.error(response.data.error, {
+                                position: toast.POSITION.TOP_LEFT,
+                                autoClose: 2000,
+                            });
+                            self.resetValue();
+                        }
+                        else {
+                            toast.success("Cập nhập Emai mới công !", {
+                                position: toast.POSITION.TOP_CENTER,
+                                autoClose: 1000
+                            });
+                            self.resetValue();
+                            self.getInfoMember();
+                            self.$f7router.back();
+                        }
+                    }, 1000)
+                })
+                .catch(err => console.log(err));
         }
     }
 
@@ -118,49 +118,51 @@ export default class extends React.Component {
                     </div>
                 </div>
                 <div className="edit-email__box">
-                    <div className="note">
-                        Bạn muốn thay đổi Email hiện tại. Vui lòng cập nhập đầy đủ thông tin dưới đây.
+                    <form>
+                        <div className="note">
+                            Bạn muốn thay đổi Email hiện tại. Vui lòng cập nhập đầy đủ thông tin dưới đây.
                     </div>
-                    <div className="page-login__form-item">
-                        <label>Email hiện tại</label>
-                        <input
-                            value={memberInfo && memberInfo.Email || ""}
-                            type="text"
-                            autoComplete="off"
-                            disabled
-                        />
-                    </div>
-                    <div className="page-login__form-item">
-                        <label>Email mới</label>
-                        <input
-                            type="text"
-                            name="email"
-                            value={this.state.email || ""}
-                            autoComplete="off"
-                            onChange={this.handleChangeInput}
-                            placeholder="Nhập Email mới"
-                        />
-                    </div>
-                    <div className="page-login__form-item">
-                        <label>Mật khẩu</label>
-                        <input
-                            type="password"
-                            name="password"
-                            autoComplete="off"
-                            value={this.state.password || ""}
-                            onChange={this.handleChangeInput}
-                            placeholder="Mật khẩu"
-                        />
-                    </div>
-                    <div className="page-login__form-item">
-                        <button
-                            type="button"
-                            className="btn-login btn-me btn-no-image"
-                            onClick={() => this.saveEmail()}
-                        >
-                            <span>Lưu thay đổi</span>
-                        </button>
-                    </div>
+                        <div className="page-login__form-item">
+                            <label>Email hiện tại</label>
+                            <input
+                                value={memberInfo && memberInfo.Email || ""}
+                                type="text"
+                                autoComplete="off"
+                                disabled
+                            />
+                        </div>
+                        <div className="page-login__form-item">
+                            <label>Email mới</label>
+                            <input
+                                type="text"
+                                name="email"
+                                value={this.state.email || ""}
+                                autoComplete="off"
+                                onChange={this.handleChangeInput}
+                                placeholder="Nhập Email mới"
+                            />
+                        </div>
+                        <div className="page-login__form-item">
+                            <label>Mật khẩu</label>
+                            <input
+                                type="password"
+                                name="password"
+                                autoComplete="off"
+                                value={this.state.password || ""}
+                                onChange={this.handleChangeInput}
+                                placeholder="Mật khẩu"
+                            />
+                        </div>
+                        <div className="page-login__form-item">
+                            <button
+                                type="button"
+                                className="btn-login btn-me btn-no-image"
+                                onClick={() => this.saveEmail()}
+                            >
+                                <span>Lưu thay đổi</span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </Page>
         )

@@ -4,12 +4,14 @@ import { Page, Link, Toolbar, Navbar } from "framework7-react";
 import AdvDataService from '../../service/adv.service';
 import ReactHtmlParser from "react-html-parser";
 import ToolBarBottom from "../../components/ToolBarBottom";
+import SelectStock from '../../components/SelectStock';
 
 export default class extends React.Component {
     constructor() {
         super();
         this.state = {
-            arrCateAdv: []
+            arrCateAdv: [],
+            isOpenStock: false
         };
     }
 
@@ -30,6 +32,12 @@ export default class extends React.Component {
         });
     }
 
+    openStock = () => {
+        this.setState({
+            isOpenStock : !this.state.isOpenStock
+        });
+    }
+
     render() {
         const arrCateAdv = this.state.arrCateAdv;
         return (
@@ -37,7 +45,7 @@ export default class extends React.Component {
                 <Navbar>
                     <div className="page-navbar">
                         <div className="page-navbar__back">
-                            <Link>
+                            <Link onClick={() => this.openStock()}>
                                 <i className="las la-map-marked-alt"></i>
                             </Link>
                         </div>
@@ -72,6 +80,7 @@ export default class extends React.Component {
                 <Toolbar tabbar position="bottom">
                     <ToolBarBottom />
                 </Toolbar>
+                <SelectStock isOpenStock={this.state.isOpenStock}/>
             </Page>
         )
     }

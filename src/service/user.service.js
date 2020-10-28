@@ -36,7 +36,13 @@ class UserService {
         })
     }
     updatePassword(username, password, data) {
-        return http.post(`/app/index.aspx?cmd=chgpwd&USN=${username}&PWD=${password}`, data)
+        return http.post(`/app/index.aspx?cmd=chgpwd&USN=${username}&PWD=${password}`, data);
+    }
+    getStock() {
+        return http.post(`/api/v3/web?cmd=getStock`)
+    }
+    setStock(data) {
+        return http.post(`/api/v3/web?cmd=setStock`, data)
     }
 }
 

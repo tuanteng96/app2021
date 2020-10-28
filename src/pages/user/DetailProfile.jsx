@@ -1,44 +1,48 @@
 import React from "react";
 import { Page, Link, Navbar } from "framework7-react";
-import { SERVER_APP } from "./../../constants/config";
+import SelectStock from "../../components/SelectStock";
 import { checkAvt, formatDateBirday, formatDateUTC } from "../../constants/format";
-import { removeUserStorage, getUser,getPassword } from "../../constants/user";
+import { removeUserStorage, getUser, getPassword, getStockNameStorage, removeStockIDStorage, removeStockNameStorage } from "../../constants/user";
 import UserService from "../../service/user.service";
 import DatePicker from 'react-mobile-datepicker';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-toast.configure();
-
 export default class extends React.Component {
     constructor() {
         super();
         this.state = {
             memberInfo: [],
+            IDStockName: "",
             isOpen: false,
+            isOpenStock: false
         };
     }
 
     componentDidMount() {
         this.getInfoMember();
+        this.getStockCurrent();
     }
     getInfoMember = () => {
         const infoUser = getUser();
-        if(!infoUser) return false;
+        if (!infoUser) return false;
         const username = infoUser.MobilePhone;
         const password = getPassword();
-        UserService.getInfo(username,password)
+        UserService.getInfo(username, password)
             .then(response => {
                 const memberInfo = response.data.info;
                 this.setState({
-                    memberInfo: memberInfo
+                    memberInfo: memberInfo,
                 })
             })
             .catch(err => console.log(err));
+
     }
     signOut = () => {
         const $$this = this;
         $$this.$f7.dialog.confirm('Bạn muống đăng xuất khỏi tài khoản ?', () => {
             removeUserStorage();
+            removeStockIDStorage();
+            removeStockNameStorage();
             $$this.$f7router.navigate('/');
         });
     }
@@ -57,7 +61,7 @@ export default class extends React.Component {
         const username = infoUser.MobilePhone;
         const password = getPassword();
 
-        UserService.updateBirthday(date,username,password)
+        UserService.updateBirthday(date, username, password)
             .then(response => {
                 if (!response.error) {
                     toast.success("Cập nhập ngày sinh thành công !", {
@@ -86,8 +90,26 @@ export default class extends React.Component {
         self.$f7router.navigate('/edit-password/');
     }
 
+    getStockCurrent = () => {
+        const StockCurrentName = getStockNameStorage();
+        this.setState({
+            IDStockName: StockCurrentName
+        });
+    }
+
+    changeStock = () => {
+        this.setState({ isOpenStock: !this.state.isOpenStock });
+    }
+
+    checkSuccess = (status) => {
+        if (status === true) {
+            this.getStockCurrent();
+        }
+    }
+
     render() {
         const member = this.state.memberInfo && this.state.memberInfo;
+        const IDStockName = this.state.IDStockName;
         const dateConfig = {
             'date': {
                 caption: 'Ngày',
@@ -106,7 +128,7 @@ export default class extends React.Component {
             },
         };
         return (
-            <Page  onPageBeforeIn={this.onPageBeforeIn.bind(this)} name="detail-profile" noToolbar>
+            <Page onPageBeforeIn={this.onPageBeforeIn.bind(this)} name="detail-profile" noToolbar>
                 <Navbar>
                     <div className="page-navbar">
                         <div className="page-navbar__back">
@@ -145,7 +167,6 @@ export default class extends React.Component {
                                 <div className="content-text">
                                     {member.FullName}
                                 </div>
-                                {/* <i className="las la-angle-right"></i> */}
                             </div>
                         </div>
                         <div className="page-detail-profile__item">
@@ -156,7 +177,6 @@ export default class extends React.Component {
                                 <div className="content-text">
                                     {member.Gender === 1 ? "Nam" : "Nữ"}
                                 </div>
-                                {/* <i className="las la-angle-right"></i> */}
                             </div>
                         </div>
                         <div className="page-detail-profile__item" onClick={this.handleClickBirthday}>
@@ -189,7 +209,6 @@ export default class extends React.Component {
                                 <div className="content-text">
                                     {member.MobilePhone}
                                 </div>
-                                {/* <i className="las la-angle-right"></i> */}
                             </div>
                         </div>
                         <div className="page-detail-profile__item" onClick={() => this.handleUpdateEmail()}>
@@ -211,17 +230,16 @@ export default class extends React.Component {
                                 <div className="content-text">
                                     {member.HomeAddress}
                                 </div>
-                                {/* <i className="las la-angle-right"></i> */}
                             </div>
                         </div>
-                        <div className="page-detail-profile__item">
+                        <div className="page-detail-profile__item" onClick={() => this.changeStock()}>
                             <div className="name">
                                 Cơ sở
                             </div>
                             <div className="content">
                                 <div className="content-text">
-                                    Cser Beauty Hà Nội
-                            </div>
+                                    {IDStockName === "" ? ("Chưa chọn điểm") : (IDStockName)}
+                                </div>
                                 <i className="las la-angle-right"></i>
                             </div>
                         </div>
@@ -245,6 +263,7 @@ export default class extends React.Component {
                         <button type="button" className="btn-signout" onClick={() => this.signOut()}>Đăng xuất</button>
                     </div>
                 </div>
+                <SelectStock isOpenStock={this.state.isOpenStock} fnSuccess={(status) => this.checkSuccess(status)} />
             </Page>
         )
     }

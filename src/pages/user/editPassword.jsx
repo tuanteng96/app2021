@@ -35,10 +35,9 @@ export default class extends React.Component {
         const repwd = this.state.repwd;
         const crpwd = this.state.crpwd;
         const infoMember = getUser();
-        if(!infoMember) return false;
+        if (!infoMember) return false;
         const username = infoMember.MobilePhone;
         const password = getPassword();
-        console.log(password);
         var bodyData = new FormData();
         bodyData.append("pwd", pwd);// New Password
         bodyData.append("repwd", repwd); // Nhập lại mật khẩu mới
@@ -125,53 +124,55 @@ export default class extends React.Component {
                         <img src={IconChangePassword} />
                     </div>
                 </div>
-                <div className="edit-email__box">
-                    <div className="note">
-                        <span>(*)</span>Bạn muốn thay đổi mật khẩu hiện tại. Vui lòng cập nhập đầy đủ thông tin dưới đây.
+                <form>
+                    <div className="edit-email__box">
+                        <div className="note">
+                            <span>(*)</span>Bạn muốn thay đổi mật khẩu hiện tại. Vui lòng cập nhập đầy đủ thông tin dưới đây.
                     </div>
-                    <div className="page-login__form-item">
-                        <label>Mật khẩu hiện tại</label>
-                        <input
-                            type="password"
-                            name="crpwd"
-                            value={this.state.crpwd || ""}
-                            autoComplete="off"
-                            onChange={this.handleChangeInput}
-                            placeholder="Nhập mật khẩu của bạn"
-                        />
+                        <div className="page-login__form-item">
+                            <label>Mật khẩu hiện tại</label>
+                            <input
+                                type="password"
+                                name="crpwd"
+                                value={this.state.crpwd || ""}
+                                autoComplete="off"
+                                onChange={this.handleChangeInput}
+                                placeholder="Nhập mật khẩu của bạn"
+                            />
+                        </div>
+                        <div className="page-login__form-item">
+                            <label>Mật khẩu mới</label>
+                            <input
+                                type="password"
+                                name="pwd"
+                                value={this.state.pwd || ""}
+                                autoComplete="off"
+                                onChange={this.handleChangeInput}
+                                placeholder="Nhập mật khẩu mới"
+                            />
+                        </div>
+                        <div className="page-login__form-item">
+                            <label>Nhập lại mật khẩu mới</label>
+                            <input
+                                type="password"
+                                value={this.state.repwd || ""}
+                                name="repwd"
+                                autoComplete="off"
+                                onChange={this.handleChangeInput}
+                                placeholder="Nhập lại mật khẩu mới"
+                            />
+                        </div>
+                        <div className="page-login__form-item">
+                            <button
+                                type="button"
+                                className="btn-login btn-me btn-no-image"
+                                onClick={() => this.savePassword()}
+                            >
+                                <span>Lưu thay đổi</span>
+                            </button>
+                        </div>
                     </div>
-                    <div className="page-login__form-item">
-                        <label>Mật khẩu mới</label>
-                        <input
-                            type="password"
-                            name="pwd"
-                            value={this.state.pwd || ""}
-                            autoComplete="off"
-                            onChange={this.handleChangeInput}
-                            placeholder="Nhập mật khẩu mới"
-                        />
-                    </div>
-                    <div className="page-login__form-item">
-                        <label>Nhập lại mật khẩu mới</label>
-                        <input
-                            type="password"
-                            value={this.state.repwd || ""}
-                            name="repwd"
-                            autoComplete="off"
-                            onChange={this.handleChangeInput}
-                            placeholder="Nhập lại mật khẩu mới"
-                        />
-                    </div>
-                    <div className="page-login__form-item">
-                        <button
-                            type="button"
-                            className="btn-login btn-me btn-no-image"
-                            onClick={() => this.savePassword()}
-                        >
-                            <span>Lưu thay đổi</span>
-                        </button>
-                    </div>
-                </div>
+                </form>
             </Page>
         )
     }

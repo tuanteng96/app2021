@@ -23,7 +23,31 @@ export const removeUserStorage = () => {
 
 // set the token and user from the storage
 export const setUserStorage = (token, user, password) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    localStorage.setItem('password', password);
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('password', password);
+    }
+    // get Stock
+export const getStockIDStorage = () => {
+        return localStorage.getItem('CurrentStockID') || null;
+    }
+    // set Stock
+export const setStockIDStorage = (stockID) => {
+        localStorage.setItem('CurrentStockID', stockID);
+    }
+    // remove Stock
+export const removeStockIDStorage = () => {
+        localStorage.removeItem('CurrentStockID');
+    }
+    // get Stock
+export const getStockNameStorage = () => {
+        return localStorage.getItem('CurrentStockName') || null;
+    }
+    // set Stock
+export const setStockNameStorage = (stockName) => {
+        localStorage.setItem('CurrentStockName', stockName);
+    }
+    // remove Stock
+export const removeStockNameStorage = () => {
+    localStorage.removeItem('CurrentStockName');
 }

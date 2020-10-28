@@ -38,17 +38,15 @@ export default class extends React.Component {
         routes: routes,
         on: {
           init: function () {
-            var ACC_ID = localStorage.getItem("ACC_ID");
-            console.log("Mở lần đầu" + ACC_ID);
+            console.log("Lần đầu mở App");
           },
           pageInit: function() {
-            var ACC_ID = localStorage.getItem("ACC_ID");
-            console.log("Khi quay lại" + ACC_ID);
+            console.log("Khi quay lại");
           }
         },
         view: {
           routesBeforeEnter: function(to, from, resolve, reject) {
-            console.log('check log in here')
+            console.log('All Page resolve + App.jsx');
             resolve();
           }
         },
@@ -65,11 +63,11 @@ export default class extends React.Component {
   }
   componentDidMount() {
     this.$f7ready((f7) => {
-      const self = this;
-      self.$f7.dialog.preloader('Loading ...');
-      setTimeout(() => {
-        self.$f7.dialog.close();
-      }, 2000);
+      // const self = this;
+      // self.$f7.dialog.preloader('Loading ...');
+      // setTimeout(() => {
+      //   self.$f7.dialog.close();
+      // }, 2000);
     });
   }
 }

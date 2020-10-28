@@ -1,11 +1,13 @@
 import React from "react";
 import { SERVER_APP } from "./../../constants/config";
-import { Page, Link, Toolbar, Navbar } from "framework7-react";
+import { Page, Link, Toolbar } from "framework7-react";
 import ReactHtmlParser from "react-html-parser";
 import NewsDataService from "../../service/news.service";
+import UserService from "../../service/user.service";
 import Slider from "react-slick";
 import ToolBarBottom from "../../components/ToolBarBottom";
-import { getUser,getPassword } from "../../constants/user";
+import SelectStock from '../../components/SelectStock';
+import { getUser, setStockIDStorage, getStockIDStorage,setStockNameStorage } from "../../constants/user";
 
 export default class extends React.Component {
   constructor() {
@@ -13,18 +15,15 @@ export default class extends React.Component {
     this.state = {
       arrNews: [],
       arrBanner: [],
+      isOpenStock: false
     };
   }
-  
+
   getDateVietnamese = () => {
     var d = new Date();
-    var s = d.getSeconds();
-    var m = d.getMinutes();
-    var h = d.getHours();
     var day = d.getDay();
     var date = d.getDate();
     var month = d.getMonth();
-    var year = d.getFullYear();
     var days = new Array(
       "Chủ nhật",
       "Thứ hai",
@@ -57,16 +56,18 @@ export default class extends React.Component {
       </div>
     );
   };
+
   handStyle = () => {
     const _width = this.state.width - 100;
     return Object.assign({
       width: _width,
     });
   };
+
   componentDidMount() {
     const userInfo = getUser();
     this.setState({
-      userInfo : userInfo
+      userInfo: userInfo
     })
     this.$f7ready((f7) => {
       this.setState({ width: window.innerWidth });
@@ -95,11 +96,27 @@ export default class extends React.Component {
     });
   }
   onPageBeforeIn = () => {
-
+    const getStock = getStockIDStorage();
+    UserService.getStock()
+      .then(response => {
+        const arrStock = response.data.data.all;
+        const countStock = arrStock.length;
+        const CurrentStockID = response.data.data.CurrentStockID;
+        if(countStock === 2) {
+          const StockID = arrStock.slice(-1)[0].ID;
+          const TitleStockID = arrStock.slice(-1)[0].Title;
+          setStockIDStorage(StockID);
+          setStockNameStorage(TitleStockID);
+        }
+        setTimeout(() => {
+          if (CurrentStockID === 0 && !getStock && countStock > 2) {
+            this.setState({
+              isOpenStock: true
+            })
+          }
+        }, 500);
+      })
   };
-  componentDidUpdate(prevProps) {
-
-  }
 
   render() {
     const userInfo = this.state.userInfo;
@@ -133,10 +150,10 @@ export default class extends React.Component {
               {this.getDateVietnamese()}
               <div className="page-news__header-user">
                 {
-                  userInfo !== null ? 
-                  (<Link noLinkClass href="/profile/"><i className="las la-user-circle"></i></Link>)
-                  : 
-                  (<Link noLinkClass href="/login/"><i className="las la-user-circle"></i></Link>)
+                  userInfo !== null ?
+                    (<Link noLinkClass href="/profile/"><i className="las la-user-circle"></i></Link>)
+                    :
+                    (<Link noLinkClass href="/login/"><i className="las la-user-circle"></i></Link>)
                 }
               </div>
             </div>
@@ -225,6 +242,7 @@ export default class extends React.Component {
         <Toolbar tabbar position="bottom">
           <ToolBarBottom />
         </Toolbar>
+        <SelectStock isOpenStock={this.state.isOpenStock} />
       </Page>
     );
   }

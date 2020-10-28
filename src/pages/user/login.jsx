@@ -1,6 +1,6 @@
 import React from "react";
 import { SERVER_APP } from "./../../constants/config";
-import {setUserStorage} from "../../constants/user";
+import { setUserStorage } from "../../constants/user";
 import { Page, Link, Toolbar } from "framework7-react";
 import UserService from "../../service/user.service";
 import { toast } from "react-toastify";
@@ -23,7 +23,7 @@ export default class extends React.Component {
   loginSubmit = () => {
     const username = this.state.username;
     const password = this.state.password;
-    if ( username === "" || password === "") {
+    if (username === "" || password === "") {
       toast.error("Vui lòng nhập tài khoản & mật khẩu !", {
         position: toast.POSITION.TOP_LEFT,
         autoClose: 3000,
@@ -46,8 +46,8 @@ export default class extends React.Component {
         } else {
           const userData = response.data;
           const token = userData.etoken;
-          setUserStorage(token, userData,password);
-          
+          setUserStorage(token, userData, password);
+
           setTimeout(() => {
             self.$f7.preloader.hide();
             this.$f7router.navigate('/');
@@ -86,36 +86,38 @@ export default class extends React.Component {
               <div className="page-login__title">
                 Hi, Vui lòng đăng nhập vào tài khoản của bạn
               </div>
-              <div className="page-login__form-item">
-                <input
-                  type="text"
-                  name="username"
-                  autoComplete="off"
-                  onChange={this.handleChangeInput}
-                  placeholder="Số điện thoại hoặc Email"
-                />
-              </div>
-              <div className="page-login__form-item">
-                <input
-                  type="password"
-                  value={password}
-                  name="password"
-                  autoComplete="off"
-                  onChange={this.handleChangeInput}
-                  placeholder="Mật khẩu"
-                />
-              </div>
-              <div className="page-login__form-item">
-                <button
-                  type="button"
-                  onClick={() => this.loginSubmit()}
-                  className={
-                    "btn-login btn-me" + (isLoading === true ? " loading" : "")
-                  }
-                >
-                  <span>Đăng nhập</span>
-                </button>
-              </div>
+              <form>
+                <div className="page-login__form-item">
+                  <input
+                    type="text"
+                    name="username"
+                    autoComplete="off"
+                    onChange={this.handleChangeInput}
+                    placeholder="Số điện thoại hoặc Email"
+                  />
+                </div>
+                <div className="page-login__form-item">
+                  <input
+                    type="password"
+                    value={password}
+                    name="password"
+                    autoComplete="off"
+                    onChange={this.handleChangeInput}
+                    placeholder="Mật khẩu"
+                  />
+                </div>
+                <div className="page-login__form-item">
+                  <button
+                    type="button"
+                    onClick={() => this.loginSubmit()}
+                    className={
+                      "btn-login btn-me" + (isLoading === true ? " loading" : "")
+                    }
+                  >
+                    <span>Đăng nhập</span>
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
           <div className="page-login__alert">

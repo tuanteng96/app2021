@@ -7,7 +7,8 @@ import UserService from "../../service/user.service";
 import Slider from "react-slick";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import SelectStock from '../../components/SelectStock';
-import { getUser, setStockIDStorage, getStockIDStorage,setStockNameStorage } from "../../constants/user";
+import Skeleton from 'react-loading-skeleton';
+import { getUser, setStockIDStorage, getStockIDStorage, setStockNameStorage } from "../../constants/user";
 
 export default class extends React.Component {
   constructor() {
@@ -71,7 +72,7 @@ export default class extends React.Component {
     })
     this.$f7ready((f7) => {
       this.setState({ width: window.innerWidth });
-      // Call F7 APIs here
+
       NewsDataService.getBanner()
         .then((response) => {
           const arrBanner = response.data.data;
@@ -102,7 +103,7 @@ export default class extends React.Component {
         const arrStock = response.data.data.all;
         const countStock = arrStock.length;
         const CurrentStockID = response.data.data.CurrentStockID;
-        if(countStock === 2) {
+        if (countStock === 2) {
           const StockID = arrStock.slice(-1)[0].ID;
           const TitleStockID = arrStock.slice(-1)[0].Title;
           setStockIDStorage(StockID);
@@ -157,28 +158,37 @@ export default class extends React.Component {
                 }
               </div>
             </div>
-            {arrNews &&
-              arrNews.map((item, index) => {
-                if (index >= 1) return null;
-                return (
-                  <div className="page-news__dear" key={item.ID}>
-                    <div className="page-news__dear-img">
-                      <a href={"/news/detail/" + item.ID + "/"}>
-                        <img
-                          src={SERVER_APP + item.Thumbnail_web}
-                          alt={item.Title}
-                        />
-                      </a>
+            {arrNews.length === 0 || arrNews === undefined ? (
+              <div className="page-news__dear">
+                <Skeleton height={500} />
+                <div className="page-news__dear-text">
+                  <Skeleton count={2} />
+                </div>
+              </div>
+            ) : (
+                arrNews.map((item, index) => {
+                  if (index >= 1) return null;
+                  return (
+                    <div className="page-news__dear" key={item.ID}>
+                      <div className="page-news__dear-img">
+                        <a href={"/news/detail/" + item.ID + "/"}>
+                          <img
+                            src={SERVER_APP + item.Thumbnail_web}
+                            alt={item.Title}
+                          />
+                        </a>
+                      </div>
+                      <div className="page-news__dear-text">
+                        <a href={"/news/detail/" + item.ID + "/"}>
+                          <h4>{item.Title}</h4>
+                          <div className="desc">{ReactHtmlParser(item.Desc)}</div>
+                        </a>
+                      </div>
                     </div>
-                    <div className="page-news__dear-text">
-                      <a href={"/news/detail/" + item.ID + "/"}>
-                        <h4>{item.Title}</h4>
-                        <div className="desc">{ReactHtmlParser(item.Desc)}</div>
-                      </a>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
+
             <div className="page-news__slide">
               <Slider {...settingsBanner}>
                 {arrBanner &&

@@ -9,10 +9,11 @@ import imgCoupon from '../../assets/images/coupon.svg';
 import imgEvaluate from '../../assets/images/evaluate.svg'
 import { SERVER_APP } from "./../../constants/config";
 import { checkAvt } from "../../constants/format";
-import { removeUserStorage, getUser,getPassword } from "../../constants/user";
+import { removeUserStorage, getUser, getPassword } from "../../constants/user";
 import { Page, Link, Toolbar, Row, Col } from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import UserService from "../../service/user.service";
+import Skeleton from 'react-loading-skeleton';
 
 export default class extends React.Component {
     constructor() {
@@ -23,10 +24,10 @@ export default class extends React.Component {
     }
     componentDidMount() {
         const infoUser = getUser();
-        if(!infoUser) return false;
+        if (!infoUser) return false;
         const username = infoUser.MobilePhone;
         const password = getPassword();
-        UserService.getInfo(username,password)
+        UserService.getInfo(username, password)
             .then(response => {
                 const memberInfo = response.data.info;
                 this.setState({
@@ -65,13 +66,28 @@ export default class extends React.Component {
                 </div>
                 <div className="profile-info">
                     <div className="profile-info__avatar">
-                        <img src={checkAvt(member.Photo)} />
+                        {
+                            member.length === 0 || member === undefined ? (
+                                <Skeleton circle={true} height={90} width={90} />
+                            ) : (
+                                    <img src={checkAvt(member.Photo)} />
+                                )}
+
                         <Link noLinkClass href="/detail-profile/"><i className="las la-pen"></i></Link>
                     </div>
-                    <div className="profile-info__basic">
-                        <div className="name">{member.FullName}</div>
-                        <div className="group">{member.acc_group > 0 ? (member.MemberGroups[0].Title) : "Khách thường"}</div>
-                    </div>
+                    {
+                        member.length === 0 || member === undefined ? (
+                            <div className="profile-info__basic">
+                                <div className="name"><Skeleton width={100} count={1} /></div>
+                                <div className="group"><Skeleton width={120} count={1} /></div>
+                            </div>
+                        ) : (
+                                <div className="profile-info__basic">
+                                    <div className="name">{member.FullName}</div>
+                                    <div className="group">{member.acc_group > 0 ? (member.MemberGroups[0].Title) : "Khách thường"}</div>
+                                </div>
+                            )}
+
                     <div className="profile-info__shortcuts">
                         <div className="profile-info__shortcut">
                             <Row>

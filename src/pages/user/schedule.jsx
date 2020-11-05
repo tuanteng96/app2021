@@ -67,7 +67,6 @@ export default class extends React.Component {
 
     render() {
         const { arrListDate } = this.state;
-        console.log(arrListDate);
         return (
             <Page name="schedule">
                 <Navbar>
@@ -95,13 +94,16 @@ export default class extends React.Component {
                             ))
                         }
                     </div>
+                    <div className="page-schedule__date">
+                        <h5>Chọn spa gần bạn</h5>
+                        
+                    </div>
                     <div className="page-schedule__time">
                         <h5>Chọn thời gian</h5>
                         <Tabs animated>
                             {
                                 arrListDate && arrListDate.map((item, index) => (
                                     <Tab key={index} id={"tab-" + item.name} className="page-content" tabActive={index === 0 ? true : false}>
-                                        {item.date}
                                         {
                                             item.arrtime.map((sub,i) => (
                                                 <div key={i}>

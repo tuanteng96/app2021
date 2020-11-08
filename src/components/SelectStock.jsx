@@ -101,7 +101,7 @@ export default class SelectStock extends React.Component {
                                         value={item.ID}
                                         title={item.Title}
                                         id={item.ID}
-                                        checked={parseInt(StockID) === item.ID}
+                                        defaultChecked={parseInt(StockID) === item.ID}
                                         onChange={(e) => this.handleChangeStock(e)} />
                                     <label htmlFor={item.ID}>{item.Title} <i className="las la-check"></i></label>
                                 </div>

@@ -61,6 +61,20 @@
     outline: none;
 }
 
+.btn-toolbar-book {
+    width: 100%;
+    padding: 8px 0;
+    border: 0;
+    background: $color-app;
+    color: $white;
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: $font-app;
+    border-radius: 2px;
+    outline: none;
+}
+
 @-webkit-keyframes animation-rotate {
     100% {
         -webkit-transform: rotate(360deg);

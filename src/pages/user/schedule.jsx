@@ -1,8 +1,12 @@
 import React from "react";
-import { Page, Link, Navbar, Toolbar, Tabs, Tab } from "framework7-react";
+import { Page, Link, Navbar, Toolbar, Tabs, Tab, Row, Col } from "framework7-react";
 import ToolBarBottom from '../../components/ToolBarBottom';
 import UserService from "../../service/user.service";
-import { setStockIDStorage, getStockIDStorage,setStockNameStorage } from "../../constants/user";
+import ScheduleSpa from "../../components/schedule/ScheduleSpa";
+import ScheduleService from "../../components/schedule/ScheduleService";
+import ScheduleSuccess from "../../components/schedule/ScheduleSuccess";
+import { setStockIDStorage, getStockIDStorage, setStockNameStorage } from "../../constants/user";
+import IconLocation from "../../assets/images/location1.svg";
 import Slider from "react-slick";
 import moment from 'moment';
 import 'moment/locale/vi';
@@ -12,124 +16,84 @@ export default class extends React.Component {
     constructor() {
         super();
         this.state = {
-            arrListDate: [], // Hiển thị 3 ngày từ ngày today next
-            arrStock: [], // List Stock
+            steps: [
+                {
+                    label: 'Thời gian',
+                    component: <ScheduleSpa />,
+                    exitValidation: false
+                },
+                {
+                    label: 'Dịch vụ',
+                    component: <ScheduleService />
+                },
+                {
+                    label: 'Hoàn tất',
+                    component: <ScheduleSuccess />
+                }
+            ],
+            onFinish: false,
+            activeStep: 0,
+
         };
     }
     componentDidMount() {
-        this.listDate();
-        this.getStock();
-        const CurrentStockID = getStockIDStorage();
-        this.setState({
-            CurrentStockID: CurrentStockID,
-            width: window.innerWidth
-        });
     }
 
-    group = (items, n) => items.reduce((acc, x, i) => {
-        const idx = Math.floor(i / n);
-        acc[idx] = [...(acc[idx] || []), x];
-        return acc;
-    }, []);
-
-    getStock() {
-        UserService.getStock()
-            .then(response => {
-                const ListStock = response.data.data.all;
-                const arrStock = [];
-
-                ListStock.map((item) => {
-                    if (item.ID !== 778) {
-                        arrStock.push(item);
-                    }
-                });
-
-                this.setState({
-                    arrStock: arrStock
-                });
-            })
+    handleStepChange = (activeStep) => {
+        this.setState({ activeStep });
     }
 
-    listDate = () => {
-        const gettoday = moment();
-        const arrListDate = [];
-        const arrListTime = [];
-        for (let day = 0; day <= 630; day +=15) {
-            var time = moment("2020-11-05T07:30:00").add(day, 'm').format('LT');
-            var item = {
-                time : time
-            }
-            arrListTime.push(item);
+    nextStep = () => {
+        if (this.state.activeStep < this.state.steps.length - 1) {
+            this.setState({ activeStep: this.state.activeStep + 1 });
         }
+    }
 
-        for (let day = 1; day <= 3; day++) {
-            switch (day) {
-                case 1:
-                    var todayFormat = moment(gettoday).add(day, 'days').format("DD/MM");
-                    var today = moment(gettoday).add(day, 'days').format("DD/MM/YYYY");
-                    var item = {
-                        dateFormat: "Hôm nay " + todayFormat,
-                        date: today,
-                        name: "today",
-                        arrtime: arrListTime
-                    }
-                    arrListDate.push(item);
-                    break;
-                case 2:
-                    var tomorrowFormat = moment(gettoday).add(day, 'days').format("DD/MM");
-                    var tomorrow = moment(gettoday).add(day, 'days').format("DD/MM/YYYY");
-                    var item = {
-                        dateFormat: "Ngày mai " + tomorrowFormat,
-                        date: tomorrow,
-                        name: "tomorrow",
-                        arrtime: arrListTime
-                    }
-                    arrListDate.push(item);
-                    break;
-
-                default:
-                    var tomorrowAfterFormat = moment(gettoday).add(day, 'days').format("DD/MM");
-                    var tomorrowAfter = moment(gettoday).add(day, 'days').format("DD/MM/YYYY");
-                    var item = {
-                        dateFormat: "Ngày kia " + tomorrowAfterFormat,
-                        date: tomorrowAfter,
-                        name: "tomorrowAfter",
-                        arrtime: arrListTime
-                    }
-                    arrListDate.push(item);
-                    break;
-            }
+    previousStep = () => {
+        if (this.state.activeStep > 0) {
+            this.setState({ activeStep: this.state.activeStep - 1 });
         }
-        this.setState({
-            arrListDate: arrListDate
-        })
     }
 
-    handStyle = () => {
-        const _width = (this.state.width / 4) - 10;
-        return Object.assign({
-          width: _width,
-        });
+    nextService = () => {
+        this.nextStep();
     }
 
-    onDateChanged = (event) => {
-        const target = event.target;
-        const value = target.value;
-        console.log(value);
+    controlsStep = () => {
+        console.log(this.state.activeStep);
+        switch (this.state.activeStep) {
+            case 0:
+                return (
+                    <div className="schedule-toolbar">
+                        <button type="button" className="btn-toolbar-book" onClick={() => this.nextService()}>Chọn dịch vụ</button>
+                    </div>
+                )
+                break;
+            case 1:
+                return (
+                    <div>Step2</div>
+                )
+            default:
+                return (
+                    <div>Step3</div>
+                )
+                break;
+        }
     }
 
     render() {
-        const { arrListDate,arrStock } = this.state;
-        const CurrentStockID = this.state.CurrentStockID && this.state.CurrentStockID;
-        const settings = {
-            className: "slider variable-width",
-            dots: false,
-            arrows: false,
-            infinite: true,
-            slidesToShow: 4,
-            spaceBetween: 30,
-            slidesPerView: 'auto',
-        };
+        const { activeStep, steps } = this.state;
+        const stepIndicators = steps && steps.map((step, i) => {
+            return (
+                <div key={i} className={`page-schedule__step-item ${activeStep === i && 'active'}`} onClick={() => this.handleStepChange(i)}>
+                    <div className="number">
+                        {i + 1}
+                    </div>
+                    {i !== steps.length && <div className="text"><span>{step.label}</span></div>}
+                </div>
+            );
+        });
+
         return (
             <Page name="schedule">
                 <Navbar>
@@ -150,65 +114,15 @@ export default class extends React.Component {
                     </div>
                 </Navbar>
                 <div className="page-schedule">
-                    <div className="page-schedule__date">
-                        {
-                            arrListDate && arrListDate.map((item, index) => (
-                                <Link key={index} noLinkClass tabLink={"#tab-" + item.name} tabLinkActive={index === 0 ? true : false}>
-                                    <input type="radio" onChange={this.onDateChanged} name="checkdate" value={item.date} />
-                                    <span>{item.dateFormat}</span>
-                                </Link>
-                            ))
-                        }
+                    <div className="page-schedule__step">
+                        {stepIndicators}
                     </div>
-                    <div className="page-schedule__location">
-                        <h5>Chọn spa gần bạn</h5>
-                        <div className="page-schedule__location-list">
-                            {
-                                arrStock && arrStock.map((item,index) => (
-                                    <div className="locaiton" key={index}>
-                                        <input 
-                                            type="radio" 
-                                            name="checklocation" 
-                                            value={item.ID}
-                                            defaultChecked={parseInt(CurrentStockID) === item.ID} />
-                                        <span>{item.Title}</span>
-                                    </div>
-                                ))
-                            }
-                        </div>
-                    </div>
-                    <div className="page-schedule__time">
-                        <h5>Chọn thời gian</h5>
-                        <Tabs animated>
-                            {
-                                
-                                arrListDate && arrListDate.map((item, index) => (
-                                    <Tab key={index} id={"tab-" + item.name} className="page-tab-location" tabActive={index === 0 ? true : false}>
-                                        <Slider {...settings}>
-                                        {
-                                            this.group(item.arrtime, 5).map((children,k) =>
-                                                <div className="group" style={this.handStyle()} key={k}>
-                                                {
-                                                    children.map((sub, i) => (
-                                                        <div key={i}>
-                                                            <input value={sub.time} type="radio" name="checktime"/>
-                                                            <span>{sub.time}</span>
-                                                        </div>
-                                                    ))
-                                                }
-                                                </div>
-                                            )
-                                        }
-                                        </Slider>
-                                    </Tab>
-                                ))
-                            }
-                        </Tabs>
-                    </div>
-                    <button type="button">Next</button>
+                    {steps[activeStep].component}
                 </div>
                 <Toolbar tabbar position="bottom">
-                    <ToolBarBottom />
+                    {
+                        this.controlsStep()
+                    }
                 </Toolbar>
             </Page>
         )

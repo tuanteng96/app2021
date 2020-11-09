@@ -100,10 +100,10 @@ export default class SelectStock extends React.Component {
                                         type="radio"
                                         value={item.ID}
                                         title={item.Title}
-                                        id={item.ID}
+                                        id={"stock" + item.ID}
                                         defaultChecked={parseInt(StockID) === item.ID}
                                         onChange={(e) => this.handleChangeStock(e)} />
-                                    <label htmlFor={item.ID}>{item.Title} <i className="las la-check"></i></label>
+                                    <label htmlFor={"stock" + item.ID}>{item.Title} <i className="las la-check"></i></label>
                                 </div>
                             ))
                         }

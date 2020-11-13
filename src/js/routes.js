@@ -12,18 +12,18 @@ import MapsPage from '../pages/maps/maps';
 
 import LoginPage from '../pages/user/login';
 import RegistrationPage from '../pages/user/registration';
+import NotificationPage from '../pages/user/Notification';
 import ProfilePage from '../pages/user/profile';
 import DetailProfilePage from '../pages/user/DetailProfile';
 import CardServicePage from '../pages/user/cardService'; //Thẻ dịch vụ
 import SchedulePage from '../pages/user/schedule'; //Đặt lịch
+import VoucherPage from '../pages/user/voucher'; // Mã giảm giá
+import WalletPage from '../pages/user/Wallet'; // Ví điện tử
+import DiaryPage from '../pages/user/Diary'; // Nhật ký
+import RatingListPage from '../pages/user/RatingList';
 import BarCodePage from '../pages/user/barcode';
 import EditEmailPage from '../pages/user/editEmail';
 import EditPasswordPage from '../pages/user/editPassword';
-
-import AboutPage from '../pages/about.jsx';
-import FormPage from '../pages/form.jsx';
-import HomePage from '../pages/home.jsx';
-
 
 import DynamicRoutePage from '../pages/dynamic-route.jsx';
 import RequestAndLoad from '../pages/request-and-load.jsx';
@@ -34,14 +34,6 @@ import NotFoundPage from '../pages/404.jsx';
 var routes = [{
         path: '/',
         component: NewsPage
-    },
-    {
-        path: '/about/',
-        component: AboutPage,
-    },
-    {
-        path: '/form/',
-        component: FormPage,
     },
     {
         path: '/news/',
@@ -165,6 +157,26 @@ var routes = [{
         options: {
             transition: 'f7-cover',
         }
+    },
+    {
+        path: '/voucher/', // Mã giảm giá
+        component: VoucherPage
+    },
+    {
+        path: '/wallet/', // Ví điện tử
+        component: WalletPage
+    },
+    {
+        path: '/diary/', // Nhật ký
+        component: DiaryPage
+    },
+    {
+        path: '/rating/', // Nhật ký
+        component: RatingListPage
+    },
+    {
+        path: '/notification/', // Thông báo Noti
+        component: NotificationPage
     },
     {
         path: '(.*)',

@@ -1,13 +1,11 @@
 import React from "react";
 import bgImage from '../../assets/images/headerbottombgapp.png';
-import imgCheckin from '../../assets/images/checkin.svg';
 import imgWallet from '../../assets/images/wallet.svg';
 import imgLocation from '../../assets/images/location.svg';
 import imgOrder from '../../assets/images/order.svg';
 import imgDiary from '../../assets/images/diary.svg';
 import imgCoupon from '../../assets/images/coupon.svg';
 import imgEvaluate from '../../assets/images/evaluate.svg'
-import { SERVER_APP } from "./../../constants/config";
 import { checkAvt } from "../../constants/format";
 import { removeUserStorage, getUser, getPassword } from "../../constants/user";
 import { Page, Link, Toolbar, Row, Col } from "framework7-react";
@@ -108,7 +106,7 @@ export default class extends React.Component {
                 <div className="profile-function">
                     <Row>
                         <Col width="33">
-                            <Link noLinkClass href="/">
+                            <Link noLinkClass href="/wallet/">
                                 <div className="image">
                                     <img src={imgWallet} />
                                 </div>
@@ -116,7 +114,7 @@ export default class extends React.Component {
                             </Link>
                         </Col>
                         <Col width="33">
-                            <Link noLinkClass href="/">
+                            <Link noLinkClass href="/diary/">
                                 <div className="image">
                                     <img src={imgDiary} />
                                 </div>
@@ -132,7 +130,7 @@ export default class extends React.Component {
                             </Link>
                         </Col>
                         <Col width="33">
-                            <Link noLinkClass href="/">
+                            <Link noLinkClass href="/voucher/">
                                 <div className="image">
                                     <img src={imgCoupon} />
                                 </div>
@@ -140,7 +138,7 @@ export default class extends React.Component {
                             </Link>
                         </Col>
                         <Col width="33">
-                            <Link noLinkClass href="/">
+                            <Link noLinkClass href="/rating/">
                                 <div className="image">
                                     <img src={imgEvaluate} />
                                 </div>
@@ -148,7 +146,7 @@ export default class extends React.Component {
                             </Link>
                         </Col>
                         <Col width="33">
-                            <Link noLinkClass href="/">
+                            <Link noLinkClass href="/maps/">
                                 <div className="image">
                                     <img src={imgLocation} />
                                 </div>
@@ -157,7 +155,6 @@ export default class extends React.Component {
                         </Col>
                     </Row>
                 </div>
-                {/* <button type="button" onClick={() => this.signOut()}>Đăng xuất</button> */}
                 <Toolbar tabbar position="bottom">
                     <ToolBarBottom />
                 </Toolbar>

@@ -131,7 +131,7 @@ export default class ScheduleSpa extends React.Component {
         }
     }
     handStyle = () => {
-        const _width = (this.state.width / 5) - 12;
+        const _width = (this.state.width / 4) - 12;
         return Object.assign({
             width: _width,
         });
@@ -154,7 +154,7 @@ export default class ScheduleSpa extends React.Component {
             centerMode: false,
             slidesToShow: 1,
             slidesToScroll: 1,
-            variableWidth: true
+            variableWidth: true,
         };
         return (
             <div className="page-schedule__box">
@@ -203,15 +203,15 @@ export default class ScheduleSpa extends React.Component {
                     </div>
                     <div className="page-schedule__note">
                         <div className="page-schedule__note-item">
-                            <div class="box box-not"></div>
+                            <div className="box box-not"></div>
                             <span>Hết chỗ</span>
                         </div>
                         <div className="page-schedule__note-item">
-                            <div class="box box-no"></div>
+                            <div className="box box-no"></div>
                             <span>Còn chỗ</span>
                         </div>
                         <div className="page-schedule__note-item">
-                            <div class="box box-succes"></div>
+                            <div className="box box-succes"></div>
                             <span>Đang chọn</span>
                         </div>
                     </div>

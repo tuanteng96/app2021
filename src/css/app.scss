@@ -12,7 +12,9 @@
 @import './../css/layout/toolbar';
 @import './../css/layout/toolbarCustom';
 @import './../css/layout/toolbarBottom';
+@import './../css/layout/modal.scss';
 // pages
+@import './../css/pages/nodata.scss';
 @import './../css/pages/news.scss';
 @import './../css/pages/shop.scss';
 @import './../css/pages/maps.scss';
@@ -22,6 +24,10 @@
 @import './../css/pages/barcode.scss';
 @import './../css/pages/stock.scss';
 @import './../css/pages/schedule.scss';
+@import './../css/pages/voucher.scss';
+@import './../css/pages/wallet.scss';
+@import './../css/pages/diary.scss';
+@import './../css/pages/rating.scss';
 //Font family
 body,
 html {

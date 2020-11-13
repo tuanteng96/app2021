@@ -44,6 +44,21 @@ class UserService {
     setStock(data) {
         return http.post(`/api/v3/web?cmd=setStock`, data)
     }
+    getVoucher(memberid) {
+        return http.post(`/app/index.aspx?cmd=voucherandaff&mid=${memberid}`);
+    }
+    getWallet(data) {
+        return http.post(`/services/preview.aspx?cmd=list_money`, data);
+    }
+    getDiary(username, password) {
+        return http.post(`/app/index.aspx?cmd=noti&USN=${username}&PWD=${password}`);
+    }
+    getReviews(memberid) {
+        return http.get(`/api/v3/OrderService?cmd=get_service_unrate&mid=${memberid}`);
+    }
+    postReviews(memberid, data) {
+        return http.post(`/api/v3/OrderService?cmd=get_service_unrate&mid=${memberid}`, data);
+    }
 }
 
 export default new UserService();

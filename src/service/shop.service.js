@@ -23,6 +23,9 @@ class ShopDataService {
     getSearchService(keys) {
         return http.get(`/app/index.aspx?cmd=search_prods&key=${keys}&cates=795&pi=1&ps=1000`);
     }
+    getProd() {
+        return http.get(`/app/index.aspx?cmd=ProdService`);
+    }
 }
 
 export default new ShopDataService();

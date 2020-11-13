@@ -5,6 +5,7 @@ import ReactHtmlParser from "react-html-parser";
 import NewsDataService from "../../service/news.service";
 import UserService from "../../service/user.service";
 import Slider from "react-slick";
+import ModalReviews from "../../components/ModalReviews";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import SelectStock from '../../components/SelectStock';
 import Skeleton from 'react-loading-skeleton';
@@ -16,7 +17,7 @@ export default class extends React.Component {
     this.state = {
       arrNews: [],
       arrBanner: [],
-      isOpenStock: false
+      isOpenStock: false,
     };
   }
 
@@ -120,9 +121,7 @@ export default class extends React.Component {
   };
 
   render() {
-    const userInfo = this.state.userInfo;
-    const arrBanner = this.state.arrBanner;
-    const arrNews = this.state.arrNews;
+    const { userInfo, arrBanner, arrNews } = this.state;
     var settingsBanner = {
       dots: true,
       arrows: false,
@@ -253,6 +252,7 @@ export default class extends React.Component {
           <ToolBarBottom />
         </Toolbar>
         <SelectStock isOpenStock={this.state.isOpenStock} />
+        <ModalReviews />
       </Page>
     );
   }

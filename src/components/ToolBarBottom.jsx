@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "framework7-react";
 import { getUser } from "../constants/user";
+import iconBook from '../assets/images/bookicon.png';
 
 export default class ToolBarCustom extends React.Component {
   constructor() {
@@ -64,7 +65,8 @@ export default class ToolBarCustom extends React.Component {
               className="page-toolbar-bottom__link active"
             >
               <div className="page-toolbar-bottom__link-inner">
-                <i className="las la-calendar-plus"></i>
+                <img src={iconBook} alt="Đặt lịch"/>
+                {/* <i className="las la-calendar-plus"></i> */}
               </div>
             </Link>
             <Link

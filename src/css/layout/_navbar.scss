@@ -41,6 +41,52 @@
             @include justify-content(center);
             color: $white;
             font-size: 22px;
+            position: relative;
+            .count {
+                position: absolute;
+                font-family: $font-app;
+                width: 10px;
+                height: 10px;
+                background: $white;
+                border-radius: 50%;
+                box-sizing: border-box;
+                border: 3px solid #f46a6a;
+                right: 10px;
+                top: 10px;
+            }
+            svg {
+                -webkit-animation: tadaNoti 1.5s ease infinite;
+                animation: tadaNoti 1.5s ease infinite;
+            }
         }
+    }
+}
+
+@keyframes tadaNoti {
+    0% {
+        -webkit-transform: scaleX(1);
+        transform: scaleX(1);
+    }
+    10%,
+    20% {
+        -webkit-transform: scale3d(.95, .95, .95) rotate(-10deg);
+        transform: scale3d(.95, .95, .95) rotate(-10deg);
+    }
+    30%,
+    50%,
+    70%,
+    90% {
+        -webkit-transform: scaleX(1) rotate(10deg);
+        transform: scaleX(1) rotate(10deg);
+    }
+    40%,
+    60%,
+    80% {
+        -webkit-transform: rotate(-10deg);
+        transform: rotate(-10deg);
+    }
+    100% {
+        -webkit-transform: scaleX(1);
+        transform: scaleX(1);
     }
 }

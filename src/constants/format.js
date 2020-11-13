@@ -7,7 +7,7 @@ moment.locale('vi');
 
 //Format VNĐ
 export const formatPriceVietnamese = (price) => {
-    return price.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+    return price.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
 };
 
 //format date service
@@ -37,7 +37,6 @@ export const formatDateUTC = (date) => {
 }
 
 // Check Sale 
-
 export const checkSale = (SaleBegin, SaleEnd) => {
     var SaleBegins = SaleBegin.slice(0, 10);
     var SaleEnds = SaleEnd.slice(0, 10);
@@ -58,7 +57,6 @@ export const checkSale = (SaleBegin, SaleEnd) => {
 };
 
 //Tính phần trăm sale Product
-
 export const percentagesSale = (Price, PriceSale) => {
     return 100 - ((PriceSale / Price) * 100);
 }
@@ -91,8 +89,46 @@ export const maxBookDate = (services) => {
     return max;
 }
 
+export const getDateFacebook = (date) => {
+    return moment(date).startOf('day').fromNow();
+}
+
 // validateEmail
 export const validateEmail = (email) => {
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
+}
+
+// Kiểm tra số ngày tới
+export const checkDateDiff = (dateEnd) => {
+    const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+    const firstDate = new Date();
+    const secondDate = new Date(dateEnd);
+    const diffDays = Math.round(Math.abs((firstDate - secondDate) / oneDay));
+    return diffDays;
+}
+
+//Group item theo ngày
+export const groupbyDDHHMM = (arr) => {
+    const newArr = [];
+    if (!arr) return false;
+    arr.map(item => {
+        const dayFull = item.CreateDate;
+        const d = dayFull.split('T')[0];
+        var g = null;
+        newArr.every((_g) => {
+            if (_g.day == d) g = _g;
+            return g == null;
+        })
+        if (g == null) {
+            g = {
+                day: d,
+                dayFull: dayFull,
+                items: []
+            };
+            newArr.push(g);
+        }
+        g.items.push(item);
+    })
+    return newArr;
 }

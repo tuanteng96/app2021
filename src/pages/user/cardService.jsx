@@ -4,11 +4,13 @@ import { getUser, getPassword } from "../../constants/user";
 import UserService from "../../service/user.service";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import ItemCardService from "../../components/ItemCardService";
+import SelectStock from '../../components/SelectStock';
 
 export default class extends React.Component {
     constructor() {
         super();
         this.state = {
+            isOpenStock: false,
             countSv: 0, // Số lương thẻ
             cardSv: [], // Thẻ dịch vụ
             insuranceSV: [], // Thẻ bảo hành
@@ -53,8 +55,14 @@ export default class extends React.Component {
             .catch(e => console.log(e));
     }
 
+    openStock = () => {
+        this.setState({
+            isOpenStock : !this.state.isOpenStock
+        });
+    }
+
     render() {
-        const countSv = this.state.countSv;
+        const {isOpenStock, countSv } = this.state;
         const cardSv = this.state.cardSv && this.state.cardSv;
         const insuranceSV = this.state.insuranceSV && this.state.insuranceSV;
         const excessiveSv = this.state.excessiveSv && this.state.excessiveSv;
@@ -63,7 +71,7 @@ export default class extends React.Component {
                 <Navbar>
                     <div className="page-navbar">
                         <div className="page-navbar__back">
-                            <Link>
+                            <Link onClick={() => this.openStock()}>
                                 <i className="las la-map-marked-alt"></i>
                             </Link>
                         </div>
@@ -118,6 +126,7 @@ export default class extends React.Component {
                 <Toolbar tabbar position="bottom">
                     <ToolBarBottom />
                 </Toolbar>
+                <SelectStock isOpenStock={isOpenStock} />
             </Page>
         )
     }

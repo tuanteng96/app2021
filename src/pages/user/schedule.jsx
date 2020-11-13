@@ -5,9 +5,6 @@ import UserService from "../../service/user.service";
 import ScheduleSpa from "../../components/schedule/ScheduleSpa";
 import ScheduleService from "../../components/schedule/ScheduleService";
 import ScheduleSuccess from "../../components/schedule/ScheduleSuccess";
-import { setStockIDStorage, getStockIDStorage, setStockNameStorage } from "../../constants/user";
-import IconLocation from "../../assets/images/location1.svg";
-import Slider from "react-slick";
 import moment from 'moment';
 import 'moment/locale/vi';
 moment.locale('vi');
@@ -32,8 +29,7 @@ export default class extends React.Component {
                 }
             ],
             onFinish: false,
-            activeStep: 0,
-
+            activeStep: 1,
         };
     }
     componentDidMount() {
@@ -60,7 +56,6 @@ export default class extends React.Component {
     }
 
     controlsStep = () => {
-        console.log(this.state.activeStep);
         switch (this.state.activeStep) {
             case 0:
                 return (
@@ -99,8 +94,8 @@ export default class extends React.Component {
                 <Navbar>
                     <div className="page-navbar">
                         <div className="page-navbar__back">
-                            <Link>
-                                <i className="las la-map-marked-alt"></i>
+                            <Link onClick={() => this.$f7router.back()}>
+                                <i className="las la-angle-left"></i>
                             </Link>
                         </div>
                         <div className="page-navbar__title">

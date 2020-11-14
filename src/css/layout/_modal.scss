@@ -9,9 +9,14 @@
     background: #f5f6f8;
     height: auto;
     max-height: max-content;
+    min-height: min-content;
     overflow: hidden;
+    .sheet-modal-inner {
+        height: auto;
+    }
     &.modal-in {
         opacity: 1;
+        height: auto;
         @include translate3d(-50%, -50%, 0);
     }
     &__box {

@@ -26,7 +26,6 @@ import EditEmailPage from '../pages/user/editEmail';
 import EditPasswordPage from '../pages/user/editPassword';
 
 import DynamicRoutePage from '../pages/dynamic-route.jsx';
-import RequestAndLoad from '../pages/request-and-load.jsx';
 import NotFoundPage from '../pages/404.jsx';
 
 

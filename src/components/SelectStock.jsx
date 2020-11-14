@@ -13,7 +13,7 @@ export default class SelectStock extends React.Component {
         }
     }
 
-    getStock() {
+    async getStock() {
         UserService.getStock()
             .then(response => {
                 const CurrentStockID = response.data.data.CurrentStockID;
@@ -34,10 +34,10 @@ export default class SelectStock extends React.Component {
     }
 
     componentDidMount() {
-        this.getStock();
         const isOpenStock = this.props.isOpenStock;
         if (isOpenStock === true) {
             this.refs.actionStock.open();
+            this.getStock();
         }
         else {
             const StockID = getStockIDStorage();
@@ -51,6 +51,7 @@ export default class SelectStock extends React.Component {
         const isOpenStock = this.props.isOpenStock;
 
         if (prevProps.isOpenStock !== isOpenStock) {
+            this.getStock();
             this.refs.actionStock.open();
         }
     }

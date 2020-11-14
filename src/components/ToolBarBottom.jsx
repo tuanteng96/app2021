@@ -108,7 +108,7 @@ export default class ToolBarCustom extends React.Component {
               className="page-toolbar-bottom__link active"
             >
               <div className="page-toolbar-bottom__link-inner">
-                <i className="las la-calendar-plus"></i>
+                <img src={iconBook} alt="Đặt lịch"/>
               </div>
             </Link>
             <Link

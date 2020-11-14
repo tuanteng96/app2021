@@ -1,13 +1,13 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { SERVER_APP } from "./../../constants/config";
 import { Page, Link, Toolbar } from "framework7-react";
 import ReactHtmlParser from "react-html-parser";
 import NewsDataService from "../../service/news.service";
 import UserService from "../../service/user.service";
 import Slider from "react-slick";
-import ModalReviews from "../../components/ModalReviews";
+const ModalReviews = React.lazy(() => import('../../components/ModalReviews'));
+const SelectStock = React.lazy(() => import('../../components/SelectStock'));
 import ToolBarBottom from "../../components/ToolBarBottom";
-import SelectStock from '../../components/SelectStock';
 import Skeleton from 'react-loading-skeleton';
 import { getUser, setStockIDStorage, getStockIDStorage, setStockNameStorage } from "../../constants/user";
 
@@ -73,30 +73,37 @@ export default class extends React.Component {
     })
     this.$f7ready((f7) => {
       this.setState({ width: window.innerWidth });
-
-      NewsDataService.getBanner()
-        .then((response) => {
-          const arrBanner = response.data.data;
-          this.setState({
-            arrBanner: arrBanner,
-          });
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-
-      NewsDataService.getAll()
-        .then((response) => {
-          const arrNews = response.data.news;
-          this.setState({
-            arrNews: arrNews,
-          });
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      this.getBanner();
+      this.getNewsAll();
     });
   }
+
+  getBanner = () => {
+    NewsDataService.getBanner()
+      .then((response) => {
+        const arrBanner = response.data.data;
+        this.setState({
+          arrBanner: arrBanner,
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
+  getNewsAll = () => {
+    NewsDataService.getAll()
+      .then((response) => {
+        const arrNews = response.data.news;
+        this.setState({
+          arrNews: arrNews,
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
   onPageBeforeIn = () => {
     const getStock = getStockIDStorage();
     UserService.getStock()
@@ -118,10 +125,11 @@ export default class extends React.Component {
           }
         }, 500);
       })
+      .catch(e => console.log(e))
   };
 
   render() {
-    const { userInfo, arrBanner, arrNews } = this.state;
+    const { userInfo, arrBanner, arrNews, isOpenStock } = this.state;
     var settingsBanner = {
       dots: true,
       arrows: false,
@@ -251,8 +259,12 @@ export default class extends React.Component {
         <Toolbar tabbar position="bottom">
           <ToolBarBottom />
         </Toolbar>
-        <SelectStock isOpenStock={this.state.isOpenStock} />
-        <ModalReviews />
+
+        <Suspense fallback={<div>Loading...</div>}>
+          <SelectStock isOpenStock={isOpenStock} />
+          <ModalReviews />
+        </Suspense>
+
       </Page>
     );
   }

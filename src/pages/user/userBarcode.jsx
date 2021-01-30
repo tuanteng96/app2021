@@ -1,6 +1,6 @@
 import React from "react";
 import bgImage from '../../assets/images/headerbottombgapp.png';
-import { SERVER_APP } from "./../../constants/config";
+import { SERVER_APP } from "../../constants/config";
 import { checkAvt } from "../../constants/format";
 import { getUser,getPassword } from "../../constants/user";
 import { Page, Link } from "framework7-react";

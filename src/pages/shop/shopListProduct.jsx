@@ -1,7 +1,7 @@
 import React from "react";
 import { SERVER_APP } from "./../../constants/config";
-import {formatPriceVietnamese,checkSale} from "../../constants/format";
-import _ from 'lodash';
+import { formatPriceVietnamese, checkSale } from "../../constants/format";
+import _ from "lodash";
 import {
   Page,
   Link,
@@ -12,6 +12,7 @@ import {
   Subnavbar,
   Searchbar,
 } from "framework7-react";
+import { getStockIDStorage } from "../../constants/user";
 import ShopDataService from "./../../service/shop.service";
 import ReactHtmlParser from "react-html-parser";
 import ToolBarBottom from "../../components/ToolBarBottom";
@@ -26,11 +27,11 @@ export default class extends React.Component {
       countCateList: "",
       totalCateList: "",
       titlePage: "",
-      showPreloader: true,
+      showPreloader: false,
       allowInfinite: true,
       parentCateID: "",
       CateID: "",
-      CateIDall: 662
+      CateIDall: 662,
     };
 
     this.delayedCallback = _.debounce(this.inputCallback, 400);
@@ -42,12 +43,19 @@ export default class extends React.Component {
     //Số sản phẩm trên trang
     // Tag
     //keys Từ khóa tìm kiếm
-    ShopDataService.getList(ID, pi, ps, tag, keys)
+
+    let stockid = getStockIDStorage();
+    if (!stockid) {
+      stockid = 0;
+    }
+
+    ShopDataService.getList(ID, pi, ps, tag, keys, stockid)
       .then((response) => {
         const arrCateList = response.data.data.lst;
         const countCateList = response.data.data.pcount;
         const totalCateList = response.data.data.total;
         const piCateList = response.data.data.pi;
+
         this.setState({
           arrCateList: arrCateList,
           countCateList: countCateList,
@@ -57,8 +65,8 @@ export default class extends React.Component {
         if (arrCateList.length === 0) {
           this.setState({
             showPreloader: false,
-            dataNull: true
-          })
+            dataNull: true,
+          });
         }
       })
       .catch((e) => {
@@ -86,8 +94,8 @@ export default class extends React.Component {
 
       this.setState({
         parentCateID: parentCateID,
-        CateID: CateID
-      })
+        CateID: CateID,
+      });
 
       if (CateID === "hot") {
         this.setState({
@@ -104,21 +112,32 @@ export default class extends React.Component {
   loadMore = () => {
     const self = this;
     const isState = self.state;
-    const CateID = isState.keySearch ? isState.CateIDall : this.$f7route.params.cateId;
+    const CateID = isState.keySearch
+      ? isState.CateIDall
+      : this.$f7route.params.cateId;
     const itemView = isState.itemView; // Tổng số item trên 1 page
 
-    const tag = (isState.isTag && !isState.keySearch) ? isState.isTag : "";
+    const tag = isState.isTag && !isState.keySearch ? isState.isTag : "";
     const keys = isState.keySearch ? isState.keySearch : "";
 
     if (!self.state.allowInfinite) return;
-    self.setState({ allowInfinite: false });
+    self.setState({
+      allowInfinite: false,
+      showPreloader: true,
+    });
     setTimeout(() => {
       if (isState.totalCateList <= isState.arrCateList.length) {
         self.setState({ showPreloader: false });
         return;
       }
 
-      ShopDataService.getList(CateID, isState.piCateList + 1, itemView, tag, keys)
+      ShopDataService.getList(
+        CateID,
+        isState.piCateList + 1,
+        itemView,
+        tag,
+        keys
+      )
         .then((response) => {
           const arrCateList = response.data.data.lst;
 
@@ -165,12 +184,12 @@ export default class extends React.Component {
     const key = value;
     const itemView = this.state.itemView;
     this.getDataList(662, "1", itemView, "", key);
-  }
+  };
   handleInputSearch = (event) => {
     const key = event.target.value;
-    event.persist()
+    event.persist();
     this.delayedCallback(key);
-  }
+  };
 
   hideSearch = () => {
     const CateID = this.$f7route.params.cateId;
@@ -182,10 +201,10 @@ export default class extends React.Component {
       this.getDataList(CateID, "1", itemView, "", "");
     }
     this.setState({
-      showPreloader: true,
-      dataNull: false
+      showPreloader: false,
+      dataNull: false,
     });
-  }
+  };
 
   render() {
     const arrCateList = this.state.arrCateList;
@@ -235,7 +254,10 @@ export default class extends React.Component {
                 {arrCateList &&
                   arrCateList.map((item, index) => (
                     <Col width="50" key={index}>
-                      <a href={"/shop/detail/" + item.id} className="page-shop__list-item">
+                      <a
+                        href={"/shop/detail/" + item.id}
+                        className="page-shop__list-item"
+                      >
                         <div className="page-shop__list-img">
                           <img
                             src={SERVER_APP + "/Upload/image/" + item.photo}
@@ -250,7 +272,9 @@ export default class extends React.Component {
                               (checkSale(
                                 item.source.SaleBegin,
                                 item.source.SaleEnd
-                              ) === true ? 'sale' : '')
+                              ) === true
+                                ? "sale"
+                                : "")
                             }
                           >
                             <span className="price">

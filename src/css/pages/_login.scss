@@ -4,6 +4,9 @@
     box-sizing: border-box;
     background: $white;
     position: relative;
+    @include flexbox();
+    @include flex-direction(column);
+    @include justify-content(space-between);
     &__back {
         position: absolute;
         top: 0;
@@ -84,10 +87,7 @@
         }
     }
     &__alert {
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        padding: 15px;
+        position: relative;
         text-align: center;
         width: 100%;
         box-sizing: border-box;

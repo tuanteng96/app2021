@@ -1,19 +1,21 @@
 /* Your app custom styles here */
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&family=Barlow:wght@200;300;400;500;600;700&family=Archivo+Narrow:wght@400;500;600;700&family=Roboto:wght@100;300;400;500;700&display=swap');
-// abstracts
+////////// abstracts
 @import './abstracts/variables';
 @import './../css/abstracts/mixins';
-// base
+////////// base
 @import './base/reset';
-// layout
+////////// layout
 @import './../css/layout/button';
 @import './../css/layout/navbar';
 @import './../css/layout/toolbar';
 @import './../css/layout/toolbarCustom';
 @import './../css/layout/toolbarBottom';
 @import './../css/layout/modal.scss';
-// pages
+////////// pages
+//home
+@import './../css/pages/home/index.scss';
 @import './../css/pages/nodata.scss';
 @import './../css/pages/news.scss';
 @import './../css/pages/shop.scss';
@@ -28,10 +30,13 @@
 @import './../css/pages/wallet.scss';
 @import './../css/pages/diary.scss';
 @import './../css/pages/rating.scss';
+@import './../css/pages/notification.scss';
+@import './../css/pages/order.scss';
+@import './../css/pages/pay.scss';
 //Font family
 body,
 html {
-    font-family: $font-app3 !important;
+    font-family: $font-app2 !important;
 }
 
 .p-0 {
@@ -44,8 +49,7 @@ html {
 
 //Reset Framework7
 .page-content {
-    background: white;
-    background: linear-gradient(180deg, white 0%, white 5%, #f1f5f8 100%);
+    background: $color-gray-bg;
 }
 
 .toolbar {

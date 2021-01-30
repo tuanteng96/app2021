@@ -1,3 +1,5 @@
+import HomeIndex from "../pages/home/homeIndex";
+
 import NewsPage from '../pages/news/news.jsx';
 import NewsListPage from '../pages/news/newsList.jsx';
 import NewsDetailPage from '../pages/news/newsDetail';
@@ -7,6 +9,9 @@ import ShopCatePage from '../pages/shop/shopCate';
 import ShopListProductPage from '../pages/shop/shopListProduct';
 import ShopListServicePage from '../pages/shop/shopListService';
 import ShopDetailPage from '../pages/shop/shopDetail';
+import ShopPayPage from '../pages/shop/shopPay';
+import ShopPayInfoPage from '../pages/shop/ShopPayInfo';
+import ShopPaySuccessPage from '../pages/shop/shopPaySuccess';
 
 import MapsPage from '../pages/maps/maps';
 
@@ -21,22 +26,31 @@ import VoucherPage from '../pages/user/voucher'; // Mã giảm giá
 import WalletPage from '../pages/user/Wallet'; // Ví điện tử
 import DiaryPage from '../pages/user/Diary'; // Nhật ký
 import RatingListPage from '../pages/user/RatingList';
-import BarCodePage from '../pages/user/barcode';
+import BarCodePage from '../pages/user/userBarcode';
+import OrderPage from '../pages/user/userOrder';
 import EditEmailPage from '../pages/user/editEmail';
 import EditPasswordPage from '../pages/user/editPassword';
 
 import DynamicRoutePage from '../pages/dynamic-route.jsx';
 import NotFoundPage from '../pages/404.jsx';
 
-
+function checkAuth(to, from, resolve, reject) {
+    var router = this;
+    if (localStorage.getItem("user")) {
+        resolve();
+    } else {
+        reject();
+        router.navigate('/login/');
+    }
+}
 
 var routes = [{
         path: '/',
-        component: NewsPage
+        component: HomeIndex
     },
     {
         path: '/news/',
-        component: NewsPage,
+        component: HomeIndex,
         options: {
             transition: 'f7-cover',
         }
@@ -55,6 +69,19 @@ var routes = [{
         options: {
             transition: 'f7-cover',
         }
+    },
+    {
+        path: '/pay/',
+        component: ShopPayPage,
+        beforeEnter: checkAuth
+    },
+    {
+        path: '/pay-info/',
+        component: ShopPayInfoPage
+    },
+    {
+        path: '/pay-success/:orderID',
+        component: ShopPaySuccessPage
     },
     {
         path: '/shop/:cateId',
@@ -158,6 +185,13 @@ var routes = [{
         }
     },
     {
+        path: '/order/', // Check In
+        component: OrderPage,
+        options: {
+            transition: 'f7-cover',
+        }
+    },
+    {
         path: '/voucher/', // Mã giảm giá
         component: VoucherPage
     },
@@ -175,7 +209,8 @@ var routes = [{
     },
     {
         path: '/notification/', // Thông báo Noti
-        component: NotificationPage
+        component: NotificationPage,
+        beforeEnter: checkAuth
     },
     {
         path: '(.*)',

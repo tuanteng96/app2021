@@ -7,7 +7,11 @@ moment.locale('vi');
 
 //Format VNĐ
 export const formatPriceVietnamese = (price) => {
-    return price.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+    if (!price || price === 0) {
+        return "0";
+    } else {
+        return price.toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+    }
 };
 
 //format date service
@@ -38,6 +42,7 @@ export const formatDateUTC = (date) => {
 
 // Check Sale 
 export const checkSale = (SaleBegin, SaleEnd) => {
+    if (!SaleBegin || !SaleEnd) return false;
     var SaleBegins = SaleBegin.slice(0, 10);
     var SaleEnds = SaleEnd.slice(0, 10);
     var todaydate = new Date();
@@ -56,12 +61,25 @@ export const checkSale = (SaleBegin, SaleEnd) => {
     }
 };
 
-//Tính phần trăm sale Product
-export const percentagesSale = (Price, PriceSale) => {
-    return 100 - ((PriceSale / Price) * 100);
+// So sánh ngày giờ
+
+export const isFromBiggerThanTo = (dtmfrom, dtmto) => {
+    return new Date(dtmfrom).getTime() > new Date(dtmto).getTime();
 }
 
-//Check avatar Null
+//Tính phần trăm sale Product
+export const percentagesSale = (Price, PriceSale) => {
+        return 100 - ((PriceSale / Price) * 100);
+    }
+    //Check avatar Null
+export const checkImageProduct = (src) => {
+        if (src === "null.gif" || src === "") {
+            return imgNoProduct;
+        } else {
+            return SERVER_APP + "/Upload/image/" + src;
+        }
+    }
+    //Check avatar Null
 export const checkAvt = (src) => {
     if (src === "null.gif" || src === "") {
         return imgAvatarNull

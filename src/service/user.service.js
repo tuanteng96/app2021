@@ -59,6 +59,15 @@ class UserService {
     postReviews(memberid, data) {
         return http.post(`/api/v3/OrderService?cmd=get_service_unrate&mid=${memberid}`, data);
     }
+    getNotification(acctype, accid, offset, next) {
+        return http.get(`/api/v3/noti2?cmd=nextoffset&acctype=${acctype}&accid=${accid}&offset=${offset}&next=${next}`);
+    }
+    deleteNotification(data) {
+        return http.post(`/api/v3/noti2/?cmd=clear2`, data);
+    }
+    getOrderAll(memberID) {
+        return http.get(`/services/preview.aspx?cmd=search_order&key=kh:${memberID}&getitems=1`);
+    }
 }
 
 export default new UserService();

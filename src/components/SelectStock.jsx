@@ -43,7 +43,7 @@ export default class SelectStock extends React.Component {
             const StockID = getStockIDStorage();
             this.setState({
                 StockID: StockID
-            })
+            });
         }
     }
 
@@ -78,6 +78,7 @@ export default class SelectStock extends React.Component {
                 if (this.props.fnSuccess !== undefined) {
                     this.props.fnSuccess(true);
                 }
+                this.props.nameStock(NameStock);
             })
             .catch(err => console.log(err))
     }

@@ -1,33 +1,60 @@
 import React from "react";
-import { Page, Link, Toolbar, Navbar } from "framework7-react";
+import { Link } from "framework7-react";
+import { FaRegBell } from "react-icons/fa";
+import { getUser } from "../constants/user";
+import UserService from "../service/user.service";
 
 export default class NotificationIcon extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-
-        };
+  constructor() {
+    super();
+      this.state = {
+        countCart: 0
+    };
+  }
+  componentDidMount() {
+    this.getNotification();
+  }
+  getNotification = () => {
+    const _this = this;
+    const infoUser = getUser();
+    if (!infoUser) {
+      return false;
     }
+    UserService.getNotification(infoUser.acc_type, infoUser.acc_id, 0, 200)
+      .then((response) => {
+        const data = response.data.data;
+          const dataNew = data.filter((item) => item.IsReaded === false);
+          this.setState({
+            countCart: dataNew.length,
+          });
+      })
+      .catch((er) => console.log(er));
+  };
+  handleNoti = () => {
+    const _this = this;
+    const infoUser = getUser();
+    if (!infoUser) {
+      _this.$f7.dialog.confirm(
+        "Bạn vui lòng đăng nhập tài khoản để sử dụng chức năng ngày.",
+        () => {
+          _this.$f7.views.main.router.navigate("/login/");
+        }
+      );
+    } else {
+      _this.$f7.views.main.router.navigate("/notification/");
+    }
+  };
     render() {
-        return (
-            <div className="page-navbar__noti">
-                <Link href="/notification/">
-                    <svg
-                        width={20}
-                        height={20}
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="prefix__feather prefix__feather-bell"
-                    >
-                        <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" />
-                    </svg>
-                    <div className="count"></div>
-                </Link>
-            </div>
-        )
-    }
+      const { countCart } = this.state;
+    return (
+      <Link
+        className={countCart > 0 ? "notification--animation" : ""}
+        noLinkClass
+        onClick={() => this.handleNoti()}
+      >
+        <FaRegBell />
+        {countCart > 0 ? <span className="count">{countCart}</span> : ""}
+      </Link>
+    );
+  }
 }

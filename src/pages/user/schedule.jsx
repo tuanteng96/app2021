@@ -5,6 +5,7 @@ import UserService from "../../service/user.service";
 import ScheduleSpa from "../../components/schedule/ScheduleSpa";
 import ScheduleService from "../../components/schedule/ScheduleService";
 import ScheduleSuccess from "../../components/schedule/ScheduleSuccess";
+import NotificationIcon from "../../components/NotificationIcon";
 import moment from 'moment';
 import 'moment/locale/vi';
 moment.locale('vi');
@@ -90,36 +91,30 @@ export default class extends React.Component {
         });
 
         return (
-            <Page name="schedule">
-                <Navbar>
-                    <div className="page-navbar">
-                        <div className="page-navbar__back">
-                            <Link onClick={() => this.$f7router.back()}>
-                                <i className="las la-angle-left"></i>
-                            </Link>
-                        </div>
-                        <div className="page-navbar__title">
-                            <span className="title">Đặt lịch</span>
-                        </div>
-                        <div className="page-navbar__noti">
-                            <Link>
-                                <i className="las la-bell"></i>
-                            </Link>
-                        </div>
-                    </div>
-                </Navbar>
-                <div className="page-schedule">
-                    <div className="page-schedule__step">
-                        {stepIndicators}
-                    </div>
-                    {steps[activeStep].component}
+          <Page name="schedule">
+            <Navbar>
+              <div className="page-navbar">
+                <div className="page-navbar__back">
+                  <Link onClick={() => this.$f7router.back()}>
+                    <i className="las la-angle-left"></i>
+                  </Link>
                 </div>
-                <Toolbar tabbar position="bottom">
-                    {
-                        this.controlsStep()
-                    }
-                </Toolbar>
-            </Page>
-        )
+                <div className="page-navbar__title">
+                  <span className="title">Đặt lịch</span>
+                </div>
+                <div className="page-navbar__noti">
+                  <NotificationIcon />
+                </div>
+              </div>
+            </Navbar>
+            <div className="page-schedule">
+              <div className="page-schedule__step">{stepIndicators}</div>
+              {steps[activeStep].component}
+            </div>
+            <Toolbar tabbar position="bottom">
+              {this.controlsStep()}
+            </Toolbar>
+          </Page>
+        );
     }
 }

@@ -82,7 +82,7 @@ export default class extends React.Component {
                         ) : (
                                 <div className="profile-info__basic">
                                     <div className="name">{member.FullName}</div>
-                                    <div className="group">{member.acc_group > 0 ? (member.MemberGroups[0].Title) : "Khách thường"}</div>
+                                    <div className="group">{member.acc_group > 0 ? (member.MemberGroups[0].Title) : "Thành viên"}</div>
                                 </div>
                             )}
 
@@ -122,7 +122,7 @@ export default class extends React.Component {
                             </Link>
                         </Col>
                         <Col width="33">
-                            <Link noLinkClass href="/">
+                            <Link noLinkClass href="/order/">
                                 <div className="image">
                                     <img src={imgOrder} />
                                 </div>

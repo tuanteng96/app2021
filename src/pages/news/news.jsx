@@ -7,6 +7,9 @@ import UserService from "../../service/user.service";
 import Slider from "react-slick";
 const ModalReviews = React.lazy(() => import('../../components/ModalReviews'));
 const SelectStock = React.lazy(() => import('../../components/SelectStock'));
+const CartComponent = React.lazy(() =>
+  import("../../components/CartComponent")
+);
 import ToolBarBottom from "../../components/ToolBarBottom";
 import Skeleton from 'react-loading-skeleton';
 import { getUser, setStockIDStorage, getStockIDStorage, setStockNameStorage } from "../../constants/user";
@@ -79,7 +82,7 @@ export default class extends React.Component {
   }
 
   getBanner = () => {
-    NewsDataService.getBanner()
+    NewsDataService.getBannerName("App.Banner")
       .then((response) => {
         const arrBanner = response.data.data;
         this.setState({
@@ -157,12 +160,15 @@ export default class extends React.Component {
             <div className="page-news__header">
               {this.getDateVietnamese()}
               <div className="page-news__header-user">
-                {
-                  userInfo !== null ?
-                    (<Link noLinkClass href="/profile/"><i className="las la-user-circle"></i></Link>)
-                    :
-                    (<Link noLinkClass href="/login/"><i className="las la-user-circle"></i></Link>)
-                }
+                {userInfo !== null ? (
+                  <Link noLinkClass href="/profile/">
+                    <i className="las la-user-circle"></i>
+                  </Link>
+                ) : (
+                  <Link noLinkClass href="/login/">
+                    <i className="las la-user-circle"></i>
+                  </Link>
+                )}
               </div>
             </div>
             {arrNews.length === 0 || arrNews === undefined ? (
@@ -173,28 +179,28 @@ export default class extends React.Component {
                 </div>
               </div>
             ) : (
-                arrNews.map((item, index) => {
-                  if (index >= 1) return null;
-                  return (
-                    <div className="page-news__dear" key={item.ID}>
-                      <div className="page-news__dear-img">
-                        <a href={"/news/detail/" + item.ID + "/"}>
-                          <img
-                            src={SERVER_APP + item.Thumbnail_web}
-                            alt={item.Title}
-                          />
-                        </a>
-                      </div>
-                      <div className="page-news__dear-text">
-                        <a href={"/news/detail/" + item.ID + "/"}>
-                          <h4>{item.Title}</h4>
-                          <div className="desc">{ReactHtmlParser(item.Desc)}</div>
-                        </a>
-                      </div>
+              arrNews.map((item, index) => {
+                if (index >= 1) return null;
+                return (
+                  <div className="page-news__dear" key={item.ID}>
+                    <div className="page-news__dear-img">
+                      <a href={"/news/detail/" + item.ID + "/"}>
+                        <img
+                          src={SERVER_APP + item.Thumbnail_web}
+                          alt={item.Title}
+                        />
+                      </a>
                     </div>
-                  );
-                })
-              )}
+                    <div className="page-news__dear-text">
+                      <a href={"/news/detail/" + item.ID + "/"}>
+                        <h4>{item.Title}</h4>
+                        <div className="desc">{ReactHtmlParser(item.Desc)}</div>
+                      </a>
+                    </div>
+                  </div>
+                );
+              })
+            )}
 
             <div className="page-news__slide">
               <Slider {...settingsBanner}>
@@ -263,8 +269,8 @@ export default class extends React.Component {
         <Suspense fallback={<div>Loading...</div>}>
           <SelectStock isOpenStock={isOpenStock} />
           <ModalReviews />
+          <CartComponent />
         </Suspense>
-
       </Page>
     );
   }

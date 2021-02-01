@@ -144,6 +144,11 @@
     }
 }
 
+.btn-no-click {
+    pointer-events: none;
+    opacity: .7;
+}
+
 .btn-small {
     position: relative;
     &.loading {

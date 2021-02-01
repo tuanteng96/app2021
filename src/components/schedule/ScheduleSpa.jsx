@@ -1,9 +1,6 @@
 import React from "react";
 import {
-  Page,
   Link,
-  Navbar,
-  Toolbar,
   Tabs,
   Tab,
   Row,
@@ -11,8 +8,8 @@ import {
 } from "framework7-react";
 import UserService from "../../service/user.service";
 import { getStockIDStorage } from "../../constants/user";
-import { isFromBiggerThanTo } from "../../constants/format";
 import IconLocation from "../../assets/images/location1.svg";
+import SkeletonStock from "./SkeletonStock";
 import Slider from "react-slick";
 import moment from "moment";
 import "moment/locale/vi";
@@ -25,6 +22,9 @@ export default class ScheduleSpa extends React.Component {
       arrListDate: [], // Hiển thị 3 ngày từ ngày today next
       arrStock: [], // List Stock
       bookDate: "", // Ngày đặt lịch
+      timeSelected: "",
+      itemBook: {},
+      isLoadingStock: true
     };
   }
 
@@ -62,6 +62,7 @@ export default class ScheduleSpa extends React.Component {
 
       this.setState({
         arrStock: arrStock,
+        isLoadingStock: false,
       });
     });
   };
@@ -175,19 +176,54 @@ export default class ScheduleSpa extends React.Component {
   onDateChanged = (event) => {
     const target = event.target;
     const value = target.value;
-    console.log(value);
+    const { itemBook } = this.state;
+    const itemBookNew = itemBook;
+    itemBookNew.time && delete itemBookNew.time;
+    this.setState({
+      dateSelected: value,
+      timeSelected: "",
+      itemBook: itemBookNew,
+    });
+    this.props.handleTime(itemBookNew);
   };
 
   handleStock = (id) => {
-    console.log(id);
+    const {
+      bookDate,
+      dateSelected,
+      timeSelected,
+    } = this.state;
+    const itemBookNew = {};
+    itemBookNew.stock = id;
+    timeSelected ? itemBookNew.time = timeSelected : "";
+    itemBookNew.date = dateSelected ? dateSelected : bookDate;
+    this.setState({
+      StockSelected: id,
+      itemBook: itemBookNew,
+    });
+    this.props.handleTime(itemBookNew);
   };
 
   handleTime = (time) => {
-    console.log(time);
+    const {
+      CurrentStockID,
+      StockSelected,
+      bookDate,
+      dateSelected,
+    } = this.state;
+    const itemBookNew = {};
+    itemBookNew.time = time;
+    itemBookNew.stock = StockSelected ? StockSelected : parseInt(CurrentStockID);
+    itemBookNew.date = dateSelected ? dateSelected : bookDate;
+    this.setState({
+      timeSelected: time,
+      itemBook: itemBookNew,
+    });
+    this.props.handleTime(itemBookNew);
   };
 
   render() {
-    const { arrListDate, arrStock } = this.state;
+    const { arrListDate, arrStock, timeSelected, isLoadingStock } = this.state;
     const CurrentStockID =
       this.state.CurrentStockID && this.state.CurrentStockID;
     const settings = {
@@ -208,7 +244,9 @@ export default class ScheduleSpa extends React.Component {
           <h5>1. Chọn spa gần bạn</h5>
           <div className="page-schedule__location-list">
             <Row>
-              {arrStock &&
+              {isLoadingStock && <SkeletonStock />}
+              {!isLoadingStock &&
+                arrStock &&
                 arrStock.map((item, index) => (
                   <Col width="50" key={index}>
                     <div className="location">
@@ -300,13 +338,11 @@ export default class ScheduleSpa extends React.Component {
                               key={i}
                               onClick={() => this.handleTime(sub.time)}
                             >
-                              <input
-                                value={sub.time}
-                                id={sub.time}
-                                type="radio"
-                                name="checktime"
-                              />
-                              <label a={item.date} htmlFor={sub.time}>
+                              <label
+                                className={
+                                  timeSelected === sub.time ? "active" : ""
+                                }
+                              >
                                 {this.formatTime(sub.time)}
                               </label>
                             </div>

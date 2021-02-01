@@ -3,6 +3,7 @@
         padding: 5px 15px;
         @include flexbox();
         @include justify-content(space-between);
+        background: $white;
         &-item {
             @include flex-basis(33.3333%);
             padding-left: 32px;
@@ -149,7 +150,8 @@
     &__location {
         padding: 15px 15px 5px 15px;
         border-bottom: 1px solid #f1f1f1;
-        background: #f1f5f8;
+        background: $white;
+        margin-top: 8px;
         h5 {
             margin: 0;
             text-transform: uppercase;
@@ -234,6 +236,7 @@
     &__time {
         padding: 15px;
         border-bottom: 1px solid #f1f1f1;
+        background: $white;
         h5 {
             margin: 0;
             text-transform: uppercase;
@@ -268,6 +271,11 @@
                         border-radius: 3px;
                         overflow: hidden;
                         letter-spacing: .5px;
+                        &.active {
+                            background: $color-app;
+                            border: 1px solid $color-app;
+                            color: $white;
+                        }
                     }
                     input {
                         opacity: 0;
@@ -278,11 +286,6 @@
                         height: 100%;
                         z-index: 2;
                         margin: 0;
-                        &:checked~label {
-                            background: $color-app;
-                            border: 1px solid $color-app;
-                            color: $white;
-                        }
                     }
                     &.not-time {
                         background: #e6e6e6;
@@ -293,9 +296,53 @@
             }
         }
     }
+    .service-me {
+        background: $white;
+        padding: 15px;
+        margin: 8px 0;
+        h5 {
+            margin: 0;
+            text-transform: uppercase;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+    }
+    .service-hot {
+        background: $white;
+        padding: 15px;
+        h5 {
+            margin: 0;
+            text-transform: uppercase;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+        .slick-track {
+            margin: 0 -7px;
+            &>div {
+                padding: 0 7px;
+            }
+        }
+        .item {
+            outline: none;
+            img {
+                border-radius: 5px;
+            }
+        }
+    }
+    .service-spa {
+        background: $white;
+        padding: 15px;
+        margin-top: 8px;
+        h5 {
+            margin: 0;
+            text-transform: uppercase;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+    }
 }
 
 .schedule-toolbar {
     width: 100%;
-    padding: 0 8px;
+    height: 100%;
 }

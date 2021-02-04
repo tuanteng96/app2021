@@ -147,32 +147,29 @@ export default class extends React.Component {
       return false;
     }
     
+    const date = itemStepTime.date + " " + itemStepTime.time;
+    
     const itemBooksList = [];
-
     if (itemBooks[0].Prod) {
       itemBooks.map((item, index) => {
         const itemBook = {};
         itemBook.stock_id = itemStepTime && itemStepTime.stock;
         itemBook.service_id = item.Prod.ID;
         itemBook.desc = serviceNote ? serviceNote : "Không có ghi chú .";
-        itemBook.date =
-          itemStepTime &&
-          itemStepTime.date + " " + itemStepTime &&
-          itemStepTime.time;
+        itemBook.date = date;
         itemBooksList.push(itemBook);
       });
     }
     else {
+      
       itemBooks.map((item, index) => {
+        console.log(itemStepTime.date);
         const itemBook = {};
         itemBook.stock_id = itemStepTime && itemStepTime.stock;
         itemBook.service_id = item.ServiceID;
         itemBook.desc = serviceNote ? serviceNote : "Không có ghi chú .";
-        itemBook.date =
-          itemStepTime &&
-          itemStepTime.date + " " + itemStepTime &&
-          itemStepTime.time;
-        itemBooksList.push(itemBook);
+        itemBook.date = date;
+        
       })
       
     }
@@ -181,6 +178,7 @@ export default class extends React.Component {
       memberid: infoUser.ID,
       books: itemBooksList,
     };
+    console.log(data);
     this.setState({
       isLoading: true,
     });

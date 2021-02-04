@@ -49,5 +49,39 @@ export const setStockNameStorage = (stockName) => {
     }
     // remove Stock
 export const removeStockNameStorage = () => {
-    localStorage.removeItem('CurrentStockName');
+        localStorage.removeItem('CurrentStockName');
+    }
+    //reg notification user
+export const subscribe = (rt) => {
+    //nếu chưa có key subscribe => ios iphone 8 lỗi
+    //vì vậy cần 1 bước phụ để xác định đã có key subscribe=> để unsubscribe
+    if (localStorage.getItem('_subscribe'))
+        app_request("unsubscribe", "");
+    localStorage.setItem('_subscribe', rt);
+
+    //code bên dưới copy từ hàm login
+    var topic = [];
+    var Firebase_Prefix = 1;
+    topic.push('news-' + Firebase_Prefix + '-' + rt.acc_type); //cho loại M(member) || (U)user
+    topic.push('news-' + Firebase_Prefix + '-' + rt.acc_type + '-gr-0'); //Mặc định mọi tài khoản đều thuộc nhóm 0 tương ứng với * trong admin
+    topic.push('news-' + Firebase_Prefix + '-' + rt.acc_type + '-id-0'); //Mặc định mọi tài khoản là 0 tương ứng với * trong admin
+
+    (rt.acc_group || '').split(',').filter((x) => {
+        return x;
+    }).forEach((x) => {
+        topic.push('news-' + Firebase_Prefix + '-' + rt.acc_type + '-gr-' + x);
+    });
+    topic.push('news-' + Firebase_Prefix + '-' + rt.acc_type + '-id-' + rt.acc_id);
+    //console.log(topic);
+    app_request('subscribe', topic.join(','));
+}
+
+export const app_request = (cmd, value) => {
+    if (window['ANDROID'])
+        ANDROID.Do(cmd, value);
+    else
+        window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.IOS.postMessage({
+            "cmd": cmd,
+            "value": value
+        })
 }

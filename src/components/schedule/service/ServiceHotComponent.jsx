@@ -1,8 +1,10 @@
 import React from "react";
-import { Link, Toolbar } from "framework7-react";
 import NewsDataService from "../../../service/news.service";
 import Slider from "react-slick";
 import { SERVER_APP } from "../../../constants/config";
+import { AiFillCheckCircle } from "react-icons/ai";
+import ServiceHotSkeleton from "./ServiceHotSkeleton";
+
 export default class ServiceHotComponent extends React.Component {
   constructor() {
     super();
@@ -31,8 +33,36 @@ export default class ServiceHotComponent extends React.Component {
       })
       .catch((er) => console.log(er));
   };
+
+  handleClick = (item) => {
+    const id = item.ID;
+    const Titles = item.Title;
+    item.OrderItemID = id;
+    item.Titles = Titles;
+    item.ServiceID = parseInt(item.Link);
+    this.setState({
+      active: id,
+    });
+    const itemBooks = [item];
+    this.props.serviceSelected(itemBooks);
+  };
+
+  resetActive = () => {
+    this.setState({
+      active: 0,
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { reset } = this.props;
+
+    if (prevProps.reset !== reset) {
+      this.resetActive();
+    }
+  }
+
   render() {
-    const { arrService } = this.state;
+    const { arrService, isLoading, active } = this.state;
     const settingService = {
       className: "slider variable-width",
       dots: false,
@@ -45,19 +75,25 @@ export default class ServiceHotComponent extends React.Component {
     return (
       <div className="service-hot__box">
         <div className="service-hot__list">
+          {isLoading && <ServiceHotSkeleton />}
           <Slider {...settingService}>
-            {arrService &&
+            {!isLoading &&
+              arrService &&
               arrService.map((item, index) => {
                 return (
                   <div
-                    className="item"
+                    className={`item ${active === item.ID ? "active" : ""}`}
                     key={item.ID}
+                    onClick={() => this.handleClick(item)}
                     style={this.handStyle()}
                   >
                     <img
                       src={SERVER_APP + "/Upload/image/" + item.FileName}
                       alt={item.Title}
                     />
+                    <div className="icon">
+                      <AiFillCheckCircle />
+                    </div>
                   </div>
                 );
               })}

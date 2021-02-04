@@ -21,7 +21,8 @@ import NotificationPage from '../pages/user/Notification';
 import ProfilePage from '../pages/user/profile';
 import DetailProfilePage from '../pages/user/DetailProfile';
 import CardServicePage from '../pages/user/cardService'; //Thẻ dịch vụ
-import SchedulePage from '../pages/user/schedule'; //Đặt lịch
+import SchedulePage from '../pages/user/Schedule'; //Đặt lịch
+import ScheduleManagePage from '../pages/user/SchedulesManage'; // Quản lí đặt lịch
 import VoucherPage from '../pages/user/voucher'; // Mã giảm giá
 import WalletPage from '../pages/user/Wallet'; // Ví điện tử
 import DiaryPage from '../pages/user/Diary'; // Nhật ký
@@ -173,6 +174,13 @@ var routes = [{
     {
         path: '/schedule/', // Thẻ dịch vụ
         component: SchedulePage,
+        options: {
+            transition: 'f7-cover',
+        }
+    },
+    {
+        path: '/manage-schedules/', // Quản lý Thẻ dịch vụ
+        component: ScheduleManagePage,
         options: {
             transition: 'f7-cover',
         }

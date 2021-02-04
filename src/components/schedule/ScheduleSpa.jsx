@@ -7,7 +7,7 @@ import {
   Col,
 } from "framework7-react";
 import UserService from "../../service/user.service";
-import { getStockIDStorage } from "../../constants/user";
+import { getStockIDStorage, getStockNameStorage } from "../../constants/user";
 import IconLocation from "../../assets/images/location1.svg";
 import SkeletonStock from "./SkeletonStock";
 import Slider from "react-slick";
@@ -35,8 +35,10 @@ export default class ScheduleSpa extends React.Component {
     const bookDateDefault = moment(gettoday).format("DD/MM/YYYY");
 
     const CurrentStockID = getStockIDStorage();
+    const CurrentStockName = getStockNameStorage();
     this.setState({
       CurrentStockID: CurrentStockID,
+      CurrentStockName: CurrentStockName,
       width: window.innerWidth,
       bookDate: bookDateDefault,
     });
@@ -176,8 +178,9 @@ export default class ScheduleSpa extends React.Component {
   onDateChanged = (event) => {
     const target = event.target;
     const value = target.value;
-    const { itemBook } = this.state;
+    const { itemBook, CurrentStockName } = this.state;
     const itemBookNew = itemBook;
+    itemBookNew.nameStock = CurrentStockName;
     itemBookNew.time && delete itemBookNew.time;
     this.setState({
       dateSelected: value,
@@ -187,18 +190,20 @@ export default class ScheduleSpa extends React.Component {
     this.props.handleTime(itemBookNew);
   };
 
-  handleStock = (id) => {
+  handleStock = (item) => {
     const {
       bookDate,
       dateSelected,
       timeSelected,
     } = this.state;
     const itemBookNew = {};
-    itemBookNew.stock = id;
+    itemBookNew.stock = item.ID;
+    itemBookNew.nameStock = item.Title;
     timeSelected ? itemBookNew.time = timeSelected : "";
     itemBookNew.date = dateSelected ? dateSelected : bookDate;
     this.setState({
-      StockSelected: id,
+      StockSelected: item.ID,
+      CurrentStockName: item.Title,
       itemBook: itemBookNew,
     });
     this.props.handleTime(itemBookNew);
@@ -207,6 +212,7 @@ export default class ScheduleSpa extends React.Component {
   handleTime = (time) => {
     const {
       CurrentStockID,
+      CurrentStockName,
       StockSelected,
       bookDate,
       dateSelected,
@@ -215,6 +221,7 @@ export default class ScheduleSpa extends React.Component {
     itemBookNew.time = time;
     itemBookNew.stock = StockSelected ? StockSelected : parseInt(CurrentStockID);
     itemBookNew.date = dateSelected ? dateSelected : bookDate;
+    itemBookNew.nameStock = CurrentStockName;
     this.setState({
       timeSelected: time,
       itemBook: itemBookNew,
@@ -252,7 +259,7 @@ export default class ScheduleSpa extends React.Component {
                     <div className="location">
                       <div
                         className="location-item"
-                        onClick={() => this.handleStock(item.ID)}
+                        onClick={() => this.handleStock(item)}
                       >
                         <input
                           id={"location-" + item.ID}

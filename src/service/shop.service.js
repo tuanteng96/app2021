@@ -1,8 +1,8 @@
 import http from "../service/http-common";
 
 class ShopDataService {
-    getCate(id) {
-        return http.get(`/app/index.aspx?cmd=cate_parentid&id=${id}`);
+    getCate(id, stockid) {
+        return http.get(`/app/index.aspx?cmd=cate_parentid&id=${id}&stockid=${stockid}`);
     }
     getList(id, pi, ps, tags, keys, stockid) {
         return http.get(`/app/index.aspx?cmd=search_prods&key=${keys}&cates=${id}&pi=${pi}&ps=${ps}&tags=${tags}&stockid=${stockid}`);
@@ -19,11 +19,11 @@ class ShopDataService {
     getDetailFull(id) {
         return http.get(`/api/v3/prod?cmd=getid&id=${id}`);
     }
-    getServiceParentID(id) {
-        return http.get(`/app/index.aspx?cmd=service_parentid&id=${id}`);
+    getServiceParentID(id, stockid) {
+        return http.get(`/app/index.aspx?cmd=service_parentid&id=${id}&stockid=${stockid}`);
     }
-    getServiceProdID(id) {
-        return http.get(`/app/index.aspx?cmd=service_prodsid&id=${id}`);
+    getServiceProdID(id, stockid) {
+        return http.get(`/app/index.aspx?cmd=service_prodsid&id=${id}&stockid=${stockid}`);
     }
     getSearchService(keys) {
         return http.get(`/app/index.aspx?cmd=search_prods&key=${keys}&cates=795&pi=1&ps=1000`);

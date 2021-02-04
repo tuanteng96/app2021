@@ -172,8 +172,8 @@
                         background: $white;
                         display: block;
                         border-radius: 3px;
-                        font-size: 15px;
-                        font-weight: 500;
+                        font-size: 14px;
+                        font-weight: 600;
                         text-align: center;
                         @include cut-text();
                     }
@@ -296,6 +296,42 @@
             }
         }
     }
+    &__success {
+        background: $white;
+        margin-top: 5px;
+        @include flexbox;
+        @include flex-direction(column);
+        @include align-items(center);
+        @include justify-content(center);
+        padding: 100px 30px;
+        text-align: center;
+        svg {
+            width: 70px;
+            height: 70px;
+            fill: $color-app;
+            polyline {
+                stroke: $color-app;
+            }
+        }
+        h4 {
+            font-size: 16px;
+            margin: 15px 0 0 0;
+        }
+        .desc {
+            margin-top: 10px;
+            font-weight: 400;
+            line-height: 20px;
+        }
+        .btn-submit-order {
+            line-height: 38px;
+            margin-top: 30px;
+            width: auto;
+            padding: 0 20px;
+            font-size: 13px;
+            border-radius: 2px;
+            min-height: 38px;
+        }
+    }
     .service-me {
         background: $white;
         padding: 15px;
@@ -305,6 +341,78 @@
             text-transform: uppercase;
             font-size: 15px;
             margin-bottom: 15px;
+        }
+        &__list {
+            .item {
+                @include flexbox();
+                padding: 10px;
+                box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, .10);
+                margin-bottom: 12px;
+                border-radius: 8px;
+                border: 2px solid transparent;
+                transition: all .2s ease;
+                &:last-child {
+                    margin-bottom: 0;
+                }
+                &.active {
+                    border: 2px solid $color-app;
+                }
+                &-image {
+                    width: 65px;
+                    position: relative;
+                    img {
+                        border-radius: 5px;
+                    }
+                }
+                &-info {
+                    width: calc(100% - 65px);
+                    padding-right: 12px;
+                    box-sizing: border-box;
+                    .title {
+                        line-height: 22px;
+                        text-transform: uppercase;
+                        font-weight: 600;
+                        position: relative;
+                        margin-bottom: 6px;
+                        font-size: 13px;
+                        &:before {
+                            content: "";
+                            position: absolute;
+                            width: 30px;
+                            height: 1px;
+                            background: $color-app;
+                            bottom: 0;
+                        }
+                    }
+                    .count {
+                        @include flexbox();
+                        font-size: 13px;
+                        &-number {
+                            color: $color-price-app;
+                            font-weight: 500;
+                            padding: 0 5px;
+                        }
+                    }
+                    .price {
+                        @include flexbox();
+                        font-size: 13px;
+                        &-number {
+                            color: $color-price-app;
+                            font-weight: 500;
+                        }
+                        &-vnd {
+                            padding-left: 5px;
+                        }
+                    }
+                    .desc {
+                        @include cut-text-to(2);
+                        font-size: 13px;
+                        p {
+                            margin: 0;
+                        }
+                    }
+                }
+            }
         }
     }
     .service-hot {
@@ -324,8 +432,30 @@
         }
         .item {
             outline: none;
+            position: relative;
+            &.active {
+                img {
+                    -webkit-filter: grayscale(1);
+                    filter: gray;
+                }
+                .icon {
+                    visibility: visible;
+                }
+            }
             img {
                 border-radius: 5px;
+                transition: all .3s ease;
+            }
+            .icon {
+                position: absolute;
+                top: 15px;
+                left: 15px;
+                visibility: hidden;
+                svg {
+                    fill: $color-app;
+                    width: 30px;
+                    height: 30px;
+                }
             }
         }
     }
@@ -342,7 +472,341 @@
     }
 }
 
+.chedule-manage {
+    position: relative;
+    &__lst {
+        .item {
+            margin-bottom: 10px;
+            .item-date {
+                font-weight: 700;
+                background: $white;
+                padding: 12px;
+                border-bottom: 1px solid #f0f4f7;
+                font-size: 15px;
+            }
+            .item-lst {
+                background: $white;
+                &__box {
+                    padding: 12px;
+                    @include flexbox();
+                    border-top: 1px solid #f0f4f7;
+                    .time-book {
+                        width: 50px;
+                        @include flexbox;
+                        @include flex-direction(column);
+                        @include align-items(center);
+                        @include justify-content(center);
+                        text-align: center;
+                        font-size: 13px;
+                        font-weight: 500;
+                        color: $color-gray-app;
+                        .time {
+                            color: $black;
+                            font-weight: 700;
+                        }
+                    }
+                    .service-time {
+                        margin: 5px 0;
+                        .service-time__item {
+                            color: $color-gray-app;
+                            font-size: 13px;
+                            >div:last-child {
+                                font-weight: 700;
+                                line-height: 20px;
+                                color: $black;
+                            }
+                        }
+                    }
+                    .stock {
+                        font-weight: 700;
+                        font-size: 13px;
+                        position: relative;
+                        padding-right: 65px;
+                        .btn-close {
+                            position: absolute;
+                            display: inline-block;
+                            padding: .25em .6em;
+                            font-size: 11px;
+                            font-weight: 600;
+                            line-height: 1;
+                            text-align: center;
+                            white-space: nowrap;
+                            vertical-align: baseline;
+                            border-radius: .25rem;
+                            color: $white;
+                            background-color: $color-price-app;
+                            right: 0;
+                            top: 0;
+                            width: auto;
+                            border: 0;
+                            outline: none;
+                        }
+                    }
+                    .time-wrap {
+                        width: calc(100% - 50px);
+                        padding-left: 12px;
+                        box-sizing: border-box;
+                    }
+                    .service-book {
+                        position: relative;
+                        padding-right: 40px;
+                        .service-book__info {
+                            .name {
+                                color: $color-gray-app;
+                                font-size: 13px;
+                            }
+                            .title {
+                                font-weight: 700;
+                                line-height: 20px;
+                                @include cut-text();
+                            }
+                        }
+                        .service-book__img {
+                            width: 35px;
+                            position: absolute;
+                            right: 0;
+                            top: 0;
+                            img {
+                                border-radius: 100%;
+                                box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.10);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 .schedule-toolbar {
     width: 100%;
     height: 100%;
+}
+
+.sheet-swipe-service {
+    .sheet-swipe-service__content {
+        .sheet-service-header {
+            text-transform: uppercase;
+            font-weight: 600;
+            border-bottom: 1px solid #f0f4f7;
+            padding: 12px;
+            position: relative;
+        }
+        .close {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            height: 25px;
+            svg {
+                width: 25px;
+                height: 25px;
+                opacity: .4;
+            }
+        }
+        .sheet-service-body__content {
+            padding: 12px;
+            border-bottom: 5px solid #f0f4f7;
+            .location {
+                margin-bottom: 10px;
+                .icon {
+                    text-transform: uppercase;
+                    font-weight: 600;
+                    font-size: 13px;
+                    @include flexbox();
+                    @include align-items(baseline);
+                    line-height: 24px;
+                    svg {
+                        margin-right: 5px;
+                    }
+                    span {
+                        color: $color-price-app;
+                        padding-left: 6px;
+                    }
+                }
+            }
+            .service {
+                margin-top: 10px;
+                .icon {
+                    text-transform: uppercase;
+                    font-weight: 600;
+                    font-size: 13px;
+                    @include flexbox();
+                    @include align-items(baseline);
+                    line-height: 24px;
+                    svg {
+                        margin-right: 5px;
+                    }
+                }
+                .text {
+                    font-size: 14px;
+                    margin-top: 5px;
+                    position: relative;
+                    padding-left: 18px;
+                    svg {
+                        width: 24px;
+                        height: 24px;
+                        position: absolute;
+                        right: 0;
+                        top: -5px;
+                        fill: $color-success;
+                    }
+                }
+            }
+            .time-box {
+                .icon {
+                    text-transform: uppercase;
+                    font-weight: 600;
+                    font-size: 13px;
+                    @include flexbox();
+                    @include align-items(baseline);
+                    line-height: 24px;
+                    svg {
+                        margin-right: 5px;
+                    }
+                }
+                .text {
+                    padding-left: 18px;
+                }
+            }
+        }
+        .sheet-service-body__note {
+            margin-bottom: 7px;
+            textarea {
+                width: 100%;
+                min-height: 80px;
+                padding: 12px;
+                font-size: 13px;
+            }
+        }
+    }
+}
+
+.sheet-service-lst {
+    height: 70vh;
+    overflow-y: auto;
+    .sheet-service-lst__item {
+        border-top: 5px solid #f0f4f7;
+        h4 {
+            margin: 0;
+            padding: 12px;
+            color: $color-app;
+            font-size: 15px;
+            font-weight: 500;
+            @include flexbox;
+            @include align-items(center);
+            .count {
+                font-size: 12px;
+                padding-left: 5px;
+                color: $black;
+                span {
+                    color: $color-danger;
+                }
+            }
+        }
+        .item-sub__box {
+            padding: 12px;
+            border-top: 1px dashed #f0f4f7;
+            position: relative;
+            h5 {
+                margin: 0;
+                font-size: 14px;
+                font-weight: 400;
+                line-height: 20px;
+            }
+            .price {
+                @include flexbox;
+                @include align-items(center);
+                span {
+                    font-weight: 500;
+                    font-size: 13px;
+                    b {
+                        font-weight: 500;
+                        font-size: 12px;
+                        padding-left: 1px;
+                    }
+                }
+                .price-sale {
+                    display: none;
+                }
+                &.sale {
+                    .price-sale {
+                        display: block;
+                        order: 1;
+                        color: $color-price-app;
+                    }
+                    .price-to {
+                        order: 2;
+                        padding-left: 5px;
+                        color: $color-gray2-app;
+                        text-decoration: line-through;
+                        font-size: 12px;
+                    }
+                }
+            }
+            .icon-succes-animated {
+                position: absolute;
+                right: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+        }
+    }
+}
+
+.page-schedule--order {
+    position: fixed;
+    width: calc(100% - 30px);
+    left: 15px;
+    bottom: calc(var(--f7-page-toolbar-bottom-offset, 0px) + var(--f7-safe-area-bottom) + var(--f7-page-content-extra-padding-bottom, 0px) + 10px);
+    background: $white;
+    padding: 6px;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.15);
+    border-radius: 5px;
+    display: none;
+    &.show {
+        display: block;
+    }
+    .item {
+        @include flexbox();
+        .image {
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+        }
+        .text {
+            width: calc(100% - 30px);
+            box-sizing: border-box;
+            padding: 0 25px 0 10px;
+            .text-title {
+                font-size: 13px;
+                line-height: 18px;
+                @include cut-text();
+            }
+            .text-price {
+                font-size: 12px;
+                color: $color-gray-app;
+                font-weight: 400;
+                @include flexbox();
+                b {
+                    font-weight: 400;
+                    padding-left: 2px;
+                }
+                .price-sale {
+                    display: none;
+                }
+                &.sale {
+                    .price-to {
+                        order: 2;
+                        text-decoration: line-through;
+                        padding-left: 5px;
+                    }
+                    .price-sale {
+                        display: block;
+                        color: $color-price-app;
+                    }
+                }
+            }
+        }
+    }
 }

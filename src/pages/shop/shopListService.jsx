@@ -1,14 +1,13 @@
 import React from "react";
 import { SERVER_APP } from "./../../constants/config";
 import { formatPriceVietnamese, checkSale } from "../../constants/format";
+import { getStockIDStorage } from "../../constants/user";
 import { Page, Link, Toolbar, Navbar, Sheet, PageContent, Button, Searchbar } from "framework7-react";
 import ShopDataService from "./../../service/shop.service";
 import ReactHtmlParser from "react-html-parser";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import _ from 'lodash';
 
-let sheetOpened = false;
-let sheet;
 export default class extends React.Component {
     constructor(props) {
         super(props);
@@ -24,22 +23,23 @@ export default class extends React.Component {
     }
     getService = () => {
         const CateID = this.$f7route.params.cateId;
-        ShopDataService.getServiceParentID(CateID)
-            .then((response) => {
-                var arrServiceParent = response.data.data;
-                const promises = arrServiceParent.map((item) =>
-                    ShopDataService.getServiceProdID(item.ID)
-                        .then((response) => {
-                            const arrServiceProd = response.data.data;
-                            item.lst = arrServiceProd;
-                        })
-                );
-                // wait for all requests to resolve
-                Promise.all(promises).then(() => {
-                    this.setState({ arrService: arrServiceParent });
-                });
-            })
-            .catch((e) => console.log(e));
+        const stockid = getStockIDStorage();
+        stockid ? stockid : 0;
+        ShopDataService.getServiceParentID(CateID, stockid)
+          .then((response) => {
+            var arrServiceParent = response.data.data;
+            const promises = arrServiceParent.map((item) =>
+              ShopDataService.getServiceProdID(item.ID).then((response) => {
+                const arrServiceProd = response.data.data;
+                item.lst = arrServiceProd;
+              })
+            );
+            // wait for all requests to resolve
+            Promise.all(promises).then(() => {
+              this.setState({ arrService: arrServiceParent });
+            });
+          })
+          .catch((e) => console.log(e));
     }
 
     getTitleCate = () => {

@@ -7,7 +7,7 @@ import imgDiary from '../../assets/images/diary.svg';
 import imgCoupon from '../../assets/images/coupon.svg';
 import imgEvaluate from '../../assets/images/evaluate.svg'
 import { checkAvt } from "../../constants/format";
-import { removeUserStorage, getUser, getPassword } from "../../constants/user";
+import { getUser, getPassword, app_request } from "../../constants/user";
 import { Page, Link, Toolbar, Row, Col } from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import UserService from "../../service/user.service";
@@ -38,8 +38,9 @@ export default class extends React.Component {
     signOut = () => {
         const $$this = this;
         $$this.$f7.dialog.confirm('Bạn muống đăng xuất khỏi tài khoản ?', () => {
-            removeUserStorage();
-            $$this.$f7router.navigate('/');
+            localStorage.clear();
+            app_request("unsubscribe", "");
+            $$this.$f7router.navigate("/");
         });
     }
     render() {

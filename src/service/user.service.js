@@ -10,6 +10,9 @@ class UserService {
     getInfo(username, password) {
         return http.get(`/app/index.aspx?cmd=getInfo&USN=${username}&PWD=${password}`)
     }
+    getSubscribe(usn, pwd, isuser) {
+        return http.get(`/app/index.aspx?cmd=authen&USN=${usn}&PWD=${pwd}&IsUser=${isuser}`);
+    }
     getListTagService(username, password, memberid) {
         return http.get(`/services/preview.aspx?a=1&USN=${username}&PWD=${password}&cmd=loadOrderService&MemberID=${memberid}&IsMember=1&fromOrderAdd=0`);
     }

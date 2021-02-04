@@ -5,6 +5,7 @@ import { Page, Link, Toolbar } from "framework7-react";
 import UserService from "../../service/user.service";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { setSubscribe } from "../../constants/subscribe";
 
 toast.configure();
 export default class extends React.Component {
@@ -47,7 +48,7 @@ export default class extends React.Component {
           const userData = response.data;
           const token = userData.etoken;
           setUserStorage(token, userData, password);
-
+          setSubscribe(userData, password);
           setTimeout(() => {
             self.$f7.preloader.hide();
             this.$f7router.navigate('/');

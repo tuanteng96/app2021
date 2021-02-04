@@ -7,32 +7,32 @@ export default class ToolBarCustom extends React.Component {
   constructor() {
     super();
     this.state = {
-      currentUrl: ""
-    }
+      currentUrl: "",
+    };
   }
   componentDidMount() {
     this.$f7ready((f7) => {
       const infoUser = getUser();
-      if(infoUser) {
+      if (infoUser) {
         this.setState({
-          infoUser: infoUser
-        })
+          infoUser: infoUser,
+        });
       }
-    })
+    });
   }
 
-  componentDidUpdate(prevProps, prevState){
+  componentDidUpdate(prevProps, prevState) {
     var href = this.$f7.views.main.router.url;
     var $$ = this.Dom7;
     $$(".js-toolbar-link").removeClass("js-active");
-    if(prevState.currentUrl !== href) {
-      $$(".js-toolbar-link").each(function(){
+    if (prevState.currentUrl !== href) {
+      $$(".js-toolbar-link").each(function () {
         const _this = $$(this);
-        const hrefLink = _this.attr('href');
-        if(href === "/") {
+        const hrefLink = _this.attr("href");
+        if (href === "/") {
           $$(".js-link-home").addClass("js-active");
         }
-        if(hrefLink === href) {
+        if (hrefLink === href) {
           _this.addClass("js-active");
         }
       });
@@ -41,6 +41,7 @@ export default class ToolBarCustom extends React.Component {
 
   menuToolbar = () => {
     const ACC_TYPE = this.state.infoUser && this.state.infoUser.acc_type;
+    console.log(ACC_TYPE);
     switch (ACC_TYPE) {
       case "M":
         return (
@@ -65,7 +66,7 @@ export default class ToolBarCustom extends React.Component {
               className="page-toolbar-bottom__link active"
             >
               <div className="page-toolbar-bottom__link-inner">
-                <img src={iconBook} alt="Đặt lịch"/>
+                <img src={iconBook} alt="Đặt lịch" />
                 {/* <i className="las la-calendar-plus"></i> */}
               </div>
             </Link>
@@ -108,7 +109,7 @@ export default class ToolBarCustom extends React.Component {
               className="page-toolbar-bottom__link active"
             >
               <div className="page-toolbar-bottom__link-inner">
-                <img src={iconBook} alt="Đặt lịch"/>
+                <img src={iconBook} alt="Đặt lịch" />
               </div>
             </Link>
             <Link

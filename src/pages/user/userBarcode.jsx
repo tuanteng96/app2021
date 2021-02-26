@@ -107,7 +107,7 @@ export default class extends React.Component {
                     <div className="barcode-qr__box">
                         <div className="barcode-qr__box-text">
                             <i className="las la-camera"></i>
-                            <span>Vui lòng di chuyển máy ảnh của bạn qua màn hình của thiết bị khác</span>
+                            {/* <span>Vui lòng di chuyển máy ảnh của bạn qua màn hình của thiết bị khác</span> */}
                         </div>
                         <Barcode value={code && code} />
                         <div className="line-qr"></div>

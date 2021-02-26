@@ -472,6 +472,12 @@
     }
 }
 
+.cardservice-title.card-book {
+    a {
+        width: 50% !important;
+    }
+}
+
 .chedule-manage {
     position: relative;
     &__lst {
@@ -549,7 +555,7 @@
                     }
                     .service-book {
                         position: relative;
-                        padding-right: 40px;
+                        padding-right: 55px;
                         .service-book__info {
                             .name {
                                 color: $color-gray-app;
@@ -690,10 +696,14 @@
             margin: 0;
             padding: 12px;
             color: $color-app;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 500;
             @include flexbox;
             @include align-items(center);
+            .title {
+                max-width: calc(100% - 75px);
+                @include cut-text();
+            }
             .count {
                 font-size: 12px;
                 padding-left: 5px;
@@ -712,6 +722,8 @@
                 font-size: 14px;
                 font-weight: 400;
                 line-height: 20px;
+                width: calc(100% - 60px);
+                @include cut-text;
             }
             .price {
                 @include flexbox;

@@ -65,26 +65,30 @@ export default class ServiceSpaComponent extends React.Component {
         <div className="service-me__list">
           {isLoading && <ServiceSpaSkeleton />}
           {!isLoading && arrService &&
-            arrService.map((item, index) => (
-              <div
-                className={`item ${
-                  active === item.OrderItemID ? "active" : ""
-                }`}
-                onClick={() => this.handleClick(item)}
-                key={index}
-              >
-                <div className="item-info">
-                  <div className="title">{item.Title}</div>
-                  <div className="desc">{ReactHtmlParser(item.Desc)}</div>
-                </div>
-                <div className="item-image">
-                  <img
-                    src={SERVER_APP + "/Upload/image/" + item.Thumbnail2}
-                    alt={item.Title}
-                  />
-                </div>
-              </div>
-            ))}
+            arrService.map((item, index) => {
+              if (item.IsPublic === 1) {
+                return (
+                  <div
+                    className={`item ${
+                      active === item.OrderItemID ? "active" : ""
+                    }`}
+                    onClick={() => this.handleClick(item)}
+                    key={index}
+                  >
+                    <div className="item-info">
+                      <div className="title">{item.Title}</div>
+                      <div className="desc">{ReactHtmlParser(item.Desc)}</div>
+                    </div>
+                    <div className="item-image">
+                      <img
+                        src={SERVER_APP + "/Upload/image/" + item.Thumbnail2}
+                        alt={item.Title}
+                      />
+                    </div>
+                  </div>
+                );
+              }
+            })}
         </div>
       </div>
     );

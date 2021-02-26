@@ -24,7 +24,7 @@ export default class ServiceCartComponent extends React.Component {
         const data = response.data.data.the;
         const arrData = [];
         data.map((item) => {
-          const Titles = item.Prod.Title;
+          const Titles = item.Prod && item.Prod.Title;
           item.Titles = Titles;
           item.isActive = false;
           arrData.push(item);
@@ -70,6 +70,11 @@ export default class ServiceCartComponent extends React.Component {
     }
   }
 
+  checkNullProd = (prod, service) => {
+    if (prod !== null) return prod;
+    return service;
+  };
+
   render() {
     const { arrCardsv, isLoading } = this.state;
     return (
@@ -78,32 +83,51 @@ export default class ServiceCartComponent extends React.Component {
           {isLoading && <ServiceCartSkeleton />}
           {!isLoading &&
             arrCardsv &&
-            arrCardsv.map((item, index) => (
-              <div
-                className={`item ${item.isActive ? "active" : ""}`}
-                onClick={() => this.handleClick(item)}
-                key={index}
-              >
-                <div className="item-info">
-                  <div className="title">{item.Prod.Title}</div>
-                  <div className="count">
-                    Còn <div className="count-number">{item.total}</div> buổi
-                  </div>
-                  <div className="price">
-                    <div className="price-number">
-                      {formatPriceVietnamese(item.Prod.PriceProduct)}
+            arrCardsv.map((item, index) => {
+              if (item.Prod !== null) {
+                return (
+                  <div
+                    className={`item ${item.isActive ? "active" : ""}`}
+                    onClick={() => this.handleClick(item)}
+                    key={index}
+                  >
+                    <div className="item-info">
+                      <div className="title">
+                        {this.checkNullProd(
+                          item.Prod && item.Prod.Title,
+                          item.Service.Title
+                        )}
+                      </div>
+                      <div className="count">
+                        Còn{" "}
+                        <div className="count-number">
+                          {item.total - item.Done}
+                        </div>
+                        buổi
+                      </div>
+                      <div className="price">
+                        <div className="price-number">
+                          {formatPriceVietnamese(item.OrderItemValue)}
+                        </div>
+                        <div className="price-vnd">VNĐ</div>
+                      </div>
                     </div>
-                    <div className="price-vnd">VNĐ</div>
+                    <div className="item-image">
+                      <img
+                        src={
+                          SERVER_APP +
+                          this.checkNullProd(
+                            item.Prod && item.Prod.Thumbnail_web,
+                            item.Service.Thumbnail_web
+                          )
+                        }
+                        alt={item.Title}
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="item-image">
-                  <img
-                    src={SERVER_APP + item.Prod.Thumbnail_web}
-                    alt={item.Title}
-                  />
-                </div>
-              </div>
-            ))}
+                );
+              }
+            })}
         </div>
       </div>
     );

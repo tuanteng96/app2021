@@ -76,11 +76,11 @@
 }
 
 .btn-reviews {
-    background: #f5f6f8;
-    border: 1px solid #f5f6f8;
+    background: $color-app;
+    border: 1px solid $color-app;
     padding: 12px 0;
     border-radius: 25px;
-    color: #959595;
+    color: $white;
     font-size: 14px;
     outline: none;
 }

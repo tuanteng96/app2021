@@ -109,19 +109,38 @@ export default class extends React.Component {
     });
   };
 
-    handleItem = (id) => {
+  handleItem = (item) => {
+    const id = item.ID;
     const { isCheckAll, isActive } = this.state;
-        if (isCheckAll === true) return;
-      if (isActive !== id) {
-        this.setState({
-          isActive: id,
-        });
-        }
-      else {
+    if (isCheckAll === true) return;
+    if (isActive !== id) {
+      this.setState({
+        isActive: id,
+      });
+    } else {
+      this.setState({
+        isActive: "",
+      });
+    }
+
+    this.handleReaded(item);
+  };
+
+  handleReaded = (item) => {
+    if (item.IsReaded) return false;
+    const id = item.ID;
+    const data = new FormData();
+    data.append("ids", id);
+    UserService.readedNotification(data)
+      .then((response) => {
+        if (response.data) {
           this.setState({
-            isActive: "",
+            isCheckAll: false,
           });
+          this.getNotification();
         }
+      })
+      .catch((er) => console.log(er));
   };
 
   handleDelete = (id) => {
@@ -195,14 +214,15 @@ export default class extends React.Component {
                 arrNoti.map((item, index) => (
                   <li
                     className={
-                      (isActive === item.ID ? "active" : "") +
-                      (item.isChecked === true ? "activeFull" : "")
+                      (isActive === item.ID ? "active " : "") +
+                      (item.isChecked === true ? "activeFull " : "") +
+                      (item.IsReaded === true ? "readed" : "")
                     }
                     key={index}
                   >
                     <div
                       className="action"
-                      onClick={() => this.handleItem(item.ID)}
+                      onClick={() => this.handleItem(item)}
                     >
                       <div className="icon">
                         <div className="icon-box">{this.iconNoti()}</div>
@@ -211,7 +231,8 @@ export default class extends React.Component {
                         <h4>{item.Title}</h4>
                         <div className="text-desc">{item.Body}</div>
                         <div className="text-time">
-                          {moment(item.CreateDate).fromNow()}
+                          {moment(item.CreateDate).fromNow()}{" "}
+                          {item.IsReaded === true ? (<span>- Đã xem</span>) : ("")}
                         </div>
                       </div>
                     </div>
@@ -238,8 +259,8 @@ export default class extends React.Component {
           </div>
         </div>
         {isCheckAll === true ? (
-                <Fab
-                     className="btn-notification-deleteall"
+          <Fab
+            className="btn-notification-deleteall"
             position="left-bottom"
             slot="fixed"
             color="red"

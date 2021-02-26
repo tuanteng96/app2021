@@ -21,6 +21,14 @@ import {
   BlockFooter,
 } from "framework7-react";
 
+import {
+  getUser,
+  getPassword,
+  removeUserStorage,
+  setUserStorage,
+} from "../constants/user";
+import UserService from "../service/user.service";
+
 import routes from "../js/routes";
 
 export default class extends React.Component {
@@ -37,6 +45,21 @@ export default class extends React.Component {
         routes: routes,
         on: {
           init: function () {
+            const infoUser = getUser();
+            if (infoUser) {
+              const pwd = getPassword();
+              UserService.getInfo(infoUser.MobilePhone, pwd)
+                .then((response) => {
+                  if (response.data.error === "REQUIRE_LOGIN") {
+                    removeUserStorage();
+                  }
+                  else {
+                    const data = response.data.info;
+                    setUserStorage(data.etoken, data, pwd);
+                  }
+                }
+              );
+            }
             console.log("Lần đầu mở App");
           },
           pageInit: function () {

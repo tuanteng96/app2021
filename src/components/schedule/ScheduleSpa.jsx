@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Link,
-  Tabs,
-  Tab,
-  Row,
-  Col,
-} from "framework7-react";
+import { Link, Tabs, Tab, Row, Col } from "framework7-react";
 import UserService from "../../service/user.service";
 import { getStockIDStorage, getStockNameStorage } from "../../constants/user";
 import IconLocation from "../../assets/images/location1.svg";
@@ -24,7 +18,7 @@ export default class ScheduleSpa extends React.Component {
       bookDate: "", // Ngày đặt lịch
       timeSelected: "",
       itemBook: {},
-      isLoadingStock: true
+      isLoadingStock: true,
     };
   }
 
@@ -73,7 +67,7 @@ export default class ScheduleSpa extends React.Component {
     const gettoday = moment();
     const arrListDate = [];
     const arrListTime = [];
-    for (let day = 0; day <= 630; day += 15) {
+    for (let day = 0; day <= 815; day += 15) {
       var time = moment("2020-11-05T07:30:00").add(day, "m").format("LT");
       var timeFull = moment("2020-11-05T07:30:00").add(day, "m").format("LTS");
       var item = {
@@ -191,15 +185,11 @@ export default class ScheduleSpa extends React.Component {
   };
 
   handleStock = (item) => {
-    const {
-      bookDate,
-      dateSelected,
-      timeSelected,
-    } = this.state;
+    const { bookDate, dateSelected, timeSelected } = this.state;
     const itemBookNew = {};
     itemBookNew.stock = item.ID;
     itemBookNew.nameStock = item.Title;
-    timeSelected ? itemBookNew.time = timeSelected : "";
+    timeSelected ? (itemBookNew.time = timeSelected) : "";
     itemBookNew.date = dateSelected ? dateSelected : bookDate;
     this.setState({
       StockSelected: item.ID,
@@ -216,23 +206,38 @@ export default class ScheduleSpa extends React.Component {
       StockSelected,
       bookDate,
       dateSelected,
+      timeSelected,
     } = this.state;
     const itemBookNew = {};
     itemBookNew.time = time;
-    itemBookNew.stock = StockSelected ? StockSelected : parseInt(CurrentStockID);
+    itemBookNew.stock = StockSelected
+      ? StockSelected
+      : parseInt(CurrentStockID);
     itemBookNew.date = dateSelected ? dateSelected : bookDate;
     itemBookNew.nameStock = CurrentStockName;
-    this.setState({
-      timeSelected: time,
-      itemBook: itemBookNew,
-    });
-    this.props.handleTime(itemBookNew);
+    if (timeSelected === time) {
+      this.setState({
+        timeSelected: "",
+        itemBook: null,
+      });
+      this.props.handleTime({});
+    } else {
+      this.setState({
+        timeSelected: time,
+        itemBook: itemBookNew,
+      });
+      this.props.handleTime(itemBookNew);
+    }
   };
 
   render() {
-    const { arrListDate, arrStock, timeSelected, isLoadingStock } = this.state;
-    const CurrentStockID =
-      this.state.CurrentStockID && this.state.CurrentStockID;
+    const {
+      arrListDate,
+      arrStock,
+      timeSelected,
+      isLoadingStock,
+      CurrentStockID,
+    } = this.state;
     const settings = {
       className: "slider variable-width",
       dots: false,
@@ -260,13 +265,18 @@ export default class ScheduleSpa extends React.Component {
                       <div
                         className="location-item"
                         onClick={() => this.handleStock(item)}
+                        data-stock={CurrentStockID && CurrentStockID}
+                        data-id={item.ID}
                       >
                         <input
                           id={"location-" + item.ID}
                           type="radio"
                           name="checklocation"
                           value={item.ID}
-                          defaultChecked={parseInt(CurrentStockID) === item.ID}
+                          defaultChecked={
+                            parseInt(CurrentStockID && CurrentStockID) ===
+                            item.ID
+                          }
                         />
                         <label htmlFor={"location-" + item.ID}>
                           {item.Title}

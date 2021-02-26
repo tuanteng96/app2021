@@ -41,7 +41,6 @@ export default class ToolBarCustom extends React.Component {
 
   menuToolbar = () => {
     const ACC_TYPE = this.state.infoUser && this.state.infoUser.acc_type;
-    console.log(ACC_TYPE);
     switch (ACC_TYPE) {
       case "M":
         return (

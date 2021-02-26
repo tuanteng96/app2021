@@ -68,6 +68,9 @@ class UserService {
     deleteNotification(data) {
         return http.post(`/api/v3/noti2/?cmd=clear2`, data);
     }
+    readedNotification(data) {
+        return http.post(`/api/v3/noti2/?cmd=readed2`, data);
+    }
     getOrderAll(memberID) {
         return http.get(`/services/preview.aspx?cmd=search_order&key=kh:${memberID}&getitems=1`);
     }

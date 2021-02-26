@@ -111,6 +111,11 @@ html {
     overflow: inherit;
 }
 
+//Slick
+.slick-slide {
+    height: auto !important;
+}
+
 //rootnotify reset
 .Toastify__close-button {
     width: auto!important;

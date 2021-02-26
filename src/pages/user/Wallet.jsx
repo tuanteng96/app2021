@@ -126,6 +126,10 @@ class MM {
     }
 }
 
+function clone(x) {
+    return JSON.parse(JSON.stringify(x));
+}
+
 export default class extends React.Component {
     constructor() {
         super();
@@ -151,7 +155,7 @@ export default class extends React.Component {
         UserService.getWallet(bodyFormData)
             .then(response => {
                 const arrWallet = response.data.data;
-                var mm = new MM(response.data);
+                var mm = new MM(clone(response.data));
                 this.setState({
                     arrWallet: arrWallet,
                     totalWallet: mm.sumAvai(true), // Ví
@@ -165,67 +169,76 @@ export default class extends React.Component {
     render() {
         const { arrWallet, totalWallet, demonsWallet, depositWallet } = this.state;
         return (
-            <Page noNavbar name="wallet" className="wallet">
-                <div className="profile-bg wallet-bg">
-                    <div className="page-login__back">
-                        <Link onClick={() => this.$f7router.back()}>
-                            <i className="las la-arrow-left"></i>
-                        </Link>
-                    </div>
-                    <div className="name">
-                        Ví điện tử
-                    </div>
-                    <div className="wallet-total">
-                        <span className="number">{formatPriceVietnamese(totalWallet && totalWallet)}</span>
-                        <span className="text">Số dư trong ví</span>
-                    </div>
+          <Page noNavbar name="wallet" className="wallet">
+            <div className="profile-bg wallet-bg">
+              <div className="page-login__back">
+                <Link onClick={() => this.$f7router.back()}>
+                  <i className="las la-arrow-left"></i>
+                </Link>
+              </div>
+              <div className="name">Ví điện tử</div>
+              <div className="wallet-total">
+                <span className="number">
+                  {formatPriceVietnamese(totalWallet && totalWallet)}
+                </span>
+                <span className="text">Số dư trong ví</span>
+              </div>
+            </div>
+            <div className="wallet-detail">
+              <div className="wallet-detail__wrap">
+                <div className="wallet-detail__box">
+                  <Row>
+                    <Col width="50">
+                      <div className="wallet-detail__box-item">
+                        <span className="number">
+                          {formatPriceVietnamese(demonsWallet && demonsWallet)}
+                        </span>
+                        <span className="text">Tiền quỹ</span>
+                      </div>
+                    </Col>
+                    <Col width="50">
+                      <div className="wallet-detail__box-item">
+                        <span className="number">
+                          {formatPriceVietnamese(
+                            depositWallet && depositWallet
+                          )}
+                        </span>
+                        <span className="text">Tiền Đặt Cọc</span>
+                      </div>
+                    </Col>
+                  </Row>
                 </div>
-                <div className="wallet-detail">
-                    <div className="wallet-detail__wrap">
-                        <div className="wallet-detail__box">
-                            <Row>
-                                <Col width="50">
-                                    <div className="wallet-detail__box-item">
-                                        <span className="number">{formatPriceVietnamese(demonsWallet && demonsWallet)}</span>
-                                        <span className="text">Tiền Quỷ</span>
-                                    </div>
-                                </Col>
-                                <Col width="50">
-                                    <div className="wallet-detail__box-item">
-                                        <span className="number">{formatPriceVietnamese(depositWallet && depositWallet)}</span>
-                                        <span className="text">Tiền Đặt Cọc</span>
-                                    </div>
-                                </Col>
-                            </Row>
+              </div>
+            </div>
+            <div className="wallet-history">
+              <h5>Lịch sử giao dịch</h5>
+              <div className="wallet-history__list">
+                <ul>
+                  {arrWallet &&
+                    arrWallet.map((item, index) => (
+                      <li
+                        className={item.Value > 0 ? "add" : "down"}
+                        key={index}
+                      >
+                        <div className="price">
+                          <div className="price-number">
+                            {item.Value > 0 ? "+" : ""}
+                            {formatPriceVietnamese(item.Value)}
+                          </div>
+                          <div className="price-time">
+                            {moment(item.CreateDate).fromNow()}
+                          </div>
                         </div>
-                    </div>
-                </div>
-                <div className="wallet-history">
-                    <h5>Lịch sử giao dịch</h5>
-                    <div className="wallet-history__list">
-                        <ul>
-                            {arrWallet && arrWallet.map((item, index) => (
-                                <li className={item.Value > 0 ? "add" : "down"} key={index}>
-                                    <div className="price">
-                                        <div className="price-number">
-                                            {item.Value > 0 ? "+" : ""}{formatPriceVietnamese(item.Value)}
-                                        </div>
-                                        <div className="price-time">
-                                            {moment(item.CreateDate).fromNow()}
-                                        </div>
-                                    </div>
-                                    <div className="note">
-                                        {item.TypeText}
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </div>
-                <Toolbar tabbar position="bottom">
-                    <ToolBarBottom />
-                </Toolbar>
-            </Page>
+                        <div className="note">{item.TypeText}</div>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            </div>
+            <Toolbar tabbar position="bottom">
+              <ToolBarBottom />
+            </Toolbar>
+          </Page>
         );
     }
 }

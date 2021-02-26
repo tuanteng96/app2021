@@ -7,6 +7,9 @@ class BookDataService {
     postBook(data) {
         return http.post(`/api/v3/bookclient?cmd=book`, data);
     }
+    bookDelete(id) {
+        return http.post(`/api/v3/bookclient?cmd=delete&ids=${id}`)
+    }
 }
 
 export default new BookDataService();

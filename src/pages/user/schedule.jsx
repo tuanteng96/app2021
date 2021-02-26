@@ -146,9 +146,9 @@ export default class extends React.Component {
     if (!infoUser) {
       return false;
     }
-    
+
     const date = itemStepTime.date + " " + itemStepTime.time;
-    
+
     const itemBooksList = [];
     if (itemBooks[0].Prod) {
       itemBooks.map((item, index) => {
@@ -159,33 +159,39 @@ export default class extends React.Component {
         itemBook.date = date;
         itemBooksList.push(itemBook);
       });
-    }
-    else {
-      
+    } else {
       itemBooks.map((item, index) => {
-        console.log(itemStepTime.date);
         const itemBook = {};
         itemBook.stock_id = itemStepTime && itemStepTime.stock;
         itemBook.service_id = item.ServiceID;
         itemBook.desc = serviceNote ? serviceNote : "Không có ghi chú .";
         itemBook.date = date;
-        
-      })
-      
+        itemBooksList.push(itemBook);
+      });
     }
 
     const data = {
       memberid: infoUser.ID,
       books: itemBooksList,
     };
-    console.log(data);
+
     this.setState({
       isLoading: true,
     });
 
     BookDataService.postBook(data)
       .then((response) => {
-        if (response.data.success) {
+        const rt = response.data.data;
+        if (rt.errors) {
+          toast.error(rt.errors[0], {
+            position: toast.POSITION.TOP_LEFT,
+            autoClose: 3000,
+          });
+          this.setState({
+            isLoading: false,
+            sheetOpened: false,
+          });
+        } else {
           setTimeout(() => {
             self.$f7.preloader.hide();
             toast.success("Đặt lịch thành công !", {
@@ -510,7 +516,7 @@ export default class extends React.Component {
                   lstAdvisory.map((item, index) => (
                     <div className="sheet-service-lst__item" key={index}>
                       <h4>
-                        {item.Title}
+                        <div className="title">{item.Title}</div>
                         <div className="count">
                           ( <span>{item.lst && item.lst.length}</span> dịch vụ )
                         </div>

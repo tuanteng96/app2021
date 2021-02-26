@@ -10,10 +10,12 @@ import CartToolBar from "../../components/CartToolBar";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import NotificationIcon from "../../components/NotificationIcon";
 import {
+  getUser,
   setStockIDStorage,
   getStockIDStorage,
   setStockNameStorage,
   getStockNameStorage,
+  removeStockNameStorage,
 } from "../../constants/user";
 import ListService from "./components/Service/ListService";
 import SlideList from "../home/components/BannerSlide/SlideList";
@@ -39,11 +41,23 @@ export default class extends React.Component {
   }
   onPageBeforeIn = () => {
     const getStock = getStockIDStorage();
+    
     UserService.getStock()
       .then((response) => {
+        let indexStock = 0;
         const arrStock = response.data.data.all;
+        
         const countStock = arrStock.length;
         const CurrentStockID = response.data.data.CurrentStockID;
+        if (getStock) {
+          indexStock = arrStock.findIndex(
+            (item) => item.ID === parseInt(getStock)
+          );
+        }
+        const indexCurrentStock = arrStock.findIndex(
+          (item) => item.ID === parseInt(CurrentStockID)
+        );;
+
         if (countStock === 2) {
           const StockID = arrStock.slice(-1)[0].ID;
           const TitleStockID = arrStock.slice(-1)[0].Title;
@@ -51,9 +65,11 @@ export default class extends React.Component {
           setStockNameStorage(TitleStockID);
         }
         setTimeout(() => {
-          if (CurrentStockID === 0 && !getStock && countStock > 2) {
+          if (indexCurrentStock <= 0 && indexStock <= 0 && countStock > 2) {
+            removeStockNameStorage();
             this.setState({
               isOpenStock: true,
+              stockName: null
             });
           }
         }, 500);
@@ -66,6 +82,23 @@ export default class extends React.Component {
       isOpenStock: !this.state.isOpenStock,
     });
   };
+
+  userHTML = () => {
+    if (!getUser()) {
+      return (
+        <Link href="/login/" noLinkClass>
+          <FaRegUser />
+        </Link>
+      )
+    }
+    else {
+      return (
+        <Link href="/profile/" noLinkClass>
+          <FaRegUser />
+        </Link>
+      )
+    }
+  }
 
   nameStock = (name) => {
     this.setState({
@@ -104,9 +137,7 @@ export default class extends React.Component {
                     <div className="menu">
                       <CartToolBar />
                       <NotificationIcon />
-                      <Link href="" noLinkClass>
-                        <FaRegUser />
-                      </Link>
+                      {this.userHTML()}
                     </div>
                   </div>
                 </div>

@@ -2,7 +2,7 @@ import { Col, Row } from "framework7-react";
 import React from "react";
 import Skeleton from "react-loading-skeleton";
 
-export default class SkeletonSchedulesManage extends React.Component {
+export default class SkeletonCardScheduling extends React.Component {
   constructor() {
     super();
     this.state = {};

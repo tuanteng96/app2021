@@ -19,6 +19,7 @@ export default class ScheduleSpa extends React.Component {
       timeSelected: "",
       itemBook: {},
       isLoadingStock: true,
+      isActive: 0,
     };
   }
 
@@ -230,6 +231,12 @@ export default class ScheduleSpa extends React.Component {
     }
   };
 
+  handleTab = (index) => {
+    this.setState({
+      isActive: index
+    })
+  }
+
   render() {
     const {
       arrListDate,
@@ -237,7 +244,9 @@ export default class ScheduleSpa extends React.Component {
       timeSelected,
       isLoadingStock,
       CurrentStockID,
+      isActive,
     } = this.state;
+
     const settings = {
       className: "slider variable-width",
       dots: false,
@@ -265,8 +274,6 @@ export default class ScheduleSpa extends React.Component {
                       <div
                         className="location-item"
                         onClick={() => this.handleStock(item)}
-                        data-stock={CurrentStockID && CurrentStockID}
-                        data-id={item.ID}
                       >
                         <input
                           id={"location-" + item.ID}
@@ -296,23 +303,33 @@ export default class ScheduleSpa extends React.Component {
           <div className="page-schedule__date">
             <Row>
               {arrListDate &&
-                arrListDate.map((item, index) => (
-                  <Col width="33" key={index}>
-                    <Link
-                      noLinkClass
-                      tabLink={"#tab-" + item.name}
-                      tabLinkActive={index === 0 ? true : false}
-                    >
-                      <input
-                        type="radio"
-                        onChange={this.onDateChanged}
-                        name="checkdate"
-                        value={item.date}
-                      />
-                      <span>{item.dateFormat}</span>
-                    </Link>
-                  </Col>
-                ))}
+                arrListDate.map((item, index) => {
+                  return (
+                    <Col width="33" key={index}>
+                      <Link
+                        noLinkClass
+                        tabLink={"#tab-" + item.name}
+                        tabLinkActive={isActive === index ? true : false}
+                        onClick={() => this.handleTab(index)}
+                      >
+                        <input
+                          type="radio"
+                          onChange={this.onDateChanged}
+                          name="checkdate"
+                          value={item.date}
+                          is-index={isActive}
+                        />
+                        <span
+                          className={isActive === index ? "active" : ""}
+                          is-active={isActive}
+                          is-index={index}
+                        >
+                          {item.dateFormat}
+                        </span>
+                      </Link>
+                    </Col>
+                  );
+                })}
             </Row>
           </div>
           <div className="page-schedule__note">
@@ -336,7 +353,7 @@ export default class ScheduleSpa extends React.Component {
                   key={index}
                   id={"tab-" + item.name}
                   className="page-tab-location"
-                  tabActive={index === 0 ? true : false}
+                  tabActive={isActive === index ? true : false}
                 >
                   <div className="page-schedule__time-list">
                     <Slider {...settings}>

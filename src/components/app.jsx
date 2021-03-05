@@ -105,6 +105,7 @@ export default class extends React.Component {
   };
 
   componentDidMount() {
+    
     var $$ = this.Dom7;
     $$("#preload").remove();
 

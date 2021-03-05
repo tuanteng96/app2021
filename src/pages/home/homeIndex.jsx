@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import bgHeaderTop from "../../assets/images/bg-header-home.png";
-import { Page, Link, Toolbar, Row, Col } from "framework7-react";
+import { Page, Link, Toolbar} from "framework7-react";
 import UserService from "../../service/user.service";
 import IconSearch from "../../assets/images/icon-search.png";
 import { FaRegUser, FaMapMarkerAlt, FaChevronDown } from "react-icons/fa";

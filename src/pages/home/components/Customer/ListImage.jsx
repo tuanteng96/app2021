@@ -1,8 +1,8 @@
 import React from "react";
 import NewsDataService from "../../../../service/news.service";
-import ReactCompareImage from "react-compare-image";
 import Slider from "react-slick";
 import { SERVER_APP } from "../../../../constants/config";
+import BeforeAfterSlider from "react-before-after-slider";
 import SkeletonCustomer from "../Customer/SkeletonCustomer";
 import { FaCheck } from "react-icons/fa";
 
@@ -42,6 +42,11 @@ export default class ListImage extends React.Component {
     });
   };
 
+  handStyleWidth = () => {
+    const _width = this.state.width - 30;
+    return _width;
+  };
+
   handlePhotoCustomer = (item) => {
     this.setState({
       isLoadPhoto: false,
@@ -79,13 +84,16 @@ export default class ListImage extends React.Component {
         {!isLoading && (
           <React.Fragment>
             <div className="box">
-              <ReactCompareImage
-                leftImage={`${SERVER_APP}/Upload/image/${
+              <BeforeAfterSlider
+                before={`${SERVER_APP}/Upload/image/${
                   PhotoCustomerActive && PhotoCustomerActive.FileName2
                 }`}
-                rightImage={`${SERVER_APP}/Upload/image/${
+                after={`${SERVER_APP}/Upload/image/${
                   PhotoCustomerActive && PhotoCustomerActive.FileName
                 }`}
+                className="box-beforeafter"
+                width={this.handStyleWidth()}
+                height={230}
               />
             </div>
             <div className="note">

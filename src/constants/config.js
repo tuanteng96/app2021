@@ -1,1 +1,1 @@
-export const SERVER_APP = "https://cser.vn"
+export const SERVER_APP = "https://cbeautyclinic.vn"

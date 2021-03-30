@@ -38,7 +38,7 @@ export default class extends React.Component {
     this.state = {
       // Framework7 Parameters
       f7params: {
-        name: "Cser Beauty", // App name
+        name: "C Beauty Clinic", // App name
         theme: "auto", // Automatic theme detection
         id: "vn.cser",
         // App routes

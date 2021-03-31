@@ -8,7 +8,7 @@ class UserService {
         return http.get(`/app/index.aspx?Fn=${fullname}&Phone=${phone}&NewPWD=${password}&cmd=reg&ByStock=${stock}&USN=${phone}`);
     }
     getInfo(username, password) {
-        return http.get(`/app/index.aspx?cmd=getInfo&USN=${username}&PWD=${password}`)
+        return http.get(`/app/index.aspx?cmd=authen&USN=${username}&PWD=${password}`)
     }
     getSubscribe(usn, pwd, isuser) {
         return http.get(`/app/index.aspx?cmd=authen&USN=${usn}&PWD=${pwd}&IsUser=${isuser}`);

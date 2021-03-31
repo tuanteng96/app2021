@@ -17,20 +17,22 @@ export default class extends React.Component {
     constructor() {
         super();
         this.state = {
-            memberInfo: []
+            memberInfo: {},
+            isLoading: true,
         };
     }
     componentDidMount() {
         const infoUser = getUser();
         if (!infoUser) return false;
-        const username = infoUser.MobilePhone;
+        const username = infoUser.MobilePhone ? infoUser.MobilePhone : infoUser.UserName;
         const password = getPassword();
         UserService.getInfo(username, password)
             .then(response => {
-                const memberInfo = response.data.info;
+                const memberInfo = response.data;
                 this.setState({
-                    memberInfo: memberInfo
-                })
+                  memberInfo: memberInfo,
+                  isLoading: false,
+                });
             })
             .catch(err => console.log(err))
 
@@ -43,123 +45,149 @@ export default class extends React.Component {
             $$this.$f7router.navigate("/");
         });
     }
+
+    checkMember = (memberInfo) => {
+        if (!memberInfo) return false;
+        if (memberInfo.acc_type === "M") {
+            return memberInfo.acc_group > 0
+              ? memberInfo.MemberGroups[0].Title
+              : "Thành viên";
+        }
+        if (memberInfo.ID === 1) {
+          return "ADMIN";
+        }
+        if (memberInfo.acc_type === "U" && memberInfo.GroupTitles.length > 0) {
+          return memberInfo.GroupTitles.join(", ");
+        }
+    }
+
     render() {
-        const member = this.state.memberInfo && this.state.memberInfo;
+        const { memberInfo, isLoading } = this.state;
         return (
-            <Page name="profile" noNavbar>
-                <div className="profile-bg">
-                    <div className="page-login__back">
-                        <Link onClick={() => this.$f7router.back()}>
-                            <i className="las la-arrow-left"></i>
-                        </Link>
-                    </div>
-                    <div className="name">
-                        {member.FullName}
-                    </div>
-                    <div className="profile-bg__logout">
-                        <Link onClick={() => this.signOut()}>
-                            <i className="las la-sign-out-alt"></i>
-                        </Link>
-                    </div>
-                    <img src={bgImage} />
-                </div>
-                <div className="profile-info">
-                    <div className="profile-info__avatar">
-                        {
-                            member.length === 0 || member === undefined ? (
-                                <Skeleton circle={true} height={90} width={90} />
-                            ) : (
-                                    <img src={checkAvt(member.Photo)} />
-                                )}
+          <Page name="profile" noNavbar>
+            <div className="profile-bg">
+              <div className="page-login__back">
+                <Link onClick={() => this.$f7router.back()}>
+                  <i className="las la-arrow-left"></i>
+                </Link>
+              </div>
+              <div className="name">{memberInfo && memberInfo.FullName}</div>
+              <div className="profile-bg__logout">
+                <Link onClick={() => this.signOut()}>
+                  <i className="las la-sign-out-alt"></i>
+                </Link>
+              </div>
+              <img src={bgImage} />
+            </div>
+            <div className="profile-info">
+              <div className="profile-info__avatar">
+                {isLoading ? (
+                  <Skeleton circle={true} height={90} width={90} />
+                ) : (
+                  <img src={checkAvt(memberInfo && memberInfo.Photo)} />
+                )}
 
-                        <Link noLinkClass href="/detail-profile/"><i className="las la-pen"></i></Link>
-                    </div>
-                    {
-                        member.length === 0 || member === undefined ? (
-                            <div className="profile-info__basic">
-                                <div className="name"><Skeleton width={100} count={1} /></div>
-                                <div className="group"><Skeleton width={120} count={1} /></div>
-                            </div>
-                        ) : (
-                                <div className="profile-info__basic">
-                                    <div className="name">{member.FullName}</div>
-                                    <div className="group">{member.acc_group > 0 ? (member.MemberGroups[0].Title) : "Thành viên"}</div>
-                                </div>
-                            )}
+                <Link noLinkClass href="/detail-profile/">
+                  <i className="las la-pen"></i>
+                </Link>
+              </div>
+              {isLoading ? (
+                <div className="profile-info__basic">
+                  <div className="name">
+                    <Skeleton width={100} count={1} />
+                  </div>
+                  <div className="group">
+                    <Skeleton width={120} count={1} />
+                  </div>
+                </div>
+              ) : (
+                <div className="profile-info__basic">
+                  <div className="name">
+                    {memberInfo && memberInfo.FullName}
+                  </div>
+                  <div className="group">
+                    {this.checkMember(memberInfo && memberInfo)}
+                  </div>
+                </div>
+              )}
 
-                    <div className="profile-info__shortcuts">
-                        <div className="profile-info__shortcut">
-                            <Row>
-                                <Col width="50">
-                                    <div className="profile-info__shortcut-item">
-                                        <Link noLinkClass href="/detail-profile/">Thông tin cá nhân</Link>
-                                    </div>
-                                </Col>
-                                <Col width="50">
-                                    <div className="profile-info__shortcut-item">
-                                        <Link noLinkClass href="/barcode/">Check In</Link>
-                                    </div>
-                                </Col>
-                            </Row>
-                        </div>
+              <div className="profile-info__shortcuts">
+                <div className="profile-info__shortcut">
+                  <Row>
+                    <Col width="50">
+                      <div className="profile-info__shortcut-item">
+                        <Link noLinkClass href="/detail-profile/">
+                          Thông tin cá nhân
+                        </Link>
+                      </div>
+                    </Col>
+                    <Col width="50">
+                      <div className="profile-info__shortcut-item">
+                        <Link noLinkClass href="/barcode/">
+                          Check In
+                        </Link>
+                      </div>
+                    </Col>
+                  </Row>
+                </div>
+              </div>
+            </div>
+            <div className="profile-function">
+              <Row>
+                <Col width="33">
+                  <Link noLinkClass href="/wallet/">
+                    <div className="image">
+                      <img src={imgWallet} />
                     </div>
-                </div>
-                <div className="profile-function">
-                    <Row>
-                        <Col width="33">
-                            <Link noLinkClass href="/wallet/">
-                                <div className="image">
-                                    <img src={imgWallet} />
-                                </div>
-                                <span>Ví điện tử</span>
-                            </Link>
-                        </Col>
-                        <Col width="33">
-                            <Link noLinkClass href="/diary/">
-                                <div className="image">
-                                    <img src={imgDiary} />
-                                </div>
-                                <span>Nhật ký</span>
-                            </Link>
-                        </Col>
-                        <Col width="33">
-                            <Link noLinkClass href="/order/">
-                                <div className="image">
-                                    <img src={imgOrder} />
-                                </div>
-                                <span>Đơn hàng</span>
-                            </Link>
-                        </Col>
-                        <Col width="33">
-                            <Link noLinkClass href="/voucher/">
-                                <div className="image">
-                                    <img src={imgCoupon} />
-                                </div>
-                                <span>Mã giảm giá</span>
-                            </Link>
-                        </Col>
-                        <Col width="33">
-                            <Link noLinkClass href="/rating/">
-                                <div className="image">
-                                    <img src={imgEvaluate} />
-                                </div>
-                                <span>Đánh giá</span>
-                            </Link>
-                        </Col>
-                        <Col width="33">
-                            <Link noLinkClass href="/maps/">
-                                <div className="image">
-                                    <img src={imgLocation} />
-                                </div>
-                                <span>Liên hệ</span>
-                            </Link>
-                        </Col>
-                    </Row>
-                </div>
-                <Toolbar tabbar position="bottom">
-                    <ToolBarBottom />
-                </Toolbar>
-            </Page>
-        )
+                    <span>Ví điện tử</span>
+                  </Link>
+                </Col>
+                <Col width="33">
+                  <Link noLinkClass href="/diary/">
+                    <div className="image">
+                      <img src={imgDiary} />
+                    </div>
+                    <span>Nhật ký</span>
+                  </Link>
+                </Col>
+                <Col width="33">
+                  <Link noLinkClass href="/order/">
+                    <div className="image">
+                      <img src={imgOrder} />
+                    </div>
+                    <span>Đơn hàng</span>
+                  </Link>
+                </Col>
+                <Col width="33">
+                  <Link noLinkClass href="/voucher/">
+                    <div className="image">
+                      <img src={imgCoupon} />
+                    </div>
+                    <span>Mã giảm giá</span>
+                  </Link>
+                </Col>
+                <Col width="33">
+                  <Link noLinkClass href="/rating/">
+                    <div className="image">
+                      <img src={imgEvaluate} />
+                    </div>
+                    <span>Đánh giá</span>
+                  </Link>
+                </Col>
+                <Col width="33">
+                  <Link noLinkClass href="/maps/">
+                    <div className="image">
+                      <img src={imgLocation} />
+                    </div>
+                    <span>Liên hệ</span>
+                  </Link>
+                </Col>
+              </Row>
+            </div>
+            <Toolbar tabbar position="bottom">
+              <ToolBarBottom />
+            </Toolbar>
+          </Page>
+        );
     }
 }

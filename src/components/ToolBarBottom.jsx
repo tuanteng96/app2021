@@ -51,7 +51,6 @@ export default class ToolBarCustom extends React.Component {
 
   menuToolbar = () => {
     const TYPE = checkRole();
-
     switch (TYPE) {
       case "STAFF":
         return (
@@ -102,35 +101,6 @@ export default class ToolBarCustom extends React.Component {
             />
           </React.Fragment>
         );
-      case "Service":
-        return (
-          <React.Fragment>
-            <Link
-              noLinkClass
-              href="/employee/service/"
-              className={`page-toolbar-bottom__link js-toolbar-link js-link-home ${TYPE}`}
-            >
-              <i className="las la-hand-holding-heart"></i>
-              <span>Dịch vụ</span>
-            </Link>
-            <Link
-              noLinkClass
-              href="/employee/statistical/"
-              className={`page-toolbar-bottom__link js-toolbar-link ${TYPE}`}
-            >
-              <i className="las la-piggy-bank"></i>
-              <span>Thống kê</span>
-            </Link>
-            <Link
-              noLinkClass
-              href="/profile/"
-              className={`page-toolbar-bottom__link js-toolbar-link ${TYPE}`}
-            >
-              <i className="las la-user-circle"></i>
-              <span>Tài khoản</span>
-            </Link>
-          </React.Fragment>
-        );
       case "ADMIN":
         return (
           <React.Fragment>
@@ -141,27 +111,6 @@ export default class ToolBarCustom extends React.Component {
             >
               <i className="las la-chart-bar"></i>
               <span>Báo cáo</span>
-            </Link>
-            <Link
-              noLinkClass
-              href="/profile/"
-              className={`page-toolbar-bottom__link js-toolbar-link ${TYPE}`}
-            >
-              <i className="las la-user-circle"></i>
-              <span>Tài khoản</span>
-            </Link>
-          </React.Fragment>
-        );
-      case "Employee":
-        return (
-          <React.Fragment>
-            <Link
-              noLinkClass
-              href="/employee/statistical/"
-              className={`page-toolbar-bottom__link js-toolbar-link js-link-home ${TYPE}`}
-            >
-              <i className="las la-piggy-bank"></i>
-              <span>Thống kê</span>
             </Link>
             <Link
               noLinkClass

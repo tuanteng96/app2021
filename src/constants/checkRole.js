@@ -22,13 +22,6 @@ export const checkRole = () => {
             return "ADMIN";
         } else {
             return "STAFF"
-                //const groupRole = infoUser.GroupTitles;
-
-            // const hasRole = Role.some(role => groupRole.includes(role));
-            // console.log(hasRole);
-
-            //const isRole = groupRole.includes("service");
-            //return isRole ? "Service" : "Employee";
         }
     }
     return null;

@@ -27,6 +27,7 @@ import { VscChromeClose, VscCloudUpload } from "react-icons/vsc";
 import { TiCameraOutline } from "react-icons/ti";
 import SkeletonDetail from "./skeleton/SkeletonDetail";
 import { app21 } from "./../../../constants/app21";
+import { PHOTO_TO_SERVER } from "../../../constants/prom21";
 
 toast.configure();
 
@@ -266,7 +267,6 @@ export default class employeeServiceDetail extends React.Component {
   };
 
   handleDeleteImage = (item) => {
-    console.log(item);
     const iddelete = {
       delete: item.id,
     };
@@ -290,52 +290,71 @@ export default class employeeServiceDetail extends React.Component {
   };
 
   handleCamera = () => {
-    const promParam = {
-      maxwidth: 5000,
-      maxheight: 5000,
-      ext: "png",
-      pref: "IMG",
-    };
-    app21
-      .prom("CAMERA", promParam)
-      .then((s) => {
-        app21
-          .prom(
-            "POST_TO_SERVER",
-            JSON.stringify({
-              server: SERVER_APP + "/api/v3/file?cmd=upload&autn=AAAA",
-              path: s.data,
-              // token: 'neu_co',
-            })
-          )
-          .then((s1) => {
-            var rs = s1.data; // path
-            f7.dialog.preloader(rs);
-            (async () => {
-              const formData = new FormData();
-              formData.append("file", rs);
-              f7.dialog.preloader("Đang Upload...");
-              try {
-                const upload = await staffService.uploadImageStaff(formData);
-                const src = upload.data.data;
-                const updateImage = await this.updateImageServer(src);
-                await new Promise((resolve) => setTimeout(resolve, 1000));
-                const getImage = await this.getImageStaff();
-                setTimeout(() => {
-                  f7.dialog.close();
-                }, 1000);
-              } catch (error) {
-                console.log(error);
-              }
-            });
-          })
-          .catch((f1) => {
-            console.log(f1);
-          });
+    PHOTO_TO_SERVER()
+      .then((rs) => {
+        f7.dialog.preloader("Đang Upload...");
+        const upload = async () => {
+          try {
+            const updateImage = await this.updateImageServer(rs.data);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            const getImage = await this.getImageStaff();
+            setTimeout(() => {
+              f7.dialog.close();
+            }, 1000);
+          } catch (error) {
+            console.log(error);
+          }
+        };
+        upload();
       })
-      .catch((f) => {
-        console.log("app_camera->CAMERA->error", f);
-      });
+      .catch((z) => console.log("aaa Error:", z));
+
+    // const promParam = {
+    //   maxwidth: 5000,
+    //   maxheight: 5000,
+    //   ext: "png",
+    //   pref: "IMG",
+    // };
+    // app21
+    //   .prom("CAMERA", promParam)
+    //   .then((s) => {
+    //     app21
+    //       .prom(
+    //         "POST_TO_SERVER",
+    //         JSON.stringify({
+    //           server: SERVER_APP + "/api/v3/file?cmd=upload&autn=AAAA",
+    //           path: s.data,
+    //           // token: 'neu_co',
+    //         })
+    //       )
+    //       .then((s1) => {
+    //         var rs = s1.data; // path
+    //         f7.dialog.preloader(rs);
+    //         (async () => {
+    //           const formData = new FormData();
+    //           formData.append("file", rs);
+    //           f7.dialog.preloader("Đang Upload...");
+    //           try {
+    //             const upload = await staffService.uploadImageStaff(formData);
+    //             const src = upload.data.data;
+    //             const updateImage = await this.updateImageServer(src);
+    //             await new Promise((resolve) => setTimeout(resolve, 1000));
+    //             const getImage = await this.getImageStaff();
+    //             setTimeout(() => {
+    //               f7.dialog.close();
+    //             }, 1000);
+    //           } catch (error) {
+    //             console.log(error);
+    //           }
+    //         });
+    //       })
+    //       .catch((f1) => {
+    //         console.log(f1);
+    //       });
+    //   })
+    //   .catch((f) => {
+    //     console.log("app_camera->CAMERA->error", f);
+    //   });
   };
 
   render() {

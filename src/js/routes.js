@@ -41,6 +41,7 @@ import EmployeeServiceSchedulePage from "../pages/employee/timeKeeping/employeeS
 import EmployeeStatisticalPage from "../pages/employee/statistical/employeeStatistical";
 import EmployeeReportPage from "../pages/employee/report/employeeReport";
 
+import SearchPage from "../pages/search/index";
 import NotFoundPage from '../pages/404.jsx';
 import { getUser } from "../constants/user";
 
@@ -55,7 +56,9 @@ function checkAuth(to, from, resolve, reject) {
 }
 
 const checkRouterHome = () => {
+
     const infoUser = getUser();
+
     const ACC_TYPE = infoUser && infoUser.acc_type;
     if (ACC_TYPE === "M") {
         return HomeIndex;
@@ -294,6 +297,10 @@ var routes = [{
         options: {
             transition: 'f7-cover',
         }
+    },
+    {
+        path: '/search/', // Thống kê
+        asyncComponent: () => SearchPage,
     },
     {
         path: '(.*)',

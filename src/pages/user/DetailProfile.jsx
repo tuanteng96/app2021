@@ -16,6 +16,7 @@ import UserService from "../../service/user.service";
 import DatePicker from "react-mobile-datepicker";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { NAME_APP, VERSION_APP } from "../../constants/config";
 export default class extends React.Component {
   constructor() {
     super();
@@ -50,11 +51,19 @@ export default class extends React.Component {
   };
   signOut = () => {
     const $$this = this;
-    $$this.$f7.dialog.confirm("Bạn muống đăng xuất khỏi tài khoản ?", () => {
-      localStorage.clear();
-      app_request("unsubscribe", "");
-      $$this.$f7router.navigate("/");
-    });
+    $$this.$f7.dialog.confirm(
+      "Bạn muống đăng xuất khỏi tài khoản ?",
+      async () => {
+        f7.dialog.preloader(`Đăng xuất ...`);
+        app_request("unsubscribe", "");
+        const clearLocal = await localStorage.clear();
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        f7.dialog.close();
+        $$this.$f7router.navigate("/", {
+          reloadCurrent: true,
+        });
+      }
+    );
   };
 
   handleClickBirthday = () => {
@@ -259,7 +268,9 @@ export default class extends React.Component {
               <div className="name">Địa chỉ</div>
               <div className="content">
                 <div className="content-text">
-                  {memberInfo && memberInfo.HomeAddress ? memberInfo.HomeAddress : "Chưa cập nhập"}
+                  {memberInfo && memberInfo.HomeAddress
+                    ? memberInfo.HomeAddress
+                    : "Chưa cập nhập"}
                 </div>
               </div>
             </div>
@@ -296,7 +307,7 @@ export default class extends React.Component {
             <div className="line-logout"></div>
           </div>
           <div className="page-detail-profile__footer">
-            <div className="text">Cser Beauty 1.0.0</div>
+            <div className="text">{`${NAME_APP} ${VERSION_APP}`}</div>
             <button
               type="button"
               className="btn-signout"

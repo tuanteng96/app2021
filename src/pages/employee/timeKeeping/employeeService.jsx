@@ -33,9 +33,11 @@ export default class employeeService extends React.Component {
       loadingSubmit: false,
       sheetOpened: false,
       messageForce: false,
+      showPreloader: false,
       keyword: "",
       startDate: "",
       endDate: "",
+      arrDefaultDate: [],
     };
   }
 
@@ -121,6 +123,7 @@ export default class employeeService extends React.Component {
     this.setState({
       startDate: moment(start).format("DD/MM/YYYY"),
       endDate: moment(end).format("DD/MM/YYYY"),
+      arrDefaultDate: evt,
     });
   };
 
@@ -148,14 +151,6 @@ export default class employeeService extends React.Component {
       loadingSubmit: true,
       isLoading: true,
     });
-
-    if (!keyword && !startDate) {
-      this.setState({
-        messageForce: true,
-        loadingSubmit: false,
-      });
-      return false;
-    }
     const formData = {
       cmd: "member_sevice",
       IsManager: 1,
@@ -177,6 +172,27 @@ export default class employeeService extends React.Component {
     });
   };
 
+  async loadRefresh(done) {
+
+    const { startDate, endDate, keyword } = this.state;
+    const formData = {
+      cmd: "member_sevice",
+      IsManager: 1,
+      IsService: 1,
+      MemberIDs: "",
+      srv_status: "book,wait_book,wait,doing,done,cancel",
+      srv_from: startDate || moment().format("l"),
+      srv_to: endDate || moment().format("l"),
+      key: keyword || "",
+      ps: 1000,
+    };
+
+    await this.getService(formData);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    done();
+
+  }
+
   render() {
     const {
       arrService,
@@ -184,9 +200,15 @@ export default class employeeService extends React.Component {
       loadingSubmit,
       sheetOpened,
       messageForce,
+      arrDefaultDate,
     } = this.state;
     return (
-      <Page name="employee-service">
+      <Page
+        name="employee-service"
+        onPtrRefresh={this.loadRefresh.bind(this)}
+        ptr
+        infiniteDistance={50}
+      >
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
@@ -210,74 +232,71 @@ export default class employeeService extends React.Component {
         <div className="page-render employee-service p-0">
           <div className="employee-service__list">
             {isLoading && <SkeletonService />}
-            {!isLoading &&
-              arrService && (
-                <>
-                  {arrService.length > 0 ? (
-                    arrService.map((item, index) => (
-                      <div key={index}>
-                        <div className="item">
-                          <h3>
-                            {this.checkStatus(item.Status)}
-                            {item.Title}
-                          </h3>
-                          <ul>
-                            <li>
-                              <span>Khách hàng : </span>
-                              <span>{item.member.FullName}</span>
-                            </li>
-                            <li>
-                              <span>Ngày đặt lịch : </span>
-                              <span>{moment(item.BookDate).format("L")}</span>
-                            </li>
-                            <li>
-                              <span>Giờ đặt lịch : </span>
-                              <span>{moment(item.BookDate).format("LT")}</span>
-                            </li>
-                            <li>
-                              <span>Số phút : </span>
-                              <span>{item.Minutes}p/Ca</span>
-                            </li>
-                          </ul>
-                          <Button
-                            noClassName
-                            raised={true}
-                            actionsOpen={`#actions-group-${item.ID}`}
-                          ></Button>
-                        </div>
-                        <Actions
-                          className="actions-custom"
-                          id={`actions-group-${item.ID}`}
-                        >
-                          <ActionsGroup>
-                            <ActionsLabel>{item.Title}</ActionsLabel>
-                            <ActionsButton
-                              onClick={() => this.handleDetail(item)}
-                            >
-                              Xem chi tiết
-                            </ActionsButton>
-                            <ActionsButton
-                              onClick={() => this.handleDiary(item)}
-                            >
-                              Nhật ký
-                            </ActionsButton>
-                            <ActionsButton
-                              onClick={() => this.handleSchedule(item)}
-                            >
-                              Lịch trình
-                            </ActionsButton>
-                          </ActionsGroup>
-                          <ActionsGroup>
-                            <ActionsButton color="red">Đóng</ActionsButton>
-                          </ActionsGroup>
-                        </Actions>
+            {!isLoading && arrService && (
+              <>
+                {arrService.length > 0 ? (
+                  arrService.map((item, index) => (
+                    <div key={index}>
+                      <div className="item">
+                        <h3>
+                          {this.checkStatus(item.Status)}
+                          {item.Title}
+                        </h3>
+                        <ul>
+                          <li>
+                            <span>Khách hàng : </span>
+                            <span>{item.member.FullName}</span>
+                          </li>
+                          <li>
+                            <span>Ngày đặt lịch : </span>
+                            <span>{moment(item.BookDate).format("L")}</span>
+                          </li>
+                          <li>
+                            <span>Giờ đặt lịch : </span>
+                            <span>{moment(item.BookDate).format("LT")}</span>
+                          </li>
+                          <li>
+                            <span>Số phút : </span>
+                            <span>{item.Minutes}p/Ca</span>
+                          </li>
+                        </ul>
+                        <Button
+                          noClassName
+                          raised={true}
+                          actionsOpen={`#actions-group-${item.ID}`}
+                        ></Button>
                       </div>
-                    ))
-                  ) : (
-                    <PageNoData text="Bạn không có lịch dịch vụ !" />
-                  )}
-                </>
-              )}
+                      <Actions
+                        className="actions-custom"
+                        id={`actions-group-${item.ID}`}
+                      >
+                        <ActionsGroup>
+                          <ActionsLabel>{item.Title}</ActionsLabel>
+                          <ActionsButton
+                            onClick={() => this.handleDetail(item)}
+                          >
+                            Xem chi tiết
+                          </ActionsButton>
+                          <ActionsButton onClick={() => this.handleDiary(item)}>
+                            Nhật ký
+                          </ActionsButton>
+                          <ActionsButton
+                            onClick={() => this.handleSchedule(item)}
+                          >
+                            Lịch trình
+                          </ActionsButton>
+                        </ActionsGroup>
+                        <ActionsGroup>
+                          <ActionsButton color="red">Đóng</ActionsButton>
+                        </ActionsGroup>
+                      </Actions>
+                    </div>
+                  ))
+                ) : (
+                  <PageNoData text="Bạn không có lịch dịch vụ !" />
+                )}
+              </>
+            )}
           </div>
         </div>
 
@@ -310,6 +329,7 @@ export default class employeeService extends React.Component {
                       label="Chọn ngày"
                       type="datepicker"
                       placeholder="Ngày bắt đầu - Ngày kết thúc"
+                      value={arrDefaultDate}
                       readonly
                       calendarParams={{
                         dateFormat: "dd/mm/yyyy",
@@ -317,6 +337,7 @@ export default class employeeService extends React.Component {
                         footer: true,
                         toolbarCloseText: "Xác nhận",
                       }}
+                      clearButton
                       onCalendarChange={this.onChangeDateS}
                     />
                   </ul>

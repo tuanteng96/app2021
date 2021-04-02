@@ -23,10 +23,10 @@ export default class employeeServiceSchedule extends React.Component {
   }
 
   componentDidMount() {
-    this.getNotificationStaff();
+    this.getScheduleStaff();
   }
 
-  getNotificationStaff = () => {
+  getScheduleStaff = () => {
     if (!getUser()) return false;
     const infoMember = getUser();
     const user = {
@@ -70,10 +70,24 @@ export default class employeeServiceSchedule extends React.Component {
     }
   };
 
+  async loadRefresh(done) {
+    await this.getScheduleStaff();
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    this.setState({
+      showPreloader: true,
+    });
+    done();
+  }
+
   render() {
     const { arrBook } = this.state;
     return (
-      <Page name="employee-diary">
+      <Page
+        name="employee-diary"
+        onPtrRefresh={this.loadRefresh.bind(this)}
+        ptr
+        infiniteDistance={50}
+      >
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
@@ -83,7 +97,8 @@ export default class employeeServiceSchedule extends React.Component {
             </div>
             <div className="page-navbar__title">
               <span className="title">
-                Lịch trình {arrBook && arrBook.length > 0 && `(${arrBook.length})`}
+                Lịch trình{" "}
+                {arrBook && arrBook.length > 0 && `(${arrBook.length})`}
               </span>
             </div>
             <div className="page-navbar__noti">
@@ -100,15 +115,14 @@ export default class employeeServiceSchedule extends React.Component {
                   className={item.Status ? item.Status : "unfulfilled"}
                 >
                   <div className="status">
-                    <div className="time">
-                      {moment(item.CreateDate).fromNow()}
-                    </div>
+                    {item.BookDate && (
+                      <div className="time">
+                        {moment(item.BookDate).format("LLL")}
+                      </div>
+                    )}
                     {this.checkStatus(item.Status)}
                   </div>
                   <div className="content">{item.Title}</div>
-                  <div className="times">
-                    Số phút :<span>{item.Minutes}p/Ca</span>
-                  </div>
                 </li>
               ))}
             </ul>

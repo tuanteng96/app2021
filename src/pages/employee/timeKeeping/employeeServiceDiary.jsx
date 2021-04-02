@@ -2,7 +2,8 @@ import React from "react";
 import { Link, Navbar, Page, Sheet, Toolbar } from "framework7-react";
 import NotificationIcon from "../../../components/NotificationIcon";
 import PageNoData from "../../../components/PageNoData";
-import ToolBarBottom from "../../../components/ToolBarBottom";
+import ReactHtmlParser from "react-html-parser";
+
 import {
   getPassword,
   getStockIDStorage,
@@ -116,10 +117,21 @@ export default class employeeServiceDiary extends React.Component {
       .catch((error) => console.log(error));
   };
 
+  async loadRefresh(done) {
+    await this.getNotificationStaff();
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    done();
+  }
+
   render() {
-    const { arrNoti, loadingSubmit, sheetOpened } = this.state;
+    const { arrNoti, loadingSubmit, sheetOpened, Note } = this.state;
     return (
-      <Page name="employee-diary">
+      <Page
+        name="employee-diary"
+        onPtrRefresh={this.loadRefresh.bind(this)}
+        ptr
+        infiniteDistance={50}
+      >
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
@@ -142,7 +154,7 @@ export default class employeeServiceDiary extends React.Component {
             <ul>
               {arrNoti.map((item, index) => (
                 <li key={index} className={item.IsPublic > 0 ? "public" : ""}>
-                  <div className="content">{item.Content}</div>
+                  <div className="content">{ReactHtmlParser(item.Content)}</div>
                   <div className="time">
                     {moment(item.CreateDate).fromNow()}
                   </div>
@@ -173,6 +185,7 @@ export default class employeeServiceDiary extends React.Component {
                     <textarea
                       name="Note"
                       placeholder="Nhập nhật ký cần lưu ..."
+                      defaultValue={Note || ""}
                       onChange={this.handleNote}
                       ref={(text) => {
                         this.NoteTXT = text;

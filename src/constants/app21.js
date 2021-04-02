@@ -95,12 +95,15 @@ export const app21 = /** @class */ (function() {
 
                 if (window.ANDROID) {
                     //and
-                    app_request("call", JSON.stringify({ sub_cmd: sub_cmd, sub_cmd_id: id, params: params }));
 
+                    app_request("call", JSON.stringify({ sub_cmd: sub_cmd, sub_cmd_id: id, params: params }));
                 } else if (window.webkit && window.webkit.messageHandlers) {
                     //ios
-                    app_request("call", JSON.stringify({ sub_cmd: sub_cmd, sub_cmd_id: id, params: params }));
+                    const abc = app_request("call", JSON.stringify({ sub_cmd: sub_cmd, sub_cmd_id: id, params: params }));
+                    f7.preloader.show("CAMERA" + abc);
+
                 } else {
+
                     App21Result(JSON.stringify({ sub_cmd: sub_cmd, sub_cmd_id: id, success: false, error: 'NO_AND_IOS', data: null }));
                 }
             } catch (e) {
@@ -132,30 +135,75 @@ export const app21 = /** @class */ (function() {
         callback.call('reject', a);
     };
 
+    /*BUILTIN*/
+    _21.PHOTO_TO_SERVER = function(_opt) {
+        var opt = {
+            maxwidth: 5000,
+            maxheight: 5000,
+            ext: 'png',
+            pref: 'IMG',
+            server: '/api/v3/file?cmd=upload&autn=AAAA'
+        };
+        opt = Object.assign(opt, _opt);
+        var t = this;
+
+        var cameraOpt = {
+            maxwidth: 5000,
+            maxheight: 5000,
+            ext: 'png',
+            pref: 'IMG',
+        }
+
+        for (var k in cameraOpt) {
+            if (opt[k]) cameraOpt[k] = opt[k];
+        }
+        return new Promise((resolve, reject) => {
+            t.prom('CAMERA', cameraOpt).then(s => {
+
+                t.prom('POST_TO_SERVER', JSON.stringify({
+                    server: opt.server,
+                    path: s.data
+                        // token: 'neu_co',
+                })).then(s1 => {
+                    var rs = JSON.parse(s1.data);
+                    //console.log('app_camera->CAMERA->POST_TO_SERVER->OK', rs.data);
+                    // vm.$emit('success', rs.data);
+                    resolve(rs);
+                }).catch(f1 => {
+                    reject({ title: 'POST_TO_SERVER FAIL', error: f1 })
+                });
+            }).catch(e => {
+                reject({ title: 'CAMERA FAIL', error: e })
+            })
+        })
+
+
+
+    }
     return _21;
 }());
 
 
-// /*
-// doc:
-// 1. Sử dụng:
-// app21.prom("sub_cmd", 0).then(x => console.log('aaa',x)).catch(z => console.log('aaa Error:', z))
+/*
+doc:
+1. Sử dụng:
+app21.prom("sub_cmd", 0).then(x => console.log('aaa',x)).catch(z => console.log('aaa Error:', z))
 
-// 2. Danh sách "sub_cmd"
-
-
-// - REBOOT
-// --- params: miliSeconds 
-// to: delay -> reboot
-
-// - CAMARA(!)
-// ---params: no_param
-
-// - LOCATION(!)
-// - CONTACT(!)
-// - CALL(!)
-// - FILES(!)
-// (!) Yêu cầu quyền
+2. Danh sách "sub_cmd"
 
 
-//  */
+- REBOOT
+--- params: miliSeconds 
+to: delay -> reboot
+
+- CAMARA(!)
+---params: no_param
+
+- LOCATION(!)
+- CONTACT(!)
+- CALL(!)
+- FILES(!)
+(!) Yêu cầu quyền
+app21.PHOTO_TO_SERVER().then(rs=>{ })
+
+ */

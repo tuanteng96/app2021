@@ -30,6 +30,7 @@ import {
 import UserService from "../service/user.service";
 
 import routes from "../js/routes";
+import { NAME_APP } from "../constants/config";
 
 export default class extends React.Component {
   constructor() {
@@ -38,7 +39,7 @@ export default class extends React.Component {
     this.state = {
       // Framework7 Parameters
       f7params: {
-        name: "Cser Beauty", // App name
+        name: NAME_APP, // App name
         theme: "auto", // Automatic theme detection
         id: "vn.cser",
         // App routes

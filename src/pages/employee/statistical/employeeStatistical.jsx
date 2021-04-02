@@ -27,11 +27,10 @@ export default class employeeStatistical extends React.Component {
     this.getSalary(month);
   }
 
-
   dateObject = (date) => {
     const dateMomentObject = moment(date, "DD/MM/YYYY"); // 1st argument - string, 2nd argument - format
     return dateMomentObject.toDate();
-  }
+  };
 
   numTotal = (arr) => {
     const initialValue = 0;
@@ -62,6 +61,18 @@ export default class employeeStatistical extends React.Component {
     value -= this.numTotal(dataSalary.PHAT);
     value += dataSalary.PHU_CAP;
     return value;
+  };
+
+  totalDayOff = (arr) => {
+    if (arr.length > 0) {
+      const initialValue = 0;
+      let sum = arr.reduce(function (total, currentValue) {
+        return total + currentValue.qty;
+      }, initialValue);
+
+      return sum;
+    }
+    return 0;
   };
 
   getSalary = (date) => {
@@ -111,6 +122,14 @@ export default class employeeStatistical extends React.Component {
     this.setState({ isOpenDate: false });
   };
 
+  async loadRefresh(done) {
+    const { isDateCurrent } = this.state;
+    const month = moment(new Date(isDateCurrent)).format("DD/YYYY");
+    await this.getSalary(month);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    done();
+  }
+
   render() {
     const {
       dataSalary,
@@ -132,7 +151,12 @@ export default class employeeStatistical extends React.Component {
       },
     };
     return (
-      <Page name="employee-statistical">
+      <Page
+        name="employee-statistical"
+        onPtrRefresh={this.loadRefresh.bind(this)}
+        ptr
+        infiniteDistance={50}
+      >
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
@@ -210,38 +234,41 @@ export default class employeeStatistical extends React.Component {
                   </div>
                 </div>
                 <div className="tbody">
-                  <div className="tr">
-                    <div className="td w-1">1</div>
-                    <div className="td w-2">
-                      Ngày nghỉ{" "}
-                      {dataSalary && dataSalary.NGAY_NGHI.length > 0 ? (
-                        <>
-                          (
+                  {dataSalary &&
+                    dataSalary.PHAT.map((item, index) => (
+                      <div className="tr" key={index}>
+                        <div className="td w-1">{index + 1}</div>
+                        <div className="td w-2">{item.Desc || "Phạt"}</div>
+                        <div className="td w-3">
+                          {formatPriceVietnamese(item.Value)}
+                        </div>
+                      </div>
+                    ))}
+                  {dataSalary &&
+                    this.totalDayOff(dataSalary.DS_NGAY_NGHI) -
+                      dataSalary.NGAY_NGHI_CHO_PHEP >
+                      0 && (
+                      <div className="tr">
+                        <div className="td w-1">
+                          {dataSalary.PHAT.length + 1}
+                        </div>
+                        <div className="td w-2">
+                          Ngày nghỉ (
                           <span className="red">
                             {" "}
-                            {dataSalary && dataSalary.NGAY_NGHI.length}{" "}
+                            {this.totalDayOff(dataSalary.DS_NGAY_NGHI) -
+                              dataSalary.NGAY_NGHI_CHO_PHEP}{" "}
                           </span>
-                          ngày quá hạn)
-                        </>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                    <div className="td w-3">
-                      {dataSalary &&
-                        formatPriceVietnamese(
-                          this.numTotal(dataSalary.NGAY_NGHI)
-                        )}
-                    </div>
-                  </div>
-                  <div className="tr">
-                    <div className="td w-1">2</div>
-                    <div className="td w-2">Phạt</div>
-                    <div className="td w-3">
-                      {dataSalary &&
-                        formatPriceVietnamese(this.numTotal(dataSalary.PHAT))}
-                    </div>
-                  </div>
+                          ngày quá hạn )
+                        </div>
+                        <div className="td w-3">
+                          {dataSalary &&
+                            formatPriceVietnamese(
+                              this.numTotal(dataSalary.NGAY_NGHI)
+                            )}
+                        </div>
+                      </div>
+                    )}
                 </div>
                 <div className="tfooter">
                   <div className="tr">
@@ -300,6 +327,17 @@ export default class employeeStatistical extends React.Component {
                           <div className="tr" key={index}>
                             <div className="td w-1">{index + 1}</div>
                             <div className="td w-2">
+                              <span
+                                className={`label-inline ${
+                                  item.OSStatus === "done"
+                                    ? "label-light-success"
+                                    : "label-light-warning"
+                                }`}
+                              >
+                                {item.OSStatus === "done"
+                                  ? "Hoàn thành"
+                                  : "Đang thực hiện"}
+                              </span>
                               {item.ProdTitle} - ({" "}
                               {moment(item.CreateDate).format("llll")} )
                             </div>
@@ -324,7 +362,7 @@ export default class employeeStatistical extends React.Component {
               </div>
               <div className="employee-statistical__item">
                 <div className="title">
-                  Thưởng (
+                  Hoa hồng bán hàng (
                   <span>{dataSalary && dataSalary.BonusSales.length}</span>)
                 </div>
                 <div className="head">
@@ -361,10 +399,48 @@ export default class employeeStatistical extends React.Component {
                   </div>
                 </div>
               </div>
+              {dataSalary && dataSalary.DOANH_SO.length > 0 && (
+                <div className="employee-statistical__item">
+                  <div className="title">
+                    Doanh số bán hàng (
+                    <span>{dataSalary && dataSalary.DOANH_SO.length}</span>)
+                  </div>
+                  <div className="head">
+                    <div className="tr">
+                      <div className="td w-1">STT</div>
+                      <div className="td w-2">Hạng mục</div>
+                      <div className="td w-3">Giá trị</div>
+                    </div>
+                  </div>
+                  <div className="tbody">
+                    {dataSalary.DOANH_SO.map((item, index) => (
+                      <div className="tr" key={index}>
+                        <div className="td w-1">{index + 1}</div>
+                        <div className="td w-2">
+                          {item.Desc || "Doanh số"} - ({" "}
+                          {moment(item.CreateDate).format("llll")} )
+                        </div>
+                        <div className="td w-3">
+                          {formatPriceVietnamese(item.Value)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="tfooter">
+                    <div className="tr">
+                      <div className="td">Tổng</div>
+                      <div className="td">
+                        {formatPriceVietnamese(
+                          this.numTotal(dataSalary.DOANH_SO)
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="employee-statistical__item">
                 <div className="title">
-                  Hoa hồng bán hàng (
-                  <span>{dataSalary && dataSalary.Bonus.length}</span>)
+                  Thưởng (<span>{dataSalary && dataSalary.Bonus.length}</span>)
                 </div>
                 <div className="head">
                   <div className="tr">
@@ -379,8 +455,7 @@ export default class employeeStatistical extends React.Component {
                       <div className="tr" key={index}>
                         <div className="td w-1">{index + 1}</div>
                         <div className="td w-2">
-                          Hoa hồng - ( {moment(item.CreateDate).format("llll")}{" "}
-                          )
+                          Thưởng - ( {moment(item.CreateDate).format("llll")} )
                         </div>
                         <div className="td w-3">
                           {formatPriceVietnamese(item.Value)}
@@ -416,11 +491,11 @@ export default class employeeStatistical extends React.Component {
                       <div className="tr" key={index}>
                         <div className="td w-1">{index + 1}</div>
                         <div className="td w-2">
-                          {item.Desc} - ({" "}
+                          {item.Desc || "Tạm ứng"} - ({" "}
                           {moment(item.CreateDate).format("llll")} )
                         </div>
                         <div className="td w-3">
-                          {formatPriceVietnamese(item.Value)}
+                          {formatPriceVietnamese(Math.abs(item.Value))}
                         </div>
                       </div>
                     ))}
@@ -431,7 +506,7 @@ export default class employeeStatistical extends React.Component {
                     <div className="td">
                       {dataSalary &&
                         formatPriceVietnamese(
-                          this.numTotal(dataSalary.TAM_UNG)
+                          Math.abs(this.numTotal(dataSalary.TAM_UNG))
                         )}
                     </div>
                   </div>
@@ -455,7 +530,7 @@ export default class employeeStatistical extends React.Component {
                       <div className="tr" key={index}>
                         <div className="td w-1">{index + 1}</div>
                         <div className="td w-2">
-                          {item.Desc} - ({" "}
+                          {item.Desc || "Hoàn ứng"} - ({" "}
                           {moment(item.CreateDate).format("llll")} )
                         </div>
                         <div className="td w-3">
@@ -491,7 +566,20 @@ export default class employeeStatistical extends React.Component {
                     <div className="td">
                       {dataSalary &&
                         formatPriceVietnamese(
-                          this.numTotal(dataSalary.THU_GIU_LUONG)
+                          Math.ceil(
+                            (this.basicSalary(dataSalary) / 100) *
+                              dataSalary.TY_LE_GIU_LUONG
+                          )
+                        )}
+                    </div>
+                  </div>
+                  <div className="tr">
+                    <div className="td">Tạm ứng còn lại</div>
+                    <div className="td">
+                      {dataSalary &&
+                        formatPriceVietnamese(
+                          Math.abs(this.numTotal(dataSalary.TAM_UNG)) -
+                            Math.abs(this.numTotal(dataSalary.THU_HOAN_UNG))
                         )}
                     </div>
                   </div>
@@ -501,7 +589,12 @@ export default class employeeStatistical extends React.Component {
                       {dataSalary &&
                         formatPriceVietnamese(
                           this.basicSalary(dataSalary) -
-                            this.numTotal(dataSalary.THU_GIU_LUONG)
+                            Math.ceil(
+                              (this.basicSalary(dataSalary) / 100) *
+                                dataSalary.TY_LE_GIU_LUONG
+                            ) -
+                            (Math.abs(this.numTotal(dataSalary.TAM_UNG)) -
+                              Math.abs(this.numTotal(dataSalary.THU_HOAN_UNG)))
                         )}
                     </div>
                   </div>

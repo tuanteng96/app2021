@@ -71,12 +71,14 @@ export default class employeeServiceDiary extends React.Component {
     this.setState({
       [name]: value,
     });
+    console.log(value);
   };
 
   orderSubmit = () => {
-    var isPublics = 0;
+    
+    var isPublics = false;
     const cateID = this.$f7route.params.id;
-    const { Note, isPublic, loadingSubmit } = this.state;
+    const { Note, isPublic } = this.state;
     this.setState({
       loadingSubmit: true,
     });
@@ -110,6 +112,8 @@ export default class employeeServiceDiary extends React.Component {
           this.setState({
             loadingSubmit: false,
             sheetOpened: false,
+            Note: "",
+            isPublic: false,
           });
         };
         asyncCall();
@@ -124,7 +128,8 @@ export default class employeeServiceDiary extends React.Component {
   }
 
   render() {
-    const { arrNoti, loadingSubmit, sheetOpened, Note } = this.state;
+    const { arrNoti, loadingSubmit, sheetOpened, Note, isPublic } = this.state;
+    console.log(this.state);
     return (
       <Page
         name="employee-diary"
@@ -185,8 +190,8 @@ export default class employeeServiceDiary extends React.Component {
                     <textarea
                       name="Note"
                       placeholder="Nhập nhật ký cần lưu ..."
-                      defaultValue={Note || ""}
                       onChange={this.handleNote}
+                      value={Note || ""}
                       ref={(text) => {
                         this.NoteTXT = text;
                       }}
@@ -199,6 +204,7 @@ export default class employeeServiceDiary extends React.Component {
                         type="checkbox"
                         name="isPublic"
                         onChange={this.handleNote}
+                        checked={isPublic || false}
                       />
                       <label htmlFor="view">
                         <span>Khách hàng xem</span>

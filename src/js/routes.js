@@ -126,11 +126,11 @@ var routes = [{
             const cateID = routeTo.params.cateId;
             if (cateID === "hot") {
                 resolve({
-                    asyncComponent: () => ShopListProductPage,
+                    component: ShopListProductPage,
                 });
             } else {
                 resolve({
-                    asyncComponent: () => ShopCatePage,
+                    component: ShopCatePage,
 
                 });
             }
@@ -142,11 +142,11 @@ var routes = [{
             const cateParentID = routeTo.params.parentId;
             if (cateParentID === "795") {
                 resolve({
-                    asyncComponent: () => ShopListServicePage,
+                    component: ShopListServicePage,
                 });
             } else {
                 resolve({
-                    asyncComponent: () => ShopListProductPage,
+                    component: ShopListProductPage,
                 });
             }
         }

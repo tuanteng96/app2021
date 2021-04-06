@@ -117,6 +117,11 @@ export default class employeeService extends React.Component {
       keyword: evt.target.value,
     });
   };
+  clearInput = () => {
+    this.setState({
+      keyword: "",
+    });
+  };
   onChangeDateS = (evt) => {
     const start = evt[0];
     const end = evt[1] ? evt[1] : evt[0];
@@ -173,7 +178,6 @@ export default class employeeService extends React.Component {
   };
 
   async loadRefresh(done) {
-
     const { startDate, endDate, keyword } = this.state;
     const formData = {
       cmd: "member_sevice",
@@ -190,7 +194,6 @@ export default class employeeService extends React.Component {
     await this.getService(formData);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     done();
-
   }
 
   render() {
@@ -322,6 +325,7 @@ export default class employeeService extends React.Component {
                       clearButton
                       onChange={this.onChangeTextS}
                       onFocus={this.onInputFocus}
+                      onInputClear={this.clearInput}
                       errorMessage="Vui lòng nhập từ khóa hoặc chọn ngày cần tìm kiếm."
                       errorMessageForce={messageForce}
                     />

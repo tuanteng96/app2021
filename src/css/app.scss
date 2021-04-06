@@ -177,6 +177,12 @@ html {
     animation-name: fadeIn;
 }
 
+.datepicker.ios .datepicker-header {
+    height: 40px;
+    line-height: 40px;
+    font-size: 18px;
+}
+
 .ios .with-photo-browser-page .icon-back:after {
     font-size: 14px;
 }

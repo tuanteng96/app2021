@@ -74,6 +74,9 @@ class UserService {
     getOrderAll(memberID) {
         return http.get(`/services/preview.aspx?cmd=search_order&key=kh:${memberID}&getitems=1`);
     }
+    getConfig(name) {
+        return http.get(`/api/v3/config?cmd=getnames&names=${name}`);
+    }
 }
 
 export default new UserService();

@@ -100,7 +100,6 @@ export const app21 = /** @class */ (function() {
                 } else if (window.webkit && window.webkit.messageHandlers) {
                     //ios
                     const abc = app_request("call", JSON.stringify({ sub_cmd: sub_cmd, sub_cmd_id: id, params: params }));
-                    f7.preloader.show("CAMERA" + abc);
 
                 } else {
 

@@ -22,6 +22,7 @@ import SlideList from "../home/components/BannerSlide/SlideList";
 import ListImage from "../home/components/Customer/ListImage";
 import ProductList from "../home/components/Product/ProductList";
 import NewsList from "../home/components/news/NewsList";
+import QuickAction from "../../components/quickAction";
 
 export default class extends React.Component {
   constructor() {
@@ -198,6 +199,7 @@ export default class extends React.Component {
             nameStock={(name) => this.nameStock(name)}
           />
           <ModalReviews />
+          <QuickAction />
         </Suspense>
       </Page>
     );

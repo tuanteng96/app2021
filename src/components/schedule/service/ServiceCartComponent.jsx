@@ -84,6 +84,7 @@ export default class ServiceCartComponent extends React.Component {
 
   render() {
     const { arrCardsv, isLoading } = this.state;
+    console.log(arrCardsv);
     return (
       <>
         <h5 onClick={() => this.onRefresh()}>Thẻ dịch vụ của bạn</h5>
@@ -96,7 +97,7 @@ export default class ServiceCartComponent extends React.Component {
               <>
                 {arrCardsv &&
                   arrCardsv.map((item, index) => {
-                    if (item.Prod !== null) {
+                    if (item.Prod !== null && item.total - item.Done > 0) {
                       return (
                         <div
                           className={`item ${item.isActive ? "active" : ""}`}

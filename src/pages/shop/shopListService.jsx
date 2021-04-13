@@ -94,11 +94,7 @@ export default class extends React.Component {
     }
 
     render() {
-        const arrService = this.state.arrService;
-        const arrSearch = this.state.arrSearch;
-        const isSearch = this.state.isSearch;
-
-        console.log(arrService);
+        const { arrService, arrSearch, isSearch } = this.state;
         return (
           <Page
             name="shop-List"

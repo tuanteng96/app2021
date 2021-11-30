@@ -38,9 +38,10 @@ export default class extends React.Component {
       VCode: "",
       isLoading: true,
       isBtn: false,
+      isUpdate: false, // Trạng thái update đơn hàng
     };
   }
-  
+
   setPopupOpen = () => {
     this.setState({
       popupOpened: true,
@@ -70,33 +71,36 @@ export default class extends React.Component {
         position: toast.POSITION.TOP_LEFT,
         autoClose: 3000,
       });
-    }
-    else {
+    } else {
       this.setState({
         WalletPaySuccess: WalletPay,
-        popupWalletOpened: false
+        popupWalletOpened: false,
       });
     }
-  }
+  };
 
   setErr = (title) => {
     toast.error(title, {
       position: toast.POSITION.TOP_LEFT,
       autoClose: 3000,
     });
-  }
+  };
 
   setPopupWalletOpen = () => {
     this.setState({
       popupWalletOpened: true,
     });
-  }
+  };
 
-  setPopupWalletClose  = () => {
+  setPopupWalletClose = () => {
     this.setState({
       popupWalletOpened: false,
     });
-  }
+  };
+
+  delayedClick = _.debounce(() => {
+    this.saveChangeCount();
+  }, 800);
 
   TotalProduct = (data) => {
     let initialValue = 0;
@@ -111,23 +115,23 @@ export default class extends React.Component {
   IncrementItem = (ID) => {
     //Tăng
     const { items, editsOrder } = this.state;
-    
+
     const indexUpdate = items.findIndex((obj) => obj.ID === ID);
     if (indexUpdate < 0) return;
     const hisQty = items[indexUpdate].Qty;
     const Price = items[indexUpdate].Price;
     const PriceOrder = items[indexUpdate].PriceOrder;
-    const Qty = items[indexUpdate].Qty = hisQty + 1;
+    const Qty = (items[indexUpdate].Qty = hisQty + 1);
     items[indexUpdate].ToPay =
       items[indexUpdate].Qty * (PriceOrder > 0 ? PriceOrder : Price);
-    
+
     const indexEdits = editsOrder.findIndex((item) => item.ID === ID);
 
     let newItemEdits = [];
     if (indexEdits < 0) {
       const itemEdits = {
         ID: ID,
-        Qty: Qty
+        Qty: Qty,
       };
       newItemEdits = [...editsOrder, itemEdits];
       this.setState({
@@ -141,9 +145,9 @@ export default class extends React.Component {
         items: items,
       });
     }
-    
-    this.TotalProduct(items);
 
+    this.TotalProduct(items);
+    this.delayedClick();
   };
 
   DecreaseItem = (ID) => {
@@ -160,11 +164,11 @@ export default class extends React.Component {
     if (hisQty === 1) {
       $$this.$f7.dialog.confirm("Xóa sản phẩm này ?", () => {
         const itemsNew = items.filter((item) => item.ID !== ID);
-          const itemDelete = {
-            ID: ID,
-            Qty: hisQty,
-          };
-          let newItemDelete = [...deletedsOrder, itemDelete];
+        const itemDelete = {
+          ID: ID,
+          Qty: hisQty,
+        };
+        let newItemDelete = [...deletedsOrder, itemDelete];
 
         this.setState({
           items: itemsNew,
@@ -174,10 +178,10 @@ export default class extends React.Component {
       });
     } else {
       const indexUpdate2 = editsOrder.findIndex((obj) => obj.ID === ID);
-      const Qty = items[indexUpdate].Qty = hisQty - 1;
+      const Qty = (items[indexUpdate].Qty = hisQty - 1);
       items[indexUpdate].ToPay =
         items[indexUpdate].Qty * (PriceOrder > 0 ? PriceOrder : Price);
-      
+
       let newItemEdits = [];
       if (indexUpdate2 < 0) {
         const itemEdits = {
@@ -198,6 +202,7 @@ export default class extends React.Component {
       }
 
       this.TotalProduct(items);
+      this.delayedClick();
     }
   };
 
@@ -220,6 +225,7 @@ export default class extends React.Component {
         deletedsOrder: newItemDelete,
       });
       this.TotalProduct(itemsNew);
+      this.delayedClick();
     });
   };
 
@@ -259,25 +265,24 @@ export default class extends React.Component {
               edits: [],
             });
             self.$f7.preloader.hide();
-          },1000)
+          }, 1000);
         }
       })
       .catch((er) => console.log(er));
-  }
-  
+  };
+
   handleWalet = (value) => {
     const wallet = parseInt(value);
     if (!isNaN(parseFloat(wallet))) {
       this.setState({
         WalletPay: wallet,
       });
-    }
-    else {
+    } else {
       this.setState({
         WalletPay: "",
       });
     }
-  }
+  };
 
   getOrder = () => {
     const infoUser = getUser();
@@ -293,7 +298,7 @@ export default class extends React.Component {
       order: {
         ID: 0,
         SenderID: infoUser.ID,
-        VCode: "",
+        VCode: null,
       },
       addProps: "ProdTitle",
     };
@@ -307,7 +312,8 @@ export default class extends React.Component {
             dfItem: data.dfItem,
             items: data.items.reverse(),
             order: data.order,
-            isLoading: false
+            isLoading: false,
+            VCode: data.order && data.order?.VoucherCode,
           });
         }
       })
@@ -349,11 +355,16 @@ export default class extends React.Component {
         }
       })
       .catch((er) => console.log(er));
-  }
+  };
 
   saveChangeCount = () => {
     const { deletedsOrder, editsOrder } = this.state;
     const infoUser = getUser();
+
+    this.setState({
+      isUpdate: true,
+    });
+
     const data = {
       order: {
         ID: 0,
@@ -363,16 +374,16 @@ export default class extends React.Component {
       edits: editsOrder,
       addProps: "ProdTitle",
     };
-    
+
     ShopDataService.getUpdateOrder(data)
       .then((response) => {
         const data = response.data.data;
         if (response.data.success) {
           //Total
-          toast.success("Cập nhập đơn hàng thành công !", {
-            position: toast.POSITION.TOP_LEFT,
-            autoClose: 3000,
-          });
+          // toast.success("Cập nhập đơn hàng thành công !", {
+          //   position: toast.POSITION.TOP_LEFT,
+          //   autoClose: 3000,
+          // });
           this.TotalProduct(data.items);
           this.setState({
             dfItem: data.dfItem,
@@ -380,11 +391,17 @@ export default class extends React.Component {
             order: data.order,
             deletedsOrder: [],
             editsOrder: [],
+            isUpdate: false,
           });
         }
       })
-      .catch((er) => console.log(er));
-  }
+      .catch((er) => {
+        console.log(er);
+        this.setState({
+          isUpdate: false,
+        });
+      });
+  };
 
   render() {
     const {
@@ -403,7 +420,7 @@ export default class extends React.Component {
       isLoading,
       isBtn,
     } = this.state;
-    
+
     return (
       <Page
         noToolbar
@@ -414,14 +431,21 @@ export default class extends React.Component {
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
-              <Link onClick={() => this.$f7router.back()}>
+              <Link
+                onClick={() =>
+                  this.$f7router.back({
+                    force: true,
+                    ignoreCache: true,
+                  })
+                }
+              >
                 <i className="las la-angle-left"></i>
               </Link>
             </div>
             <div className="page-navbar__title">
               <span className="title">Giỏ hàng</span>
             </div>
-            {deletedsOrder.length > 0 || editsOrder.length > 0 ? (
+            {/* {deletedsOrder.length > 0 || editsOrder.length > 0 ? (
               <div
                 className="page-navbar__save"
                 onClick={() => this.saveChangeCount()}
@@ -431,10 +455,11 @@ export default class extends React.Component {
                 </Link>
               </div>
             ) : (
-              <div className="page-navbar__noti">
-                <NotificationIcon />
-              </div>
-            )}
+              
+            )} */}
+            <div className="page-navbar__noti">
+              <NotificationIcon />
+            </div>
           </div>
         </Navbar>
         <div className="page-render page-render-pay no-bg p-0">
@@ -460,6 +485,10 @@ export default class extends React.Component {
                               (item.PriceOrder !== item.Price ? "hasSale" : "")
                             }
                           >
+                            <p className="price-p">
+                              {formatPriceVietnamese(item.Price)}
+                              <b>₫</b>
+                            </p>
                             <p className="price-s">
                               {formatPriceVietnamese(item.PriceOrder)}
                               <b>₫</b>
@@ -556,31 +585,50 @@ export default class extends React.Component {
                     <span>Voucher</span>
                   </div>
                   <div className="box">
-                    <div
-                      className="box-text"
-                      onClick={
-                        items.length > 0
-                          ? () => this.setPopupOpen()
-                          : () =>
-                              this.setErr("Giỏ hàng trống. Vui lòng đặt hàng.")
-                      }
-                    >
+                    <div className="box-text">
                       {VCode === "" ? (
-                        <span>Chọn hoặc nhập mã</span>
+                        <div
+                          onClick={
+                            items.length > 0
+                              ? () => this.setPopupOpen()
+                              : () =>
+                                  this.setErr(
+                                    "Giỏ hàng trống. Vui lòng đặt hàng."
+                                  )
+                          }
+                        >
+                          <span>Chọn hoặc nhập mã</span>
+                          <svg
+                            enableBackground="new 0 0 11 11"
+                            viewBox="0 0 11 11"
+                            className="stardust-icon stardust-icon-arrow-right ekGwAM"
+                          >
+                            <path
+                              stroke="none"
+                              d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"
+                            />
+                          </svg>
+                        </div>
                       ) : (
-                        <span className="vcode">{VCode}</span>
+                        <div className="box-vocher-checked">
+                          <span
+                            className="vcode"
+                            onClick={
+                              items.length > 0
+                                ? () => this.setPopupOpen()
+                                : () =>
+                                    this.setErr(
+                                      "Giỏ hàng trống. Vui lòng đặt hàng."
+                                    )
+                            }
+                          >
+                            {VCode}
+                          </span>
+                          <AiOutlineClose
+                            onClick={() => this.handleVcode("")}
+                          />
+                        </div>
                       )}
-
-                      <svg
-                        enableBackground="new 0 0 11 11"
-                        viewBox="0 0 11 11"
-                        className="stardust-icon stardust-icon-arrow-right ekGwAM"
-                      >
-                        <path
-                          stroke="none"
-                          d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"
-                        />
-                      </svg>
                     </div>
                   </div>
                 </li>
@@ -782,6 +830,12 @@ export default class extends React.Component {
                 <b>₫</b>
               </span>
             </div>
+            {WalletMe <= 0 && (
+              <div className="body-wallet--error">
+                Số tiền trong ví của bạn đã hết. Vui lòng nạp tiền vào ví để có
+                thể sử dụng ví thanh toán.
+              </div>
+            )}
             <div className="body-wallet--form">
               <input
                 type="number"
@@ -789,7 +843,11 @@ export default class extends React.Component {
                 onChange={(e) => this.handleWalet(e.target.value)}
                 placeholder="Nhập số tiền ..."
               />
-              <button onClick={() => this.handleApply()} type="button">
+              <button
+                className={`${WalletMe > 0 ? "" : "btn-no-click"}`}
+                onClick={() => this.handleApply()}
+                type="button"
+              >
                 Áp dụng
               </button>
             </div>

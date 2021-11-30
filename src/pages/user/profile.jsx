@@ -45,7 +45,7 @@ export default class extends React.Component {
       async () => {
         f7.dialog.preloader(`Đăng xuất ...`);
         app_request("unsubscribe", "");
-        const clearLocal = await localStorage.clear();
+        await localStorage.clear();
         await new Promise((resolve) => setTimeout(resolve, 1000));
         f7.dialog.close();
         $$this.$f7router.navigate("/", {

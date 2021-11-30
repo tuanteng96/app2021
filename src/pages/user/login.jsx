@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { setSubscribe } from "../../constants/subscribe";
 
 toast.configure();
+
 export default class extends React.Component {
   constructor() {
     super();
@@ -18,8 +19,6 @@ export default class extends React.Component {
       arrNews: [],
       arrBanner: [],
     };
-  }
-  componentDidMount() {
   }
   loginSubmit = () => {
     const username = this.state.username;
@@ -112,7 +111,8 @@ export default class extends React.Component {
                     type="button"
                     onClick={() => this.loginSubmit()}
                     className={
-                      "btn-login btn-me" + (isLoading === true ? " loading" : "")
+                      "btn-login btn-me" +
+                      (isLoading === true ? " loading" : "")
                     }
                   >
                     <span>Đăng nhập</span>
@@ -122,7 +122,15 @@ export default class extends React.Component {
             </div>
           </div>
           <div className="page-login__alert">
-            Bạn chưa có tài khoản ?<Link href="/registration/">Đăng ký</Link>
+            <div>
+              <Link href="/forgot/">Quên mật khẩu ?</Link>
+            </div>
+            <div className="or">
+              <span>Or</span>
+            </div>
+            <div className="ft">
+              Bạn chưa có tài khoản ?<Link href="/registration/">Đăng ký</Link>
+            </div>
           </div>
         </div>
       </Page>

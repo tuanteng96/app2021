@@ -80,6 +80,12 @@ class UserService {
     getConfig(name) {
         return http.get(`/api/v3/config?cmd=getnames&names=${name}`);
     }
+    authForget(data) {
+        return http.post(`/api/v3/authen?cmd=forget`, data);
+    }
+    authForgetReset(data) {
+        return http.post(`/api/v3/authen?cmd=reset`, data);
+    }
 }
 
 export default new UserService();

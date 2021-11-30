@@ -196,6 +196,20 @@
     }
 }
 
+.btn-submit-step {
+    line-height: 38px;
+    margin-top: 8px;
+    width: auto;
+    padding: 0 36px;
+    font-size: 13px;
+    border-radius: 2px;
+    min-height: 38px;
+    border: 1px solid $color-app;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: $color-app;
+}
+
 @keyframes bounceBtn {
     to {
         width: 12px;

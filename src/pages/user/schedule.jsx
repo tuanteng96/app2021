@@ -16,6 +16,8 @@ import moment from "moment";
 import "moment/locale/vi";
 import { checkSale, formatPriceVietnamese } from "../../constants/format";
 import { SERVER_APP } from "../../constants/config";
+import _ from "lodash";
+
 moment.locale("vi");
 
 export default class extends React.Component {
@@ -43,7 +45,7 @@ export default class extends React.Component {
         },
         {
           label: "Hoàn tất",
-          component: <ScheduleSuccess />,
+          component: <ScheduleSuccess onResetStep={() => this.onResetStep()} />,
         },
       ],
       onFinish: false,
@@ -60,6 +62,12 @@ export default class extends React.Component {
     };
   }
   componentDidMount() {}
+
+  onResetStep = () => {
+    this.setState({
+      activeStep: 0,
+    });
+  };
 
   handleDataService = (item, data, loading) => {
     this.setState({
@@ -246,7 +254,7 @@ export default class extends React.Component {
 
   controlsStep = () => {
     const { itemStepTime, isLoadingStep1, itemBooks } = this.state;
-    
+
     switch (this.state.activeStep) {
       case 0:
         return (
@@ -300,6 +308,14 @@ export default class extends React.Component {
     }
   };
 
+  onToBack = () => {
+    if (this.state.activeStep === 0) {
+      this.$f7router.back();
+    } else {
+      this.previousStep();
+    }
+  };
+
   render() {
     const {
       activeStep,
@@ -340,7 +356,7 @@ export default class extends React.Component {
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
-              <Link onClick={() => this.$f7router.back()}>
+              <Link onClick={() => this.onToBack()}>
                 <i className="las la-angle-left"></i>
               </Link>
             </div>

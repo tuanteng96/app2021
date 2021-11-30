@@ -1,5 +1,5 @@
 import React from "react";
-import { Page, Link, Navbar } from "framework7-react";
+import { Page, Link, Navbar, f7 } from "framework7-react";
 import SelectStock from "../../components/SelectStock";
 import {
   checkAvt,
@@ -42,7 +42,6 @@ export default class extends React.Component {
     UserService.getInfo(username, password)
       .then((response) => {
         const memberInfo = response.data;
-        console.log(memberInfo);
         this.setState({
           memberInfo: memberInfo,
         });
@@ -54,14 +53,18 @@ export default class extends React.Component {
     $$this.$f7.dialog.confirm(
       "Bạn muống đăng xuất khỏi tài khoản ?",
       async () => {
-        f7.dialog.preloader(`Đăng xuất ...`);
-        app_request("unsubscribe", "");
-        const clearLocal = await localStorage.clear();
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        f7.dialog.close();
-        $$this.$f7router.navigate("/", {
-          reloadCurrent: true,
-        });
+        try {
+          f7.dialog.preloader(`Đăng xuất ...`);
+          app_request("unsubscribe", "");
+          await localStorage.clear();
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          f7.dialog.close();
+          $$this.$f7router.navigate("/", {
+            reloadCurrent: true,
+          });
+        } catch (error) {
+          console.log(error);
+        }
       }
     );
   };

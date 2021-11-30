@@ -1,0 +1,43 @@
+.page-forgot {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    background: $white;
+    .to-back {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        a {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            i {
+                font-size: 20px;
+                color: #b99746;
+            }
+        }
+    }
+    .page-forgot__content {
+        text-align: center;
+        padding: 0 20px;
+        h4 {
+            margin: 0 0 12px 0;
+            font-size: 18px;
+        }
+        .logo-reg {
+            width: 140px;
+            margin-bottom: 20px;
+        }
+        .desc {
+            font-size: 14px;
+            color: #999;
+            line-height: 22px;
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+    }
+}

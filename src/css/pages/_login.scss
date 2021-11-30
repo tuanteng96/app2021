@@ -92,9 +92,38 @@
         text-align: center;
         width: 100%;
         box-sizing: border-box;
-        font-size: 15px;
-        a {
-            padding-left: 5px;
+        .or {
+            position: relative;
+            margin: 5px 0;
+            a {
+                padding-left: 0px;
+                font-size: 14px;
+            }
+            &::before {
+                content: "";
+                position: absolute;
+                width: 100%;
+                height: 1px;
+                top: 50%;
+                left: 0;
+                background: #f3f3f3;
+            }
+            span {
+                background: $white;
+                position: relative;
+                z-index: 2;
+                color: #999;
+                font-size: 13px;
+                padding: 0 12px;
+            }
+        }
+        .ft {
+            color: #999;
+            font-size: 14px;
+            a {
+                padding-left: 5px;
+                text-decoration: revert;
+            }
         }
     }
 }

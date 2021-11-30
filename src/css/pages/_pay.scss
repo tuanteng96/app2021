@@ -242,6 +242,12 @@
                                 font-weight: 700;
                                 color: $color-price-app;
                             }
+                            .box-vocher-checked {
+                                svg {
+                                    fill: #d0011b;
+                                    stroke: #d0011b;
+                                }
+                            }
                         }
                     }
                 }
@@ -435,6 +441,11 @@
                 padding-left: 2px;
             }
         }
+    }
+    .body-wallet--error {
+        padding: 15px 10px 0 15px;
+        font-size: 13px;
+        color: #d0011b;
     }
     .body-wallet--form {
         padding: 15px;

@@ -129,7 +129,6 @@ export default class employeeServiceDiary extends React.Component {
 
   render() {
     const { arrNoti, loadingSubmit, sheetOpened, Note, isPublic } = this.state;
-    console.log(this.state);
     return (
       <Page
         name="employee-diary"

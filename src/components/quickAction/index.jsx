@@ -22,9 +22,11 @@ export default class quickAction extends React.Component {
       })
       .catch((err) => console.log(err));
   };
+
   handleCall = (phone) => {
     CALL_PHONE(phone);
   };
+  
   render() {
     const { phone } = this.state;
     return (

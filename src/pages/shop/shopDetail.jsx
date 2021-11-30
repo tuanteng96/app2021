@@ -208,7 +208,7 @@ export default class extends React.Component {
           if (response.data.success) {
             self.$f7.preloader.hide();
             self.setStateLoading(false);
-            toast.success("Thêm đơn hàng vào giỏ hàng thành công !", {
+            toast.success("Thêm mặt hàng vào giỏ hàng thành công !", {
               position: toast.POSITION.TOP_LEFT,
               autoClose: 3000,
             });
@@ -259,7 +259,7 @@ export default class extends React.Component {
           if (response.data.success) {
             self.$f7.preloader.hide();
             self.setStateLoading(false);
-            toast.success("Thêm đơn hàng vào giỏ hàng thành công !", {
+            toast.success("Thêm mặt hàng vào giỏ hàng thành công !", {
               position: toast.POSITION.TOP_LEFT,
               autoClose: 3000,
             });
@@ -647,10 +647,18 @@ export default class extends React.Component {
           <div className="page-toolbar">
             <div className="page-toolbar__order">
               <button
-                className="page-btn-order btn-submit-order"
+                className={`page-btn-order btn-submit-order ${
+                  statusLoading ? "loading" : ""
+                }`}
                 onClick={() => this.openSheet()}
               >
                 <span>Đặt hàng</span>
+                <div className="loading-icon">
+                  <div className="loading-icon__item item-1"></div>
+                  <div className="loading-icon__item item-2"></div>
+                  <div className="loading-icon__item item-3"></div>
+                  <div className="loading-icon__item item-4"></div>
+                </div>
               </button>
             </div>
           </div>

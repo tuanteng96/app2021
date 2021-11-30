@@ -97,7 +97,7 @@ export default class ToolBarCustom extends React.Component {
                 "store",
                 "accountant",
               ]}
-              href="/profile/"
+              href="/detail-profile/"
             />
           </React.Fragment>
         );

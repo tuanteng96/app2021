@@ -24,16 +24,16 @@ export default class CartToolBar extends React.Component {
       order: {
         ID: 0,
         SenderID: infoUser.ID,
-        VCode: "",
+        VCode: null,
       },
       addProps: "ProdTitle",
     };
     ShopDataService.getUpdateOrder(data)
       .then((response) => {
-        const data = response.data.data;
-        if (response.data.success && data.items.length) {
+        const { items } = response.data.data;
+        if (items && items.length > 0) {
           this.setState({
-            countOrder: data.items.length,
+            countOrder: items.length,
           });
         }
       })

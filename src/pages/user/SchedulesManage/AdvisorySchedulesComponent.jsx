@@ -16,7 +16,6 @@ import "react-toastify/dist/ReactToastify.css";
 import PageNoData from "../../../components/PageNoData";
 moment.locale("vi");
 
-
 export default class AdvisorySchedulesComponent extends React.Component {
   constructor() {
     super();
@@ -53,24 +52,30 @@ export default class AdvisorySchedulesComponent extends React.Component {
   };
 
   handleDelete = (item) => {
-    const id = item.items[0].ID;
+    const { ID, disable } = item.items[0];
     const _this = this;
 
-    _this.$f7.dialog.confirm("Bạn chắc chắn mình muốn hủy lịch ?", () => {
-      _this.$f7.preloader.show();
-      BookDataService.bookDelete(id)
-        .then((response) => {
-          if (response.data.success) {
-            _this.$f7.preloader.hide();
-            toast.success("Hủy lịch thành công !", {
-              position: toast.POSITION.TOP_LEFT,
-              autoClose: 3000,
-            });
-            this.getListBooks();
-          }
-        })
-        .catch((er) => console.log(er));
-    });
+    if (disable) {
+      _this.$f7.dialog.confirm("Bạn không thể hủy lịch. Vui lòng liên hệ ADMIN để hủy lịch.", () => {
+        _this.$f7.preloader.hide();
+      })
+    } else {
+      _this.$f7.dialog.confirm("Bạn chắc chắn mình muốn hủy lịch ?", () => {
+        _this.$f7.preloader.show();
+        BookDataService.bookDelete(ID)
+          .then((response) => {
+            if (response.data.success) {
+              _this.$f7.preloader.hide();
+              toast.success("Hủy lịch thành công !", {
+                position: toast.POSITION.TOP_LEFT,
+                autoClose: 3000,
+              });
+              this.getListBooks();
+            }
+          })
+          .catch((er) => console.log(er));
+      });
+    }
   };
 
   converDate = (date) => {

@@ -18,6 +18,8 @@ import MapsPage from '../pages/maps/maps';
 
 import LoginPage from '../pages/user/login';
 import RegistrationPage from '../pages/user/registration';
+import ForgotPage from "../pages/user/forgot";
+import ForgotChangePage from "../pages/user/forgot-change";
 import NotificationPage from '../pages/user/Notification';
 import ProfilePage from '../pages/user/profile';
 import DetailProfilePage from '../pages/user/DetailProfile';
@@ -182,6 +184,20 @@ var routes = [{
     {
         path: '/registration/',
         asyncComponent: () => RegistrationPage,
+        options: {
+            transition: 'f7-cover-v',
+        }
+    },
+    {
+        path: '/forgot/',
+        asyncComponent: () => ForgotPage,
+        options: {
+            transition: 'f7-cover',
+        }
+    },
+    {
+        path: '/forgot-change/',
+        asyncComponent: () => ForgotChangePage,
         options: {
             transition: 'f7-cover-v',
         }

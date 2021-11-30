@@ -1,5 +1,17 @@
 import React from "react";
-import { Page, Link, Toolbar, Navbar, Fab, Icon } from "framework7-react";
+import {
+  Page,
+  Link,
+  Toolbar,
+  Navbar,
+  Fab,
+  Icon,
+  Button,
+  ActionsGroup,
+  ActionsButton,
+  Actions,
+  ActionsLabel,
+} from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import UserService from "../../service/user.service";
 import noNotification from "../../assets/images/no-notification.png";
@@ -109,21 +121,8 @@ export default class extends React.Component {
     });
   };
 
-  handleItem = (item) => {
-    const id = item.ID;
-    const { isCheckAll, isActive } = this.state;
-    if (isCheckAll === true) return;
-    if (isActive !== id) {
-      this.setState({
-        isActive: id,
-      });
-    } else {
-      this.setState({
-        isActive: "",
-      });
-    }
-
-    this.handleReaded(item);
+  handleDetail = (item) => {
+    console.log("1");
   };
 
   handleReaded = (item) => {
@@ -174,10 +173,16 @@ export default class extends React.Component {
     this.handleDelete(listItemDelete);
   };
 
+  async loadRefresh(done) {
+    this.getNotification();
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    done();
+  }
+
   render() {
     const { arrNoti, isActive, isCheckAll } = this.state;
     return (
-      <Page>
+      <Page onPtrRefresh={this.loadRefresh.bind(this)}>
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
@@ -222,7 +227,6 @@ export default class extends React.Component {
                   >
                     <div
                       className="action"
-                      onClick={() => this.handleItem(item)}
                     >
                       <div className="icon">
                         <div className="icon-box">{this.iconNoti()}</div>
@@ -232,15 +236,36 @@ export default class extends React.Component {
                         <div className="text-desc">{item.Body}</div>
                         <div className="text-time">
                           {moment(item.CreateDate).fromNow()}{" "}
-                          {item.IsReaded === true ? (<span>- Đã xem</span>) : ("")}
+                          {item.IsReaded === true ? <span>- Đã xem</span> : ""}
                         </div>
                       </div>
-                    </div>
-                    <div
-                      className="delete"
-                      onClick={() => this.handleDelete(item.ID)}
-                    >
-                      <i className="las la-trash"></i>
+                      <Button
+                        //raised={true}
+                        actionsOpen={`#actions-group-${item.ID}`}
+                        className="action-open"
+                      ></Button>
+                      <Actions
+                        className="actions-custom"
+                        id={`actions-group-${item.ID}`}
+                      >
+                        <ActionsGroup>
+                          <ActionsLabel>{item.Title}</ActionsLabel>
+                          <ActionsButton
+                            onClick={() => this.handleDetail(item)}
+                          >
+                            Xem chi tiết
+                          </ActionsButton>
+                          <ActionsButton
+                            color="red"
+                            onClick={() => this.handleDelete(item.ID)}
+                          >
+                            Xóa thông báo
+                          </ActionsButton>
+                        </ActionsGroup>
+                        <ActionsGroup>
+                          <ActionsButton color="red">Đóng</ActionsButton>
+                        </ActionsGroup>
+                      </Actions>
                     </div>
                     <div className="input">
                       <input

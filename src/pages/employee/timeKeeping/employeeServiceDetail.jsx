@@ -26,8 +26,7 @@ import { SERVER_APP } from "../../../constants/config";
 import { VscChromeClose, VscCloudUpload } from "react-icons/vsc";
 import { TiCameraOutline } from "react-icons/ti";
 import SkeletonDetail from "./skeleton/SkeletonDetail";
-import { app21 } from "./../../../constants/app21";
-import { PHOTO_TO_SERVER } from "../../../constants/prom21";
+import { CALL_PHONE, PHOTO_TO_SERVER } from "../../../constants/prom21";
 
 toast.configure();
 
@@ -210,9 +209,9 @@ export default class employeeServiceDetail extends React.Component {
       .catch((err) => console.log(err));
   };
 
-  openBrowserImage = () => {
+  openBrowserImage = (index) => {
     this.closeSheet();
-    this.standaloneDark.open();
+    this.standaloneDark.open(index);
   };
 
   getImageStaff = () => {
@@ -308,54 +307,13 @@ export default class employeeServiceDetail extends React.Component {
         upload();
       })
       .catch((z) => console.log("aaa Error:", z));
-
-    // const promParam = {
-    //   maxwidth: 5000,
-    //   maxheight: 5000,
-    //   ext: "png",
-    //   pref: "IMG",
-    // };
-    // app21
-    //   .prom("CAMERA", promParam)
-    //   .then((s) => {
-    //     app21
-    //       .prom(
-    //         "POST_TO_SERVER",
-    //         JSON.stringify({
-    //           server: SERVER_APP + "/api/v3/file?cmd=upload&autn=AAAA",
-    //           path: s.data,
-    //           // token: 'neu_co',
-    //         })
-    //       )
-    //       .then((s1) => {
-    //         var rs = s1.data; // path
-    //         f7.dialog.preloader(rs);
-    //         (async () => {
-    //           const formData = new FormData();
-    //           formData.append("file", rs);
-    //           f7.dialog.preloader("Đang Upload...");
-    //           try {
-    //             const upload = await staffService.uploadImageStaff(formData);
-    //             const src = upload.data.data;
-    //             const updateImage = await this.updateImageServer(src);
-    //             await new Promise((resolve) => setTimeout(resolve, 1000));
-    //             const getImage = await this.getImageStaff();
-    //             setTimeout(() => {
-    //               f7.dialog.close();
-    //             }, 1000);
-    //           } catch (error) {
-    //             console.log(error);
-    //           }
-    //         });
-    //       })
-    //       .catch((f1) => {
-    //         console.log(f1);
-    //       });
-    //   })
-    //   .catch((f) => {
-    //     console.log("app_camera->CAMERA->error", f);
-    //   });
   };
+
+  onCallPhone = (phone) => {
+    if (phone) {
+      CALL_PHONE(phone);
+    }
+  }
 
   render() {
     const {
@@ -439,7 +397,14 @@ export default class employeeServiceDetail extends React.Component {
                 )}
                 <li>
                   <span>Số điện thoại</span>
-                  <span>{itemDetail && itemDetail.member.MobilePhone}</span>
+                  <span
+                    onClick={() =>
+                      this.onCallPhone(itemDetail && itemDetail.member.MobilePhone)
+                    }
+                    className="text-link"
+                  >
+                    {itemDetail && itemDetail.member.MobilePhone}
+                  </span>
                 </li>
                 <li>
                   <span>Thời gian</span>
@@ -503,7 +468,7 @@ export default class employeeServiceDetail extends React.Component {
                             <div className="list-images__item">
                               <img
                                 src={item.url}
-                                onClick={() => this.openBrowserImage()}
+                                onClick={() => this.openBrowserImage(index)}
                               />
                               <div
                                 className="delete"

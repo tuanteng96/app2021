@@ -23,6 +23,13 @@ export default class ScheduleSuccess extends React.Component {
         >
           Quản lý đặt lịch
         </Link>
+        <Link
+          noLinkClass
+          className="btn-submit-step"
+          onClick={() => this.props.onResetStep()}
+        >
+          Đặt lịch mới
+        </Link>
       </div>
     );
   }

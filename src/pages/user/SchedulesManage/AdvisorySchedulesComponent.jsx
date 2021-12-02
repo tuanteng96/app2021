@@ -152,7 +152,7 @@ export default class AdvisorySchedulesComponent extends React.Component {
             </div>
           ))}
         {dataBooks && dataBooks.length === 0 ? (
-          <PageNoData text="Bạn chưa lịch tư vấn" />
+          <PageNoData text="Bạn chưa có đặt lịch thẻ" />
         ) : (
           ""
         )}

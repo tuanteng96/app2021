@@ -147,7 +147,7 @@ export default class CardSchedulingComponent extends React.Component {
           ))}
 
         {dataBooks && dataBooks.length === 0 ? (
-          <PageNoData text="Bạn chưa có thẻ đặt lịch" />
+          <PageNoData text="Bạn chưa có lịch tư vấn" />
         ) : (
           ""
         )}

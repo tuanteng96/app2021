@@ -5,7 +5,6 @@ import {
   Toolbar,
   Navbar,
   Fab,
-  Icon,
   Button,
   ActionsGroup,
   ActionsButton,
@@ -18,6 +17,8 @@ import noNotification from "../../assets/images/no-notification.png";
 import { getUser } from "../../constants/user";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Skeleton from "react-loading-skeleton";
+
 import moment from "moment";
 import "moment/locale/vi";
 moment.locale("vi");
@@ -26,7 +27,7 @@ export default class extends React.Component {
   constructor() {
     super();
     this.state = {
-      isLoading: true,
+      isLoading: false,
       arrNoti: [],
       allChecked: false,
       isCheckAll: false,
@@ -43,6 +44,10 @@ export default class extends React.Component {
       return false;
     }
 
+    this.setState({
+      isLoading: true,
+    });
+
     UserService.getNotification(infoUser.acc_type, infoUser.acc_id, 0, 200)
       .then((response) => {
         const data = response.data.data;
@@ -56,6 +61,7 @@ export default class extends React.Component {
         });
         this.setState({
           arrNoti: dataNew,
+          isLoading: false,
         });
       })
       .catch((er) => console.log(er));
@@ -122,7 +128,7 @@ export default class extends React.Component {
   };
 
   handleDetail = (item) => {
-    console.log("1");
+    this.$f7router.navigate(`/notification/${item.ID}/`, { reloadCurrent: true });
   };
 
   handleReaded = (item) => {
@@ -180,9 +186,9 @@ export default class extends React.Component {
   }
 
   render() {
-    const { arrNoti, isActive, isCheckAll } = this.state;
+    const { arrNoti, isActive, isCheckAll, isLoading } = this.state;
     return (
-      <Page onPtrRefresh={this.loadRefresh.bind(this)}>
+      <Page ptr onPtrRefresh={this.loadRefresh.bind(this)}>
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
@@ -207,80 +213,109 @@ export default class extends React.Component {
         </Navbar>
         <div className="page-render no-bg p-0">
           <div className="page-noti">
-            {arrNoti && arrNoti.length === 0 ? (
-              <div className="no-notification">
-                <img src={noNotification} />
-              </div>
-            ) : (
-              ""
-            )}
-            <ul className="page-noti__list">
-              {arrNoti &&
-                arrNoti.map((item, index) => (
-                  <li
-                    className={
-                      (isActive === item.ID ? "active " : "") +
-                      (item.isChecked === true ? "activeFull " : "") +
-                      (item.IsReaded === true ? "readed" : "")
-                    }
-                    key={index}
-                  >
-                    <div
-                      className="action"
-                    >
-                      <div className="icon">
-                        <div className="icon-box">{this.iconNoti()}</div>
-                      </div>
-                      <div className="text">
-                        <h4>{item.Title}</h4>
-                        <div className="text-desc">{item.Body}</div>
-                        <div className="text-time">
-                          {moment(item.CreateDate).fromNow()}{" "}
-                          {item.IsReaded === true ? <span>- Đã xem</span> : ""}
+            {isLoading ? (
+              <ul className="page-noti__list">
+                {Array(5)
+                  .fill()
+                  .map((item, index) => (
+                    <li key={index}>
+                      <div className="action">
+                        <div className="icon">
+                          <div className="icon-box">{this.iconNoti()}</div>
+                        </div>
+                        <div className="text">
+                          <h4>
+                            <Skeleton count={1} />
+                          </h4>
+                          <div className="text-desc">
+                            {<Skeleton count={2} />}
+                          </div>
+                          <div className="text-time">
+                            <Skeleton count={1} style={{width: 80}} />
+                          </div>
                         </div>
                       </div>
-                      <Button
-                        //raised={true}
-                        actionsOpen={`#actions-group-${item.ID}`}
-                        className="action-open"
-                      ></Button>
-                      <Actions
-                        className="actions-custom"
-                        id={`actions-group-${item.ID}`}
+                    </li>
+                  ))}
+              </ul>
+            ) : (
+              <React.Fragment>
+                {arrNoti && arrNoti.length === 0 && (
+                  <div className="no-notification">
+                    <img src={noNotification} />
+                  </div>
+                )}
+                <ul className="page-noti__list">
+                  {arrNoti &&
+                    arrNoti.map((item, index) => (
+                      <li
+                        className={
+                          (isActive === item.ID ? "active " : "") +
+                          (item.isChecked === true ? "activeFull " : "") +
+                          (item.IsReaded === true ? "readed" : "")
+                        }
+                        key={index}
                       >
-                        <ActionsGroup>
-                          <ActionsLabel>{item.Title}</ActionsLabel>
-                          <ActionsButton
-                            onClick={() => this.handleDetail(item)}
+                        <div className="action">
+                          <div className="icon">
+                            <div className="icon-box">{this.iconNoti()}</div>
+                          </div>
+                          <div className="text">
+                            <h4>{item.Title}</h4>
+                            <div className="text-desc">{item.Body}</div>
+                            <div className="text-time">
+                              {moment(item.CreateDate).fromNow()}{" "}
+                              {item.IsReaded === true ? (
+                                <span>- Đã xem</span>
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                          </div>
+                          <Button
+                            //raised={true}
+                            actionsOpen={`#actions-group-${item.ID}`}
+                            className="action-open"
+                          ></Button>
+                          <Actions
+                            className="actions-custom"
+                            id={`actions-group-${item.ID}`}
                           >
-                            Xem chi tiết
-                          </ActionsButton>
-                          <ActionsButton
-                            color="red"
-                            onClick={() => this.handleDelete(item.ID)}
-                          >
-                            Xóa thông báo
-                          </ActionsButton>
-                        </ActionsGroup>
-                        <ActionsGroup>
-                          <ActionsButton color="red">Đóng</ActionsButton>
-                        </ActionsGroup>
-                      </Actions>
-                    </div>
-                    <div className="input">
-                      <input
-                        key={item.ID}
-                        type="checkbox"
-                        name={item.ID}
-                        value={item.ID}
-                        checked={item.isChecked}
-                        onChange={this.handleChangeInput}
-                      />
-                      <i className="las la-check"></i>
-                    </div>
-                  </li>
-                ))}
-            </ul>
+                            <ActionsGroup>
+                              <ActionsLabel>{item.Title}</ActionsLabel>
+                              <ActionsButton
+                                onClick={() => this.handleDetail(item)}
+                              >
+                                Xem chi tiết
+                              </ActionsButton>
+                              <ActionsButton
+                                color="red"
+                                onClick={() => this.handleDelete(item.ID)}
+                              >
+                                Xóa thông báo
+                              </ActionsButton>
+                            </ActionsGroup>
+                            {/* <ActionsGroup>
+                              <ActionsButton color="red">Đóng</ActionsButton>
+                            </ActionsGroup> */}
+                          </Actions>
+                        </div>
+                        <div className="input">
+                          <input
+                            key={item.ID}
+                            type="checkbox"
+                            name={item.ID}
+                            value={item.ID}
+                            checked={item.isChecked}
+                            onChange={this.handleChangeInput}
+                          />
+                          <i className="las la-check"></i>
+                        </div>
+                      </li>
+                    ))}
+                </ul>
+              </React.Fragment>
+            )}
           </div>
         </div>
         {isCheckAll === true ? (

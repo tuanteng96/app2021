@@ -65,6 +65,9 @@ class UserService {
     getNotification(acctype, accid, offset, next) {
         return http.get(`/api/v3/noti2?cmd=nextoffset&acctype=${acctype}&accid=${accid}&offset=${offset}&next=${next}`);
     }
+    getNotiDetail(Id) {
+        return http.get(`/api/v3/noticlient?cmd=detail&ids=${Id}`)
+    }
     deleteNotification(data) {
         return http.post(`/api/v3/noti2/?cmd=clear2`, data);
     }

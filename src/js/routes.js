@@ -21,6 +21,7 @@ import RegistrationPage from '../pages/user/registration';
 import ForgotPage from "../pages/user/forgot";
 import ForgotChangePage from "../pages/user/forgot-change";
 import NotificationPage from '../pages/user/Notification';
+import NotificationDetailPage from '../pages/user/NotificationDetail';
 import ProfilePage from '../pages/user/profile';
 import DetailProfilePage from '../pages/user/DetailProfile';
 import CardServicePage from '../pages/user/cardService'; //Thẻ dịch vụ
@@ -278,6 +279,17 @@ var routes = [{
     {
         path: '/notification/', // Thông báo Noti
         asyncComponent: () => NotificationPage,
+        beforeEnter: checkAuth,
+        options: {
+            transition: 'f7-cover',
+        },
+    },
+    {
+        path: '/notification/:id', // Thông báo Noti
+        asyncComponent: () => NotificationDetailPage,
+        options: {
+            transition: 'f7-cover',
+        },
         beforeEnter: checkAuth
     },
     {

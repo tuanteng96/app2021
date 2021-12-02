@@ -13,6 +13,7 @@ import { Page, Link, Navbar, Popup } from "framework7-react";
 import { checkDateDiff } from "../../constants/format";
 import NotificationIcon from "../../components/NotificationIcon";
 import SkeletonPay from "./components/Pay/SkeletonPay";
+import NumberFormat from "react-number-format";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -27,9 +28,7 @@ export default class extends React.Component {
       order: [],
       deletedsOrder: [],
       editsOrder: [],
-      voucherMe: [],
-      VoucherAll: [],
-      VoucherAff: [],
+      voucherList: [],
       WalletMe: 0,
       WalletPay: 0,
       WalletPaySuccess: 0,
@@ -46,16 +45,6 @@ export default class extends React.Component {
     this.setState({
       popupOpened: true,
     });
-    const infoUser = getUser();
-    UserService.getVoucher(infoUser.ID)
-      .then((response) => {
-        const voucher = response.data.data;
-        this.setState({
-          voucherMe: voucher.me,
-          VoucherAll: voucher.all,
-        });
-      })
-      .catch((e) => console.log(e));
   };
 
   setPopupClose = () => {
@@ -290,9 +279,6 @@ export default class extends React.Component {
       this.$f7router.navigate("/login/");
       return false;
     }
-    this.setState({
-      WalletMe: infoUser.Present.nap_vi ? infoUser.Present.nap_vi : 0,
-    });
 
     const data = {
       order: {
@@ -314,6 +300,8 @@ export default class extends React.Component {
             order: data.order,
             isLoading: false,
             VCode: data.order && data.order?.VoucherCode,
+            WalletMe: data.mm,
+            voucherList: data.vouchers,
           });
         }
       })
@@ -392,6 +380,7 @@ export default class extends React.Component {
             deletedsOrder: [],
             editsOrder: [],
             isUpdate: false,
+            voucherList: data.vouchers,
           });
         }
       })
@@ -408,15 +397,12 @@ export default class extends React.Component {
       items,
       TotalPay,
       popupOpened,
-      voucherMe,
-      VoucherAll,
       VCode,
       WalletMe,
       WalletPay,
       WalletPaySuccess,
       popupWalletOpened,
-      deletedsOrder,
-      editsOrder,
+      voucherList,
       isLoading,
       isBtn,
     } = this.state;
@@ -586,7 +572,7 @@ export default class extends React.Component {
                   </div>
                   <div className="box">
                     <div className="box-text">
-                      {VCode === "" ? (
+                      {!VCode || VCode === "" ? (
                         <div
                           onClick={
                             items.length > 0
@@ -666,34 +652,49 @@ export default class extends React.Component {
                     </span>
                   </div>
                   <div className="box">
-                    <div
-                      className="box-text"
-                      onClick={
-                        items.length > 0
-                          ? () => this.setPopupWalletOpen()
-                          : () =>
-                              this.setErr("Giỏ hàng trống. Vui lòng đặt hàng.")
-                      }
-                    >
+                    <div className="box-text">
                       {WalletPaySuccess === 0 ? (
-                        <span>Nhập số tiền</span>
+                        <div
+                          onClick={
+                            items.length > 0
+                              ? () => this.setPopupWalletOpen()
+                              : () =>
+                                  this.setErr(
+                                    "Giỏ hàng trống. Vui lòng đặt hàng."
+                                  )
+                          }
+                        >
+                          <span>Nhập số tiền</span>
+                          <svg
+                            enableBackground="new 0 0 11 11"
+                            viewBox="0 0 11 11"
+                            className="stardust-icon stardust-icon-arrow-right ekGwAM"
+                          >
+                            <path
+                              stroke="none"
+                              d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"
+                            />
+                          </svg>
+                        </div>
                       ) : (
-                        <span className="vcode">
-                          -{formatPriceVietnamese(WalletPaySuccess)}
-                          <b>₫</b>
-                        </span>
+                        <div className="box-vocher-checked">
+                          <span
+                            className="vcode"
+                            onClick={() => this.setPopupWalletOpen()}
+                          >
+                            -{formatPriceVietnamese(WalletPaySuccess)}
+                            <b>₫</b>
+                          </span>
+                          <AiOutlineClose
+                            onClick={() =>
+                              this.setState({
+                                WalletPaySuccess: 0,
+                                WalletPay: 0,
+                              })
+                            }
+                          />
+                        </div>
                       )}
-
-                      <svg
-                        enableBackground="new 0 0 11 11"
-                        viewBox="0 0 11 11"
-                        className="stardust-icon stardust-icon-arrow-right ekGwAM"
-                      >
-                        <path
-                          stroke="none"
-                          d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"
-                        />
-                      </svg>
                     </div>
                   </div>
                 </li>
@@ -740,42 +741,14 @@ export default class extends React.Component {
             </div>
           </div>
           <div className="body">
-            {voucherMe.length === 0 && VoucherAll === 0 ? (
+            {voucherList.length === 0 ? (
               <div>Bạn không có mã khuyến mại.</div>
             ) : (
               ""
             )}
             <ul>
-              {VoucherAll &&
-                VoucherAll.map((item, index) => (
-                  <li
-                    key={index}
-                    style={{
-                      backgroundImage: `url(${imgCoupon})`,
-                    }}
-                  >
-                    <div className="coupon">
-                      <div className="coupon-title">
-                        Mã <span>{item.Code}</span>
-                      </div>
-                      <div className="coupon-value">
-                        Ưu đãi
-                        <span>{item.Discount}%</span>
-                      </div>
-                      <div className="coupon-end">
-                        HSD : Còn {checkDateDiff(item.EndDate)} ngày
-                      </div>
-                    </div>
-                    <div
-                      onClick={() => this.handleVcode(item.Code)}
-                      className="apply-coupon"
-                    >
-                      Chọn mã
-                    </div>
-                  </li>
-                ))}
-              {voucherMe &&
-                voucherMe.map((item, index) => (
+              {voucherList &&
+                voucherList.map((item, index) => (
                   <li
                     key={index}
                     style={{
@@ -837,11 +810,13 @@ export default class extends React.Component {
               </div>
             )}
             <div className="body-wallet--form">
-              <input
-                type="number"
+              <NumberFormat
                 value={WalletPay && WalletPay > 0 ? WalletPay : ""}
-                onChange={(e) => this.handleWalet(e.target.value)}
+                thousandSeparator={true}
                 placeholder="Nhập số tiền ..."
+                onValueChange={(val) => {
+                  this.handleWalet(val.floatValue ? val.floatValue : val.value);
+                }}
               />
               <button
                 className={`${WalletMe > 0 ? "" : "btn-no-click"}`}

@@ -36,7 +36,10 @@ export default class extends React.Component {
         const crpwd = this.state.crpwd;
         const infoMember = getUser();
         if (!infoMember) return false;
-        const username = infoMember.MobilePhone;
+        const username =
+          infoMember.acc_type === "M"
+            ? infoMember.MobilePhone
+            : infoMember.UserName;
         const password = getPassword();
         var bodyData = new FormData();
         bodyData.append("pwd", pwd);// New Password

@@ -35,6 +35,7 @@ export default class extends React.Component {
       popupOpened: false,
       popupWalletOpened: false,
       VCode: "",
+      VDiscount: "",
       isLoading: true,
       isBtn: false,
       isUpdate: false, // Trạng thái update đơn hàng
@@ -222,8 +223,15 @@ export default class extends React.Component {
     this.getOrder();
   }
 
-  handleVcode = (vcode) => {
-    const { editsOrder, deletedsOrder, isBtn } = this.state;
+  handleVcode = (item) => {
+    const { editsOrder, deletedsOrder } = this.state;
+    const { Code: vcode } = item;
+    if (!vcode) {
+      this.setState({
+        VCode: "",
+        VDiscount: "",
+      });
+    }
     const infoUser = getUser();
     const data = {
       order: {
@@ -249,6 +257,7 @@ export default class extends React.Component {
               items: data.items.reverse(),
               order: data.order,
               popupOpened: false,
+              VDiscount: data.order?.Voucher?.Discount,
               VCode: vcode,
               deleteds: [],
               edits: [],
@@ -300,6 +309,7 @@ export default class extends React.Component {
             order: data.order,
             isLoading: false,
             VCode: data.order && data.order?.VoucherCode,
+            VDiscount: data.order?.Voucher?.Discount,
             WalletMe: data.mm,
             voucherList: data.vouchers,
           });
@@ -405,6 +415,7 @@ export default class extends React.Component {
       voucherList,
       isLoading,
       isBtn,
+      VDiscount,
     } = this.state;
 
     return (
@@ -608,7 +619,11 @@ export default class extends React.Component {
                                     )
                             }
                           >
-                            {VCode}
+                            (
+                            {VDiscount && Number(VDiscount) < 100
+                              ? `- ${VDiscount}%`
+                              : `- ${formatPriceVietnamese(VDiscount)}đ`}
+                            ) {VCode}
                           </span>
                           <AiOutlineClose
                             onClick={() => this.handleVcode("")}
@@ -737,7 +752,7 @@ export default class extends React.Component {
           <div className="head">
             <div className="head-title">Mã khuyến mãi</div>
             <div className="head-close" onClick={() => this.setPopupClose()}>
-              <i className="fal fa-times"></i>
+              <i className="las la-times"></i>
             </div>
           </div>
           <div className="body">
@@ -764,11 +779,14 @@ export default class extends React.Component {
                         <span>{item.Discount}%</span>
                       </div>
                       <div className="coupon-end">
-                        HSD : Còn {checkDateDiff(item.EndDate)} ngày
+                        HSD :{" "}
+                        {item.EndDate === null
+                          ? "Không giới hạn"
+                          : `Còn ${checkDateDiff(item.EndDate)} ngày`}
                       </div>
                     </div>
                     <div
-                      onClick={() => this.handleVcode(item.Code)}
+                      onClick={() => this.handleVcode(item)}
                       className="apply-coupon"
                     >
                       Chọn mã
@@ -792,7 +810,7 @@ export default class extends React.Component {
               className="head-close"
               onClick={() => this.setPopupWalletClose()}
             >
-              <i className="fal fa-times"></i>
+              <i className="las la-times"></i>
             </div>
           </div>
           <div className="body">

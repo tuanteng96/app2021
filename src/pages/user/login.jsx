@@ -20,27 +20,6 @@ export default class extends React.Component {
       arrBanner: [],
     };
   }
-  inputScrollInto = () => {
-    if (
-      document.activeElement.tagName == "INPUT" ||
-      document.activeElement.tagName == "TEXTAREA"
-    ) {
-      console.log("input")
-      document.activeElement.scrollIntoView();
-    }
-  };
-  componentDidMount() {
-    console.log(navigator.appVersion);
-    if (/Android/.test(navigator.appVersion)) {
-      console.log(navigator.appVersion);
-      window.addEventListener("resize", this.inputScrollInto);
-    }
-  }
-  componentWillUnmount() {
-    if (/Android/.test(navigator.appVersion)) {
-      window.removeEventListener("resize", this.inputScrollInto);
-    }
-  }
 
   loginSubmit = () => {
     const username = this.state.username;

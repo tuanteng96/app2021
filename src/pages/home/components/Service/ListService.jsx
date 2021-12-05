@@ -16,7 +16,8 @@ export default class ListService extends React.Component {
   }
 
   getServiceHot = () => {
-    NewsDataService.getBannerName("App.DichVuNoiBat")
+
+    NewsDataService.getBannerName(this.props.id)
       .then((response) => {
         const arrService = response.data.data;
         this.setState({
@@ -36,7 +37,7 @@ export default class ListService extends React.Component {
           {!isLoading &&
             arrService &&
             arrService.map((item, index) => {
-              if (index > 8) return false;
+              if (index > 4) return false;
               return (
                 <Col width="25" key={index}>
                   <CardServiceItem item={item} />

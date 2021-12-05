@@ -158,7 +158,10 @@ export default class extends React.Component {
                     ></input>
                   </div>
                   <SlideList />
-                  <ListService />
+                  <ListService id="42" />
+                  {
+                    getUser() && <ListService id="45"/>
+                  }
                 </div>
               </div>
               <ListImage />
@@ -176,7 +179,7 @@ export default class extends React.Component {
               <div className="home-page__news">
                 <div className="page-news__list">
                   <div className="page-news__list-head">
-                    <h5>Tin tức mới</h5>
+                    <h5>Ưu đãi / Blog làm đẹp</h5>
                     <div className="all">
                       <Link href="/news-list/">
                         Xem tất cả <i className="las la-angle-right"></i>

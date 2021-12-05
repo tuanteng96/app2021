@@ -19,7 +19,7 @@ export default class extends React.Component {
     };
   }
   componentDidMount() {
-    
+
   }
   registrationSubmit = () => {
     const fullname = this.state.fullname;
@@ -100,13 +100,18 @@ export default class extends React.Component {
           </div>
           <div className="page-login__content">
             <div className="page-login__logo">
-              <img className="logo-reg" src={SERVER_APP + "/app/images/logo.png"} />
+              <div className="logo">
+                <img className="logo-reg" src={SERVER_APP + "/app/images/logo-app.png"} />
+              </div>
+              <div className="title">
+                Xin chào, Bắt đầu tạo tài khoản nào
+              </div>
             </div>
             <div className="page-login__form">
               <form>
-                <div className="page-login__title">
+                <div className="title">
                   Tạo tài khoản mới
-              </div>
+                </div>
                 <div className="page-login__form-item">
                   <input
                     type="text"
@@ -150,7 +155,7 @@ export default class extends React.Component {
             </div>
           </div>
           <div className="page-login__alert">
-            Bạn chưa có tài khoản ?<Link href="/login/">Đăng nhập</Link>
+            Bạn chưa có tài khoản ? <Link href="/login/">Đăng nhập</Link>
           </div>
         </div>
       </Page>

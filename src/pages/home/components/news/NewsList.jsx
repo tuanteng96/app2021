@@ -25,9 +25,9 @@ export default class NewsList extends React.Component {
   };
 
   getNewsAll = () => {
-    NewsDataService.getAll()
+    NewsDataService.getNewsIdCate("835")
       .then((response) => {
-        const arrNews = response.data.news;
+        const arrNews = response.data.data;
         this.setState({
           arrNews: arrNews,
           isLoading: false,
@@ -58,20 +58,20 @@ export default class NewsList extends React.Component {
                 if (index > 6) return null;
                 return (
                   <Link
-                    href={"/news/detail/" + item.ID + "/"}
+                    href={"/news/detail/" + item.id + "/"}
                     className="page-news__list-item"
-                    key={item.ID}
+                    key={item.id}
                     style={this.handStyle()}
                   >
                     <div className="images">
                       <img
-                        src={SERVER_APP + item.Thumbnail_web}
-                        alt={item.Title}
+                        src={SERVER_APP + item.source.Thumbnail_web}
+                        alt={item.source.Title}
                       />
                     </div>
                     <div className="text">
-                      <h6>{item.Title}</h6>
-                      <div className="desc">{ReactHtmlParser(item.Desc)}</div>
+                      <h6>{item.source.Title}</h6>
+                      <div className="desc">{ReactHtmlParser(item.source.Desc)}</div>
                     </div>
                   </Link>
                 );

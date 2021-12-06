@@ -6,6 +6,8 @@
 @import './../css/abstracts/mixins';
 ////////// base
 @import './base/reset';
+///
+@import './../css/components/toastify';
 ////////// layout
 @import './../css/layout/iconanimation';
 @import './../css/layout/button';
@@ -14,6 +16,7 @@
 @import './../css/layout/toolbarCustom';
 @import './../css/layout/toolbarBottom';
 @import './../css/layout/modal.scss';
+
 ////////// pages
 //home
 @import './../css/pages/home/index.scss';

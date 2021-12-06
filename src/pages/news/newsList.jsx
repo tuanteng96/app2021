@@ -17,9 +17,9 @@ export default class extends React.Component {
   }
 
   componentDidMount() {
-    NewsDataService.getAll()
+    NewsDataService.getNewsIdCate("835")
       .then((response) => {
-        const arrNews = response.data.news;
+        const arrNews = response.data.data;
         this.setState({
           arrNews: arrNews,
           isLoading: false,
@@ -43,7 +43,7 @@ export default class extends React.Component {
               </Link>
             </div>
             <div className="page-navbar__title">
-              <span className="title">Tin tức & Khuyến mại</span>
+              <span className="title">Ưu đãi / Blog làm đẹp</span>
             </div>
             <div className="page-navbar__noti">
               <NotificationIcon />
@@ -59,20 +59,20 @@ export default class extends React.Component {
                     arrNews.map((item, index) => {
                       return (
                         <Link
-                          href={"/news/detail/" + item.ID + "/"}
+                          href={"/news/detail/" + item.id + "/"}
                           className="page-news__list-item"
-                          key={item.ID}
+                          key={item.id}
                         >
                           <div className="images">
                             <img
-                              src={SERVER_APP + item.Thumbnail_web}
-                              alt={item.Title}
+                              src={SERVER_APP + item.source.Thumbnail_web}
+                              alt={item.source.Title}
                             />
                           </div>
                           <div className="text">
-                            <h6>{item.Title}</h6>
+                            <h6>{item.source.Title}</h6>
                             <div className="desc">
-                              {ReactHtmlParser(item.Desc)}
+                              {ReactHtmlParser(item.source.Desc)}
                             </div>
                           </div>
                         </Link>

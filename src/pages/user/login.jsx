@@ -6,6 +6,7 @@ import UserService from "../../service/user.service";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { setSubscribe } from "../../constants/subscribe";
+import { iOS } from "../../constants/helpers";
 
 toast.configure();
 
@@ -73,7 +74,7 @@ export default class extends React.Component {
     const password = this.state.password;
     return (
       <Page noNavbar noToolbar name="login">
-        <div className="page-wrapper page-login">
+        <div className={`page-wrapper page-login ${iOS() && "page-login-iphone"}`}>
           <div className="page-login__back">
             <Link onClick={() => this.$f7router.back()}>
               <i className="las la-arrow-left"></i>
@@ -81,13 +82,19 @@ export default class extends React.Component {
           </div>
           <div className="page-login__content">
             <div className="page-login__logo">
-              <img src={SERVER_APP + "/app/images/logo.png"} />
+              <div className="logo">
+                <img src={SERVER_APP + "/app/images/logo-app.png"} />
+              </div>
+              <div className="title">
+                Xin chào, Bắt đầu đăng nhập nào
+              </div>
             </div>
             <div className="page-login__form">
-              <div className="page-login__title">
-                Hi, Vui lòng đăng nhập vào tài khoản của bạn
-              </div>
+
               <form>
+                <div className="title">
+                  Đăng nhập tài khoản
+                </div>
                 <div className="page-login__form-item">
                   <input
                     type="text"
@@ -118,19 +125,19 @@ export default class extends React.Component {
                   >
                     <span>Đăng nhập</span>
                   </button>
+                  <div className="or">
+                    <span>hoặc</span>
+                  </div>
+                  <div className="forgot">
+                    <Link href="/forgot/">Quên mật khẩu ?</Link>
+                  </div>
                 </div>
               </form>
             </div>
           </div>
           <div className="page-login__alert">
-            <div>
-              <Link href="/forgot/">Quên mật khẩu ?</Link>
-            </div>
-            <div className="or">
-              <span>Or</span>
-            </div>
             <div className="ft">
-              Bạn chưa có tài khoản ?<Link href="/registration/">Đăng ký</Link>
+              Bạn chưa có tài khoản ? <Link href="/registration/">Đăng ký</Link>
             </div>
           </div>
         </div>

@@ -22,15 +22,20 @@ import SkeletonThumbnail from "./components/Detail/SkeletonThumbnail";
 import SelectStock from "../../components/SelectStock";
 import { Suspense } from "react";
 import Skeleton from "react-loading-skeleton";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import _ from "lodash";
 
 export default class extends React.Component {
   constructor() {
     super();
     this.state = {
+      arrProductCurrent: [],
       arrProduct: [],
       arrRelProds: [],
       arrImages: [],
       arrOptions: [],
+      arrCombos: [],
+      aff: {},
       photos: [],
       sheetOpened: false,
       activeID: null,
@@ -39,18 +44,21 @@ export default class extends React.Component {
       isProbably: false,
       statusLoading: true,
       isOpenStock: false,
+      copied: false,
     };
   }
 
   getDetialProduct = () => {
+    const infoUser = getUser();
+    const userId = infoUser ? infoUser.ID : "";
     const cateID = this.$f7route.params.cateId;
 
-    ShopDataService.getDetailFull(cateID)
+    ShopDataService.getDetailFull(cateID, userId)
       .then((response) => {
         const resultRes = response.data.data;
         const arrImages = resultRes.images;
 
-        const ptotosNew = [];
+        let ptotosNew = [];
         for (let photo in arrImages) {
           var itemPhoho = {};
           itemPhoho.url =
@@ -59,15 +67,27 @@ export default class extends React.Component {
           ptotosNew.push(itemPhoho);
         }
 
-        setTimeout(() => {
-          this.setState({
-            arrProduct: resultRes.product,
-            arrRelProds: resultRes.product.RelProds,
-            photos: ptotosNew,
-            arrOptions: resultRes.options,
-            statusLoading: false,
-          });
-        }, 5000);
+        ptotosNew.filter(
+          (item) =>
+            item.Role === "other" ||
+            item.Role === "thumb" ||
+            item.Role === "opt_thumb"
+        );
+
+        this.setState({
+          arrProductCurrent: resultRes.product,
+          arrProduct: resultRes.product,
+          arrRelProds: resultRes.product.RelProds,
+          photos: ptotosNew,
+          arrOptions: resultRes.options,
+          arrCombos: resultRes.combos,
+          statusLoading: false,
+          aff: {
+            aff: resultRes.aff,
+            aff_link: resultRes.aff_link,
+            aff_value: resultRes.aff_value,
+          },
+        });
 
         setViewed(resultRes.product);
       })
@@ -321,7 +341,7 @@ export default class extends React.Component {
   };
 
   classifiHTML = () => {
-    const arrOptions = this.state;
+    const { arrOptions, activeID } = this.state;
     return (
       <div className="sheet-pay-body__size">
         <h4>Phân loại</h4>
@@ -378,17 +398,20 @@ export default class extends React.Component {
 
   render() {
     const {
+      arrProductCurrent,
       arrProduct,
       arrOptions,
       arrRelProds,
       photos,
       sheetOpened,
-      activeID,
       quantity,
       isLoading,
       isProbably,
       statusLoading,
       isOpenStock,
+      arrCombos,
+      aff,
+      copied,
     } = this.state;
     return (
       <Page
@@ -404,7 +427,9 @@ export default class extends React.Component {
               </Link>
             </div>
             <div className="page-navbar__title">
-              <span className="title">{arrProduct.Title}</span>
+              <span className="title">
+                {!statusLoading ? arrProductCurrent.Title : "Đang tải ..."}
+              </span>
             </div>
             <div className="page-navbar__cart">
               <CartToolBar />
@@ -427,9 +452,13 @@ export default class extends React.Component {
               {!statusLoading && (
                 <div className="page-shop__detail-img">
                   <img
-                    onClick={() => this.standaloneDark.open()}
-                    src={SERVER_APP + "/Upload/image/" + arrProduct.Thumbnail}
-                    alt={arrProduct.title}
+                    onClick={() => this.standaloneDark.open(0)}
+                    src={
+                      SERVER_APP +
+                      "/Upload/image/" +
+                      arrProductCurrent.Thumbnail
+                    }
+                    alt={arrProductCurrent.title}
                   />
                   <div className="count">1/{photos && photos.length}</div>
                 </div>
@@ -438,52 +467,148 @@ export default class extends React.Component {
               <div
                 className={
                   "page-shop__detail-list " +
-                  (checkSale(arrProduct.SaleBegin, arrProduct.SaleEnd) === true
+                  (arrProductCurrent.IsDisplayPrice !== 0 &&
+                  checkSale(
+                    arrProductCurrent.SaleBegin,
+                    arrProductCurrent.SaleEnd
+                  ) === true
                     ? "sale"
                     : "")
                 }
               >
                 <ul>
                   <li>
-                    <div className="text">{arrProduct.Title}</div>
+                    <div className="text">{arrProductCurrent.Title}</div>
                   </li>
                   <li>
                     <div className="title">Mã sản phẩm</div>
-                    <div className="text">{arrProduct.DynamicID}</div>
+                    <div className="text">{arrProductCurrent.DynamicID}</div>
                   </li>
                   <li className="product">
                     <div className="title">
                       Giá
-                      {checkSale(arrProduct.SaleBegin, arrProduct.SaleEnd) ===
-                      true
-                        ? "Gốc"
+                      {arrProductCurrent.IsDisplayPrice !== 0 &&
+                      checkSale(
+                        arrProductCurrent.SaleBegin,
+                        arrProductCurrent.SaleEnd
+                      ) === true
+                        ? " gốc"
                         : ""}
                     </div>
                     <div className="text">
-                      {formatPriceVietnamese(arrProduct.PriceProduct)}
-                      <b>₫</b>
+                      {arrProductCurrent.IsDisplayPrice === 1 && (
+                        <React.Fragment>
+                          {!statusLoading
+                            ? formatPriceVietnamese(
+                                arrProductCurrent.PriceProduct
+                              )
+                            : "..."}
+                          <b>₫</b>
+                        </React.Fragment>
+                      )}
+                      {arrProductCurrent.IsDisplayPrice !== 1 && (
+                        <React.Fragment>Liên hệ</React.Fragment>
+                      )}
                     </div>
                   </li>
-                  <li className="product-sale">
-                    <div className="title">
-                      <span>Giảm</span>
-                      <div className="badges badges-danger">
-                        {percentagesSale(
-                          arrProduct.PriceProduct,
-                          arrProduct.PriceSale
-                        )}
-                        %
+                  {arrProductCurrent.IsDisplayPrice !== 0 && (
+                    <li className="product-sale">
+                      <div className="title">
+                        <span>Giảm</span>
+                        <div className="badges badges-danger">
+                          {percentagesSale(
+                            arrProductCurrent.PriceProduct,
+                            arrProductCurrent.PriceSale
+                          )}
+                          %
+                        </div>
                       </div>
-                    </div>
-                    <div className="text">
-                      {formatPriceVietnamese(arrProduct.PriceSale)}
-                      <b>₫</b>
-                    </div>
-                  </li>
+                      <div className="text">
+                        {formatPriceVietnamese(arrProduct.PriceSale)}
+                        <b>₫</b>
+                      </div>
+                    </li>
+                  )}
+
+                  {arrCombos && arrCombos.length > 1 && (
+                    <li className="content">
+                      <div className="content-title">Combo</div>
+                      <div className="content-post content-post-combo">
+                        <div className="content-combo">
+                          {arrCombos.map((item, index) => (
+                            <Link href={`/shop/detail/${item.Id}/`} key={index}>
+                              <div className="img">
+                                <img
+                                  src={
+                                    SERVER_APP +
+                                    "/Upload/image/" +
+                                    item.Product.Thumbnail
+                                  }
+                                  alt={item.Product.Title}
+                                />
+                                <span className="badgess">{item.qty}</span>
+                              </div>
+                              <div className="t-title">
+                                {item.Product.Title}
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    </li>
+                  )}
                   {this.htmlSize(arrOptions)}
                   {arrRelProds && arrRelProds.length > 0
                     ? this.probablyHTML()
                     : ""}
+                  {aff && aff.aff_link && aff.aff_value && (
+                    <li className="content">
+                      <div className="content-title">Hoa hồng giới thiệu</div>
+                      <div className="content-post">
+                        <div className="content-bonus">
+                          <span>
+                            Nguyên giá :{" "}
+                            <b>
+                              {aff.aff_value.NG > 100
+                                ? `${formatPriceVietnamese(aff.aff_value.NG)}`
+                                : `${aff.aff_value.NG}%`}
+                            </b>
+                          </span>
+                          <span>
+                            Khuyến mãi :{" "}
+                            <b>
+                              {" "}
+                              {aff.aff_value.KM > 100
+                                ? `${formatPriceVietnamese(aff.aff_value.KM)}`
+                                : `${aff.aff_value.KM}%`}
+                            </b>
+                          </span>
+                        </div>
+                        <CopyToClipboard
+                          text={aff.aff_link}
+                          onCopy={() => {
+                            this.setState({ copied: true });
+                            setTimeout(() => {
+                              toast.success("Copy đường dẫn thành công !", {
+                                position: toast.POSITION.TOP_LEFT,
+                                autoClose: 1000,
+                              });
+                              this.setState({ copied: false });
+                            }, 1000);
+                          }}
+                        >
+                          <button
+                            className={`btn-share ${copied && "btn-no-click"}`}
+                            disabled={copied}
+                          >
+                            <i className="las la-share-alt"></i>{" "}
+                            {copied ? "Đang Copy ..." : "Copy đường dẫn"}
+                          </button>
+                        </CopyToClipboard>
+                      </div>
+                    </li>
+                  )}
+
                   {arrProduct.Desc !== "" && arrProduct.Detail !== "" ? (
                     <li className="content">
                       <div className="content-title">Chi tiết sản phẩm</div>
@@ -553,7 +678,7 @@ export default class extends React.Component {
                 </div>
               </div>
               <div className="sheet-pay-body">
-                {arrOptions.length > 0 ? this.classifiHTML : ""}
+                {arrOptions.length > 0 ? this.classifiHTML() : ""}
                 <div className="sheet-pay-body__qty">
                   <h4>Số lượng</h4>
                   <div className="qty-form">
@@ -649,7 +774,7 @@ export default class extends React.Component {
               <button
                 className={`page-btn-order btn-submit-order ${
                   statusLoading ? "loading" : ""
-                }`}
+                } ${arrProductCurrent.IsDisplayPrice === 0 && "btn-no-click"}`}
                 onClick={() => this.openSheet()}
               >
                 <span>Đặt hàng</span>

@@ -48,7 +48,7 @@ export default class extends React.Component {
               {arrayItem ? (
                 <span className="title">{arrayItem.Title}</span>
               ) : (
-                <span className="title">Loadding ...</span>
+                <span className="title">Loading ...</span>
               )}
             </div>
             <div className="page-navbar__noti">

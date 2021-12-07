@@ -11,7 +11,7 @@
                 @include flexbox();
                 @include justify-content (space-between);
                 @include align-items(center);
-                padding: 12px;
+                padding: 12px 15px;
                 .location {
                     @include flexbox();
                     @include align-items(baseline);
@@ -223,7 +223,7 @@
             .page-news__list-ul {
                 .page-news__list-item {
                     .text {
-                        padding: 14px 0;
+                        padding: 14px 0 0;
                     }
                 }
             }

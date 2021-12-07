@@ -194,7 +194,6 @@ export default class extends React.Component {
                 <div className="content-avatar">
                   <img src={checkAvt(memberInfo && memberInfo.Photo)} />
                 </div>
-                <i className="las la-angle-right"></i>
               </div>
             </div>
             <div className="page-detail-profile__item">

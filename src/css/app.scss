@@ -7,6 +7,7 @@
 ////////// base
 @import './base/reset';
 ///
+@import './base/input';
 @import './../css/components/toastify';
 ////////// layout
 @import './../css/layout/iconanimation';
@@ -16,7 +17,6 @@
 @import './../css/layout/toolbarCustom';
 @import './../css/layout/toolbarBottom';
 @import './../css/layout/modal.scss';
-
 ////////// pages
 //home
 @import './../css/pages/home/index.scss';

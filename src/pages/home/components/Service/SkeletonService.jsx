@@ -10,7 +10,7 @@ export default class SkeletonService extends React.Component {
   render() {
     return (
       <Row>
-        {Array(8)
+        {Array(3)
           .fill()
           .map((item, index) => {
             return (

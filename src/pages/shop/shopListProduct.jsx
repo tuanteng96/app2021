@@ -9,13 +9,13 @@ import {
   Navbar,
   Row,
   Col,
-  Subnavbar,
   Searchbar,
 } from "framework7-react";
 import { getStockIDStorage } from "../../constants/user";
 import ShopDataService from "./../../service/shop.service";
-import ReactHtmlParser from "react-html-parser";
 import ToolBarBottom from "../../components/ToolBarBottom";
+import CategoriesList from "./components/CategoriesList/CategoriesList/CategoriesList";
+import Skeleton from "react-loading-skeleton";
 
 export default class extends React.Component {
   constructor() {
@@ -32,6 +32,9 @@ export default class extends React.Component {
       parentCateID: "",
       CateID: "",
       CateIDall: 662,
+      currentId: 0,
+      loading: false,
+      keySearch: "",
     };
 
     this.delayedCallback = _.debounce(this.inputCallback, 400);
@@ -43,7 +46,6 @@ export default class extends React.Component {
     //Số sản phẩm trên trang
     // Tag
     //keys Từ khóa tìm kiếm
-
     let stockid = getStockIDStorage();
     if (!stockid) {
       stockid = 0;
@@ -61,6 +63,7 @@ export default class extends React.Component {
           countCateList: countCateList,
           totalCateList: totalCateList,
           piCateList: piCateList,
+          loading: false,
         });
         if (arrCateList.length === 0) {
           this.setState({
@@ -73,8 +76,8 @@ export default class extends React.Component {
         console.log(e);
       });
   };
-  getTitleCate = () => {
-    const CateID = this.$f7route.params.cateId;
+  getTitleCate = (id) => {
+    const CateID = id || this.$f7route.params.cateId;
     ShopDataService.getTitleCate(CateID)
       .then((response) => {
         const titlePage = response.data.data[0].Title;
@@ -87,14 +90,17 @@ export default class extends React.Component {
       });
   };
   componentDidMount() {
+    this.setState({
+      loading: true,
+    });
     this.$f7ready((f7) => {
       const parentCateID = this.$f7route.params.parentId;
       const CateID = this.$f7route.params.cateId;
       const itemView = this.state.itemView;
-
       this.setState({
         parentCateID: parentCateID,
         CateID: CateID,
+        currentId: this.$f7route.params.cateId,
       });
 
       if (CateID === "hot") {
@@ -160,7 +166,7 @@ export default class extends React.Component {
 
   loadRefresh(done) {
     setTimeout(() => {
-      const CateID = this.$f7route.params.cateId;
+      const CateID = this.state.currentId || this.$f7route.params.cateId;
       const itemView = this.state.itemView;
 
       if (CateID === "hot") {
@@ -170,7 +176,8 @@ export default class extends React.Component {
         });
         this.getDataList(CateID, "1", itemView, "hot", "");
       } else {
-        this.getDataList(CateID, "1", itemView, "", "");
+        console.log(this.state.keySearch);
+        this.getDataList(CateID, "1", itemView, "", this.state.keySearch);
         this.getTitleCate();
       }
       this.setState({
@@ -181,9 +188,13 @@ export default class extends React.Component {
     }, 1000);
   }
   inputCallback = (value) => {
+    const newCateId = this.state.currentId || 794;
     const key = value;
     const itemView = this.state.itemView;
-    this.getDataList(662, "1", itemView, "", key);
+    this.getDataList(newCateId, "1", itemView, "", key);
+    this.setState({
+      keySearch: value,
+    });
   };
   handleInputSearch = (event) => {
     const key = event.target.value;
@@ -192,7 +203,7 @@ export default class extends React.Component {
   };
 
   hideSearch = () => {
-    const CateID = this.$f7route.params.cateId;
+    const CateID = this.state.currentId || this.$f7route.params.cateId;
     const itemView = this.state.itemView;
 
     if (CateID === "hot") {
@@ -203,11 +214,19 @@ export default class extends React.Component {
     this.setState({
       showPreloader: false,
       dataNull: false,
+      keySearch: "",
     });
   };
 
+  changeCate = (cate) => {
+    const itemView = this.state.itemView;
+    this.setState({ currentId: cate.ID, loading: true });
+    this.getDataList(cate.ID, "1", itemView, "", "");
+    this.getTitleCate(cate.ID);
+  };
+
   render() {
-    const arrCateList = this.state.arrCateList;
+    const { arrCateList, CateID, currentId, loading } = this.state;
     return (
       <Page
         name="shop-List"
@@ -228,7 +247,7 @@ export default class extends React.Component {
             <div className="page-navbar__title">
               <span className="title">{this.state.titlePage}</span>
             </div>
-            <div className="page-navbar__noti">
+            <div className="page-navbar__noti search">
               <Link searchbarEnable=".searchbar-product">
                 <i className="las la-search"></i>
               </Link>
@@ -247,11 +266,17 @@ export default class extends React.Component {
             onClickDisable={() => this.hideSearch()}
           ></Searchbar>
         </Navbar>
-        <div className="page-render no-bg">
-          <div className="page-shop no-bg">
+        <div className="page-render page-render-shop no-bg p-0">
+          <CategoriesList
+            id={CateID}
+            currentId={currentId}
+            changeCate={(cate) => this.changeCate(cate)}
+          />
+          <div className="page-shop no-bg p-15">
             <div className="page-shop__list">
               <Row>
-                {arrCateList &&
+                {!loading &&
+                  arrCateList &&
                   arrCateList.map((item, index) => (
                     <Col width="50" key={index}>
                       <a
@@ -269,7 +294,8 @@ export default class extends React.Component {
                           <div
                             className={
                               "page-shop__list-price " +
-                              (checkSale(
+                              (item.source.IsDisplayPrice !== 0 &&
+                              checkSale(
                                 item.source.SaleBegin,
                                 item.source.SaleEnd
                               ) === true
@@ -277,19 +303,50 @@ export default class extends React.Component {
                                 : "")
                             }
                           >
-                            <span className="price">
-                              <b>₫</b>
-                              {formatPriceVietnamese(item.price)}
-                            </span>
-                            <span className="price-sale">
-                              <b>₫</b>
-                              {formatPriceVietnamese(item.pricesale)}
-                            </span>
+                            {item.source.IsDisplayPrice === 0 ? (
+                              <span className="price">Liên hệ</span>
+                            ) : (
+                              <React.Fragment>
+                                <span className="price">
+                                  <b>₫</b>
+                                  {formatPriceVietnamese(item.price)}
+                                </span>
+                                <span className="price-sale">
+                                  <b>₫</b>
+                                  {formatPriceVietnamese(item.pricesale)}
+                                </span>
+                              </React.Fragment>
+                            )}
                           </div>
                         </div>
                       </a>
                     </Col>
                   ))}
+                {loading &&
+                  Array(6)
+                    .fill()
+                    .map((item, index) => (
+                      <Col width="50" key={index}>
+                        <a className="page-shop__list-item">
+                          <div className="page-shop__list-img">
+                            <Skeleton height={165} />
+                          </div>
+                          <div className="page-shop__list-text">
+                            <h3>
+                              <Skeleton width={125} />
+                            </h3>
+                            <div className={"page-shop__list-price sale"}>
+                              <span className="price">
+                                <Skeleton width={60} />
+                              </span>
+                              <span className="price-sale">
+                                <Skeleton width={60} />
+                              </span>
+                            </div>
+                          </div>
+                        </a>
+                      </Col>
+                    ))}
               </Row>
             </div>
           </div>

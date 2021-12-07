@@ -16,8 +16,8 @@ class ShopDataService {
     getDetail(id) {
         return http.get(`/app/index.aspx?id=${id}&cmd=prodid`);
     }
-    getDetailFull(id) {
-        return http.get(`/api/v3/prod?cmd=getid&id=${id}`);
+    getDetailFull(id, userId) {
+        return http.get(`/api/v3/prod?cmd=getid&id=${id}&mid=${userId}`);
     }
     getServiceParent(id, stock) {
         return http.get(`/api/v3/app2?get=sv&cid=${id}&stockid=${stock}`);
@@ -28,8 +28,8 @@ class ShopDataService {
     getServiceProdID(id, stockid) {
         return http.get(`/app/index.aspx?cmd=service_prodsid&id=${id}&stockid=${stockid}`);
     }
-    getSearchService(keys) {
-        return http.get(`/app/index.aspx?cmd=search_prods&key=${keys}&cates=795&pi=1&ps=1000`);
+    getSearchService(keys, cateId) {
+        return http.get(`/app/index.aspx?cmd=search_prods&key=${keys}&cates=${cateId}&pi=1&ps=1000`);
     }
     getProd() {
         return http.get(`/app/index.aspx?cmd=ProdService`);

@@ -1,12 +1,12 @@
 import HomeIndex from "../pages/home/homeIndex";
 import SlideDetail from "../pages/home/components/BannerSlide/SlideDetail";
 
-import NewsPage from '../pages/news/news.jsx';
+//import NewsPage from '../pages/news/news.jsx';
 import NewsListPage from '../pages/news/newsList.jsx';
 import NewsDetailPage from '../pages/news/newsDetail';
 
 import ShopPage from '../pages/shop/shop';
-import ShopCatePage from '../pages/shop/shopCate';
+//import ShopCatePage from '../pages/shop/shopCate';
 import ShopListProductPage from '../pages/shop/shopListProduct';
 import ShopListServicePage from '../pages/shop/shopListService';
 import ShopDetailPage from '../pages/shop/shopDetail';
@@ -135,16 +135,24 @@ var routes = [{
         path: '/shop/:cateId',
         async(routeTo, routeFrom, resolve, reject) {
             const cateID = routeTo.params.cateId;
-            if (cateID === "hot") {
+            if (cateID === "hot" || Number(cateID) === 794) {
                 resolve({
                     component: ShopListProductPage,
                 });
             } else {
                 resolve({
-                    component: ShopCatePage,
-
+                    component: ShopListServicePage,
                 });
             }
+            // if (cateID === "hot") {
+            //     resolve({
+            //         component: ShopListProductPage,
+            //     });
+            // } else {
+            //     resolve({
+            //         component: ShopCatePage,
+            //     });
+            // }
         }
     },
     {

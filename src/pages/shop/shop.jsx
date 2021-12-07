@@ -55,7 +55,7 @@ export default class extends React.Component {
             <div className="page-navbar__title">
               <span className="title">Mua hàng</span>
             </div>
-            <div className="page-navbar__noti">
+            <div className="page-navbar__noti noti">
               <NotificationIcon />
             </div>
           </div>

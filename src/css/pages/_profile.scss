@@ -78,7 +78,7 @@
                 width: 30px;
                 height: 30px;
                 border-radius: 100%;
-                background: #b99746;
+                background: $color-app;
                 text-align: center;
                 line-height: 32px;
                 font-size: 18px;
@@ -194,6 +194,8 @@
             @include flexbox();
             @include align-items(center);
             max-width: 50%;
+            padding-right: 15px;
+            position: relative;
             &-avatar {
                 width: 40px;
                 height: 40px;
@@ -215,7 +217,8 @@
             i {
                 color: #c5c5c5;
                 font-size: 13px;
-                margin-left: 2px;
+                position: absolute;
+                right: 0;
             }
         }
     }
@@ -259,5 +262,16 @@
                 margin-right: 4px;
             }
         }
+    }
+}
+
+.page-edit-password {
+    height: 100%;
+    background: #fff;
+    .box-form {
+        padding: 20px;
+    }
+    .note {
+        margin: 50px 20px 35px;
     }
 }

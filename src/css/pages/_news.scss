@@ -123,13 +123,14 @@
                     display: block;
                 }
                 h6 {
-                    margin: 0 0 8px 0;
+                    margin: 0 0 0 0;
                     font-size: 15px;
                     color: #000;
                     font-weight: 600;
                     @include cut-text-to(2);
                 }
                 .desc {
+                    margin-top: 8px;
                     color: $color-gray-app;
                     font-size: 13px;
                     line-height: 20px;
@@ -188,4 +189,23 @@
 
 .page-news__list-ul .slick-track>div {
     padding: 0 7px;
+}
+
+.bd-rd3 {
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.mb-8 {
+    margin-bottom: 8px !important;
+}
+
+.text-cut-1 {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.box-shadow-none {
+    box-shadow: none !important;
 }

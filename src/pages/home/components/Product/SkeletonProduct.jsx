@@ -12,7 +12,7 @@ export default class SkeletonProduct extends React.Component {
     render() {
         return (
           <Row>
-            {Array(6)
+            {Array(4)
               .fill()
               .map((item, index) => (
                 <Col width="50" key={index}>

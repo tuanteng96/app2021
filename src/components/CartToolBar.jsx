@@ -57,6 +57,7 @@ export default class CartToolBar extends React.Component {
 
   render() {
     const { countOrder } = this.state;
+    if (countOrder < 1) return "";
     return (
       <Link
         noLinkClass

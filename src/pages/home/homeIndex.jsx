@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import bgHeaderTop from "../../assets/images/bg-header-home.png";
-import { Page, Link, Toolbar, f7} from "framework7-react";
+import { Page, Link, Toolbar, f7 } from "framework7-react";
 import UserService from "../../service/user.service";
 import IconSearch from "../../assets/images/icon-search.png";
 import { FaRegUser, FaMapMarkerAlt, FaChevronDown } from "react-icons/fa";
@@ -23,6 +23,7 @@ import ListImage from "../home/components/Customer/ListImage";
 import ProductList from "../home/components/Product/ProductList";
 import NewsList from "../home/components/news/NewsList";
 import QuickAction from "../../components/quickAction";
+import ServiceHot from "./components/ServiceHot/ServiceHot";
 
 export default class extends React.Component {
   constructor() {
@@ -42,12 +43,12 @@ export default class extends React.Component {
   }
   onPageBeforeIn = () => {
     const getStock = getStockIDStorage();
-    
+
     UserService.getStock()
       .then((response) => {
         let indexStock = 0;
         const arrStock = response.data.data.all;
-        
+
         const countStock = arrStock.length;
         const CurrentStockID = response.data.data.CurrentStockID;
         if (getStock) {
@@ -57,7 +58,7 @@ export default class extends React.Component {
         }
         const indexCurrentStock = arrStock.findIndex(
           (item) => item.ID === parseInt(CurrentStockID)
-        );;
+        );
 
         if (countStock === 2) {
           const StockID = arrStock.slice(-1)[0].ID;
@@ -70,7 +71,7 @@ export default class extends React.Component {
             removeStockNameStorage();
             this.setState({
               isOpenStock: true,
-              stockName: null
+              stockName: null,
             });
           }
         }, 500);
@@ -84,23 +85,6 @@ export default class extends React.Component {
     });
   };
 
-  userHTML = () => {
-    if (!getUser()) {
-      return (
-        <Link href="/login/" noLinkClass>
-          <FaRegUser />
-        </Link>
-      )
-    }
-    else {
-      return (
-        <Link href="/profile/" noLinkClass>
-          <FaRegUser />
-        </Link>
-      )
-    }
-  }
-
   nameStock = (name) => {
     this.setState({
       stockName: name,
@@ -109,7 +93,7 @@ export default class extends React.Component {
 
   searchPage = () => {
     this.$f7router.navigate("/search/");
-  }
+  };
 
   render() {
     const { isOpenStock, stockName } = this.state;
@@ -142,7 +126,6 @@ export default class extends React.Component {
                     <div className="menu">
                       <CartToolBar />
                       <NotificationIcon />
-                      {this.userHTML()}
                     </div>
                   </div>
                 </div>
@@ -159,9 +142,12 @@ export default class extends React.Component {
                   </div>
                   <SlideList />
                   <ListService id="42" />
-                  {
-                    getUser() && <ListService id="45"/>
-                  }
+                  {getUser() && <ListService id="45" />}
+                </div>
+              </div>
+              <div className="home-page__news mb-8">
+                <div className="page-news__list">
+                  <ServiceHot f7={this.$f7router} />
                 </div>
               </div>
               <ListImage />

@@ -1,5 +1,13 @@
 import React from "react";
-import { Page, Link, Toolbar, Navbar } from "framework7-react";
+import {
+  Page,
+  Link,
+  Toolbar,
+  Navbar,
+  Sheet,
+  Button,
+  PageContent,
+} from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import UserService from "../../service/user.service";
 import NotificationIcon from "../../components/NotificationIcon";
@@ -9,6 +17,8 @@ import {
   formatPriceVietnamese,
   checkImageProduct,
 } from "../../constants/format";
+import Skeleton from "react-loading-skeleton";
+import ReactHtmlParser from "react-html-parser";
 import moment from "moment";
 import "moment/locale/vi";
 moment.locale("vi");
@@ -18,10 +28,25 @@ export default class extends React.Component {
     super();
     this.state = {
       arrOder: [],
+      loading: false,
+      loadingText: false,
+      textPay: "",
     };
   }
   componentDidMount() {
     this.getOrderAll();
+
+    this.setState({
+      loadingText: true,
+    });
+    UserService.getConfig("App.thanhtoan")
+      .then(({ data }) => {
+        this.setState({
+          textPay: data.data && data.data[0]?.Value,
+          loadingText: false,
+        });
+      })
+      .catch((error) => console.log(error));
   }
 
   getOrderAll = () => {
@@ -31,16 +56,17 @@ export default class extends React.Component {
       this.$f7router.navigate("/login/");
       return;
     }
+    this.setState(() => ({ loading: true }));
     const member = {
       USN: infoUser.MobilePhone,
       PWD: PWD,
     };
     UserService.getOrderAll2(member)
       .then((response) => {
-        
         const data = response.data;
         this.setState({
           arrOder: data,
+          loading: false,
         });
       })
       .catch((er) => console.log(er));
@@ -55,7 +81,7 @@ export default class extends React.Component {
     if (status === "finish") {
       return "success";
     }
-  }
+  };
 
   async loadRefresh(done) {
     await this.getOrderAll();
@@ -64,7 +90,7 @@ export default class extends React.Component {
   }
 
   render() {
-    const { arrOder } = this.state;
+    const { arrOder, loading, loadingText, textPay } = this.state;
     return (
       <Page
         onPtrRefresh={this.loadRefresh.bind(this)}
@@ -89,7 +115,63 @@ export default class extends React.Component {
         <div className="page-render no-bg p-0">
           <div className="page-order">
             <div className="page-order__list">
-              {arrOder.length > 0 ? (
+              {loading &&
+                Array(5)
+                  .fill()
+                  .map((item, index) => (
+                    <Link key={index} href="" noLinkClass className="item">
+                      <div className="item-header">
+                        <i className="las la-dolly"></i>
+                        <div className="text">
+                          <div className="date">
+                            <Skeleton width={60} />
+                          </div>
+                          <div className={`status`}>
+                            <Skeleton width={60} />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="item-body">
+                        <div className="list-sub">
+                          {Array(index + 2)
+                            .fill()
+                            .map((sub, idx) => (
+                              <div className="list-sub-item" key={idx}>
+                                <div className="img">
+                                  <Skeleton width={60} height={60} />
+                                </div>
+                                <div className="text">
+                                  <Skeleton count={2} />
+                                  <div className="text-count">
+                                    <Skeleton width={70} />
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                      <div className="item-footer">
+                        <div className="content-item">
+                          <span>Tổng đơn hàng :</span>
+                          <span className="price text-red">
+                            <Skeleton width={60} />
+                          </span>
+                        </div>
+                        <div className="content-item">
+                          <span>Đã thanh toán :</span>
+                          <span className="price">
+                            <Skeleton width={60} />
+                          </span>
+                          <span className="px">,</span>
+                          <span>Còn nợ :</span>
+                          <span className="price">
+                            <Skeleton width={60} />
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+              {!loading && arrOder.length > 0 ? (
                 arrOder &&
                 arrOder.map((item, index) => (
                   <Link key={index} href="" noLinkClass className="item">
@@ -107,37 +189,94 @@ export default class extends React.Component {
                       </div>
                     </div>
                     <div className="item-body">
-                      <div className="image">
-                        <img src={checkImageProduct(item.Thumb1)} />
-                      </div>
-                      <div className="content">
-                        <div className="content-item">x{item.Total}</div>
-                        <div className="content-item">
-                          Đã thanh toán :
-                          <span>
-                            {formatPriceVietnamese(
-                              item.ToPay - Math.abs(item.RemainPay)
-                            )}
-                            <b>₫</b>
-                          </span>
-                        </div>
-                        <div className="content-item">
-                          Còn nợ :
-                          <span>
-                            {formatPriceVietnamese(Math.abs(item.RemainPay))}
-                            <b>₫</b>
-                          </span>
-                        </div>
+                      <div className="list-sub">
+                        {item.Items &&
+                          item.Items.map((sub, idx) => (
+                            <div className="list-sub-item" key={idx}>
+                              <div className="img">
+                                <img src={checkImageProduct(sub.ProdThumb)} />
+                              </div>
+                              <div className="text">
+                                <div className="text-name">{sub.ProdTitle}</div>
+                                <div className="text-count">
+                                  SL <b>x{sub.Qty}</b>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
                       </div>
                     </div>
                     <div className="item-footer">
                       <div className="content-item">
                         <span>Tổng đơn hàng :</span>
-                        <span>
+                        <span className="price text-red">
                           {formatPriceVietnamese(item.ToPay)}
                           <b>₫</b>
                         </span>
                       </div>
+                      <div className="content-item">
+                        <span>Đã thanh toán :</span>
+                        <span className="price">
+                          {formatPriceVietnamese(
+                            item.ToPay - Math.abs(item.RemainPay)
+                          )}
+                          <b>₫</b>
+                        </span>
+                        <span className="px">,</span>
+                        <span>Còn nợ :</span>
+                        <span className="price">
+                          {formatPriceVietnamese(Math.abs(item.RemainPay))}
+                          <b>₫</b>
+                        </span>
+                        <div className="btn-div">
+                          {Math.abs(item.RemainPay) > 0 && (
+                            <Button
+                              sheetOpen={`.demo-sheet-${item.ID}`}
+                              className="show-more"
+                            >
+                              Thanh toán
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+
+                      <Sheet
+                        className={`demo-sheet-${item.ID} sheet-detail sheet-detail-order`}
+                        style={{
+                          height: "auto !important",
+                          "--f7-sheet-bg-color": "#fff",
+                        }}
+                        swipeToClose
+                        backdrop
+                      >
+                        <Button
+                          sheetClose={`.demo-sheet-${item.ID}`}
+                          className="show-more"
+                        >
+                          <i className="las la-times"></i>
+                        </Button>
+                        <PageContent>
+                          <div className="page-shop__service-detail">
+                            <div className="title">
+                              <h4>Thanh toán đơn hàng #{item.ID}</h4>
+                            </div>
+                            <div className="content">
+                              {textPay &&
+                                ReactHtmlParser(
+                                  textPay
+                                    .replaceAll("ID_ĐH", `#${item.ID}`)
+                                    .replaceAll(
+                                      "MONEY",
+                                      `${formatPriceVietnamese(
+                                        Math.abs(item.RemainPay)
+                                      )} ₫`
+                                    )
+                                    .replaceAll("ID_DH", `${item.ID}`)
+                                )}
+                            </div>
+                          </div>
+                        </PageContent>
+                      </Sheet>
                     </div>
                   </Link>
                 ))

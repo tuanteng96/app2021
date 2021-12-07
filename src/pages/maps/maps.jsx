@@ -20,7 +20,7 @@ export default class extends React.Component {
     UserService.getStock()
       .then((response) => {
         const { all } = response.data.data;
-        const newAll = all.filter(item => item.Title !== "Kho");
+        const newAll = all.filter((item) => item.ID !== 778);
         this.setState({
           arrMaps: newAll,
           currentMap: newAll[0].DescSEO,

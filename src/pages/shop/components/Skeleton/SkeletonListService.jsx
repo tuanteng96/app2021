@@ -26,7 +26,7 @@ export default class SkeletonListService extends React.Component {
                       <Skeleton duration={2} />
                     </div>
                     <Button className="show-more">
-                      Xem tất cả <i className="las la-angle-right"></i>
+                      Chi tiết <i className="las la-angle-right"></i>
                     </Button>
                   </div>
                   <div className="service-about__list">

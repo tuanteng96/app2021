@@ -40,6 +40,7 @@
         "react": "^16.13.1",
         "react-barcode": "^1.4.0",
         "react-before-after-slider": "^1.0.4",
+        "react-copy-to-clipboard": "^5.0.4",
         "react-debounce-input": "^3.2.2",
         "react-dom": "^16.13.1",
         "react-html-parser": "^2.0.2",

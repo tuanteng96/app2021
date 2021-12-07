@@ -51,7 +51,7 @@ export default class extends React.Component {
             dfItem: data.dfItem,
             items: data.items.reverse(),
             order: data.order,
-            isLoading: false
+            isLoading: false,
           });
         }
       })
@@ -85,7 +85,9 @@ export default class extends React.Component {
               position: toast.POSITION.TOP_LEFT,
               autoClose: 3000,
             });
-            this.$f7router.navigate("/pay-success/" + data.order.ID);
+            this.$f7router.navigate(
+              "/pay-success/" + data.order.ID + `/?money=${data.order.ToPay}`
+            );
             self.$f7.preloader.hide();
           }, 1000);
         }

@@ -509,6 +509,10 @@
                 color: $color-app;
                 border: 1px solid $color-app;
             }
+            &.sheet-open {
+                line-height: 43px;
+                font-size: 14px;
+            }
         }
     }
 }

@@ -261,7 +261,9 @@ export default class extends React.Component {
                               <h4>Thanh toán đơn hàng #{item.ID}</h4>
                             </div>
                             <div className="content">
-                              {textPay &&
+                              {loadingText && <Skeleton count={6} />}
+                              {!loadingText &&
+                                textPay &&
                                 ReactHtmlParser(
                                   textPay
                                     .replaceAll("ID_ĐH", `#${item.ID}`)

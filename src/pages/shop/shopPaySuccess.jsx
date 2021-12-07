@@ -1,28 +1,58 @@
-import { Navbar, Toolbar, Page, Link } from "framework7-react";
+import {
+  Navbar,
+  Toolbar,
+  Page,
+  Link,
+  Button,
+  Sheet,
+  PageContent,
+} from "framework7-react";
 import React from "react";
 import IconSucces from "../../assets/images/box.svg";
 import NotificationIcon from "../../components/NotificationIcon";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import UserService from "../../service/user.service";
 import { getPassword, setUserStorage, getUser } from "../../constants/user";
+import userService from "../../service/user.service";
+import Skeleton from "react-loading-skeleton";
+import ReactHtmlParser from "react-html-parser";
+import { formatPriceVietnamese } from "../../constants/format";
 
 export default class extends React.Component {
   constructor() {
     super();
-    this.state = {};
+    this.state = {
+      loadingText: false,
+      textPay: ""
+    };
   }
   componentDidMount() {
-      const userInfo = getUser();
-      if (!userInfo) return false;
-      const pwd = getPassword();
-      UserService.getInfo(userInfo.MobilePhone, pwd)
-          .then(response => {
-              const data = response.data.info;
-              setUserStorage(data.etoken, data, pwd);
-          })
-          .catch(er => console.log(er));
+    const userInfo = getUser();
+    if (!userInfo) return false;
+    const pwd = getPassword();
+    UserService.getInfo(userInfo.MobilePhone, pwd)
+      .then((response) => {
+        const data = response.data.info;
+        setUserStorage(data.etoken, data, pwd);
+      })
+      .catch((er) => console.log(er));
+
+    this.setState({
+      loadingText: true,
+    });
+    userService
+      .getConfig("App.thanhtoan")
+      .then(({ data }) => {
+        this.setState({
+          textPay: data.data && data.data[0]?.Value,
+          loadingText: false,
+        });
+      })
+      .catch((error) => console.log(error));
   }
   render() {
+    const { loadingText, textPay } = this.state;
+    console.log(this.$f7route);
     return (
       <Page
         onPageBeforeOut={this.onPageBeforeOut}
@@ -57,7 +87,52 @@ export default class extends React.Component {
               <div className="btn">
                 <Link href="/order/">Đơn hàng của bạn</Link>
                 <Link href="/shop/">Tiếp tục mua hàng</Link>
+                <Button sheetOpen={`.demo-sheet`} className="show-more">
+                  Hướng dẫn thanh toán
+                </Button>
               </div>
+              <Sheet
+                className={`demo-sheet sheet-detail sheet-detail-order`}
+                style={{
+                  height: "auto !important",
+                  "--f7-sheet-bg-color": "#fff",
+                }}
+                swipeToClose
+                backdrop
+              >
+                <Button sheetClose={`.demo-sheet`} className="show-more">
+                  <i className="las la-times"></i>
+                </Button>
+                <PageContent>
+                  <div className="page-shop__service-detail">
+                    <div className="title">
+                      <h4>Thanh toán đơn hàng #</h4>
+                    </div>
+                    <div className="content">
+                      {loadingText && <Skeleton count={6} />}
+                      {!loadingText &&
+                        textPay &&
+                        ReactHtmlParser(
+                          textPay
+                            .replaceAll(
+                              "ID_ĐH",
+                              `#${this.$f7route.params.orderID}`
+                            )
+                            .replaceAll(
+                              "MONEY",
+                              `${formatPriceVietnamese(
+                                Math.abs(this.$f7route.query.money)
+                              )} ₫`
+                            )
+                            .replaceAll(
+                              "ID_DH",
+                              `${this.$f7route.params.orderID}`
+                            )
+                        )}
+                    </div>
+                  </div>
+                </PageContent>
+              </Sheet>
             </div>
           </div>
         </div>

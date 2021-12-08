@@ -61,12 +61,8 @@ export default class ListImage extends React.Component {
   };
 
   render() {
-    const {
-      arrPhotoCustomer,
-      PhotoCustomerActive,
-      isActivePhoto,
-      isLoading,
-    } = this.state;
+    const { arrPhotoCustomer, PhotoCustomerActive, isActivePhoto, isLoading } =
+      this.state;
 
     const settingsPhoto = {
       className: "slider variable-width",
@@ -77,60 +73,62 @@ export default class ListImage extends React.Component {
       centerPadding: "20px",
       variableWidth: true,
     };
-
-    return (
-      <div className="home-page__client">
-        <div className="title">Ảnh khách hàng</div>
-        {!isLoading && (
-          <React.Fragment>
-            <div className="box">
-              <BeforeAfterSlider
-                before={`${SERVER_APP}/Upload/image/${
-                  PhotoCustomerActive && PhotoCustomerActive.FileName2
-                }`}
-                after={`${SERVER_APP}/Upload/image/${
-                  PhotoCustomerActive && PhotoCustomerActive.FileName
-                }`}
-                className="box-beforeafter"
-                width={this.handStyleWidth()}
-                height={230}
-              />
-            </div>
-            <div className="note">
-              <span>After</span>
-              <span>Before</span>
-            </div>
-            <div className="list-client">
-              <Slider {...settingsPhoto}>
-                {arrPhotoCustomer &&
-                  arrPhotoCustomer.map((item, index) => {
-                    if (index > 10) return false;
-                    return (
-                      <div
-                        className={`list-client__item ${
-                          isActivePhoto === item.ID ? "active" : ""
-                        }`}
-                        key={item.ID}
-                        style={this.handStyleAfter()}
-                        onClick={() => this.handlePhotoCustomer(item)}
-                      >
-                        <div className="image">
-                          <img
-                            className="animate__animated"
-                            src={`${SERVER_APP}/Upload/image/${item.FileName2}`}
-                            alt=""
-                          />
-                          <FaCheck />
+    if (arrPhotoCustomer && arrPhotoCustomer.length > 0) {
+      return (
+        <div className="home-page__client">
+          <div className="title">Ảnh khách hàng</div>
+          {!isLoading && (
+            <React.Fragment>
+              <div className="box">
+                <BeforeAfterSlider
+                  before={`${SERVER_APP}/Upload/image/${
+                    PhotoCustomerActive && PhotoCustomerActive.FileName2
+                  }`}
+                  after={`${SERVER_APP}/Upload/image/${
+                    PhotoCustomerActive && PhotoCustomerActive.FileName
+                  }`}
+                  className="box-beforeafter"
+                  width={this.handStyleWidth()}
+                  height={230}
+                />
+              </div>
+              <div className="note">
+                <span>After</span>
+                <span>Before</span>
+              </div>
+              <div className="list-client">
+                <Slider {...settingsPhoto}>
+                  {arrPhotoCustomer &&
+                    arrPhotoCustomer.map((item, index) => {
+                      if (index > 10) return false;
+                      return (
+                        <div
+                          className={`list-client__item ${
+                            isActivePhoto === item.ID ? "active" : ""
+                          }`}
+                          key={item.ID}
+                          style={this.handStyleAfter()}
+                          onClick={() => this.handlePhotoCustomer(item)}
+                        >
+                          <div className="image">
+                            <img
+                              className="animate__animated"
+                              src={`${SERVER_APP}/Upload/image/${item.FileName2}`}
+                              alt=""
+                            />
+                            <FaCheck />
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-              </Slider>
-            </div>
-          </React.Fragment>
-        )}
-        {isLoading && <SkeletonCustomer />}
-      </div>
-    );
+                      );
+                    })}
+                </Slider>
+              </div>
+            </React.Fragment>
+          )}
+          {isLoading && <SkeletonCustomer />}
+        </div>
+      );
+    }
+    return "";
   }
 }

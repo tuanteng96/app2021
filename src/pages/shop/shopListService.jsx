@@ -11,6 +11,7 @@ import {
   PageContent,
   Button,
   Searchbar,
+  Subnavbar,
 } from "framework7-react";
 import ShopDataService from "./../../service/shop.service";
 import ReactHtmlParser from "react-html-parser";
@@ -189,13 +190,15 @@ export default class extends React.Component {
             onClickClear={() => this.hideSearch()}
             onClickDisable={() => this.hideSearch()}
           ></Searchbar>
+          <Subnavbar className="subnavbar-prod">
+            <CategoriesList
+              id={CateID}
+              currentId={currentId}
+              changeCate={(cate) => this.changeCate(cate)}
+            />
+          </Subnavbar>
         </Navbar>
         <div className="page-render p-0">
-          <CategoriesList
-            id={CateID}
-            currentId={currentId}
-            changeCate={(cate) => this.changeCate(cate)}
-          />
           <div className="page-shop p-15">
             <div className="page-shop__service">
               {isSearch === false ? (

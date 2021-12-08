@@ -10,6 +10,7 @@ import {
   Row,
   Col,
   Searchbar,
+  Subnavbar,
 } from "framework7-react";
 import { getStockIDStorage } from "../../constants/user";
 import ShopDataService from "./../../service/shop.service";
@@ -265,13 +266,15 @@ export default class extends React.Component {
             onClickClear={() => this.hideSearch()}
             onClickDisable={() => this.hideSearch()}
           ></Searchbar>
+          <Subnavbar className="subnavbar-prod">
+            <CategoriesList
+              id={CateID}
+              currentId={currentId}
+              changeCate={(cate) => this.changeCate(cate)}
+            />
+          </Subnavbar>
         </Navbar>
         <div className="page-render page-render-shop no-bg p-0">
-          <CategoriesList
-            id={CateID}
-            currentId={currentId}
-            changeCate={(cate) => this.changeCate(cate)}
-          />
           <div className="page-shop no-bg p-15">
             <div className="page-shop__list">
               <Row>

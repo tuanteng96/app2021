@@ -77,10 +77,17 @@ export default class extends React.Component {
     return dateSplit[1] + " " + dateSplit[0];
   };
 
-  checkStatus = (status) => {
-    if (status === "finish") {
+  checkStatus = (item) => {
+    if (item.Status === "finish") {
       return "success";
     }
+    if (item.Status === "cancel" && item.IsReturn !== 0) {
+      return "primary";
+    }
+    if (item.Status === "cancel") {
+      return "danger";
+    }
+    return "warning";
   };
 
   async loadRefresh(done) {
@@ -181,10 +188,10 @@ export default class extends React.Component {
                         <div className="date">
                           {this.formatDateFull(item.OrderDate)}
                         </div>
-                        <div
-                          className={`status ` + this.checkStatus(item.Status)}
-                        >
-                          {item.StatusText}
+                        <div className={`status ` + this.checkStatus(item)}>
+                          {item.IsReturn !== 0 && item.Status === "cancel"
+                            ? "Trả lại"
+                            : item.StatusText}
                         </div>
                       </div>
                     </div>
@@ -214,31 +221,31 @@ export default class extends React.Component {
                           <b>₫</b>
                         </span>
                       </div>
-                      <div className="content-item">
-                        <span>Đã thanh toán :</span>
-                        <span className="price">
-                          {formatPriceVietnamese(
-                            item.ToPay - Math.abs(item.RemainPay)
-                          )}
-                          <b>₫</b>
-                        </span>
-                        <span className="px">,</span>
-                        <span>Còn nợ :</span>
-                        <span className="price">
-                          {formatPriceVietnamese(Math.abs(item.RemainPay))}
-                          <b>₫</b>
-                        </span>
-                        <div className="btn-div">
-                          {Math.abs(item.RemainPay) > 0 && (
-                            <Button
-                              sheetOpen={`.demo-sheet-${item.ID}`}
-                              className="show-more"
-                            >
-                              Thanh toán
-                            </Button>
-                          )}
+                      {item.Status !== "cancel" && (
+                        <div className="content-item">
+                          <span>Đã thanh toán :</span>
+                          <span className="price">
+                            {formatPriceVietnamese(item.Payed)}
+                            <b>₫</b>
+                          </span>
+                          <span className="px">,</span>
+                          <span>Còn nợ :</span>
+                          <span className="price">
+                            {formatPriceVietnamese(Math.abs(item.RemainPay))}
+                            <b>₫</b>
+                          </span>
+                          <div className="btn-div">
+                            {Math.abs(item.RemainPay) > 0 && (
+                              <Button
+                                sheetOpen={`.demo-sheet-${item.ID}`}
+                                className="show-more"
+                              >
+                                Thanh toán
+                              </Button>
+                            )}
+                          </div>
                         </div>
-                      </div>
+                      )}
 
                       <Sheet
                         className={`demo-sheet-${item.ID} sheet-detail sheet-detail-order`}

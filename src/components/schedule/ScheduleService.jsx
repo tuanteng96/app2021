@@ -12,9 +12,6 @@ export default class ScheduleService extends React.Component {
       arrProd: [],
       activeID: 0,
       arrProdActive: [],
-      resetStep1: false,
-      resetStep2: false,
-      resetStep3: false,
     };
   }
   componentDidMount() {}
@@ -22,7 +19,6 @@ export default class ScheduleService extends React.Component {
   serviceSelected = (item) => {
     this.props.handleService(item);
     this.setState({
-      resetStep1: !this.state.resetStep1,
       activeID: 0,
     });
   };
@@ -30,8 +26,6 @@ export default class ScheduleService extends React.Component {
   handleDataService = (item, data, loading) => {
     this.setState({
       activeID: item.OrderItemID,
-      resetStep1: !this.state.resetStep1,
-      resetStep2: !this.state.resetStep2,
     });
     this.props.handleDataService(item, data, loading);
   };
@@ -39,26 +33,23 @@ export default class ScheduleService extends React.Component {
   handleMultiService = (item) => {
     this.props.handleService(item.length > 0 ? item : null);
     this.setState({
-      resetStep2: !this.state.resetStep2,
       activeID: 0,
     });
   };
 
   render() {
-    const { activeID, resetStep1, resetStep2, resetStep3 } = this.state;
+    const { activeID } = this.state;
     return (
       <div className="page-schedule__box">
         <div className="service-me">
           <ServiceCartComponent
             handleMultiService={(item) => this.handleMultiService(item)}
-            reset={resetStep1}
           />
         </div>
         <div className="service-hot">
           <h5>Dịch vụ nổi bật</h5>
           <ServiceHotComponent
             serviceSelected={(item) => this.serviceSelected(item)}
-            reset={resetStep2}
           />
         </div>
         <div className="service-spa">
@@ -68,7 +59,6 @@ export default class ScheduleService extends React.Component {
               this.handleDataService(item, data, loading)
             }
             active={activeID}
-            reset={resetStep3}
           />
         </div>
       </div>

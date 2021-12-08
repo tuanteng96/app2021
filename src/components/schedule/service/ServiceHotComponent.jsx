@@ -1,7 +1,9 @@
 import React from "react";
 import NewsDataService from "../../../service/news.service";
+import ShopDataService from "../../../service/shop.service";
 import Slider from "react-slick";
 import { SERVER_APP } from "../../../constants/config";
+import { getStockIDStorage } from "../../../constants/user";
 import { AiFillCheckCircle } from "react-icons/ai";
 import ServiceHotSkeleton from "./ServiceHotSkeleton";
 
@@ -23,15 +25,20 @@ export default class ServiceHotComponent extends React.Component {
     });
   };
   getService = () => {
-    NewsDataService.getBannerName("App.DichVuBook")
+    let stockid = getStockIDStorage();
+    stockid ? stockid : 0;
+    ShopDataService.getServiceParent(795, stockid)
       .then((response) => {
-        const data = response.data.data;
+        const { data } = response.data;
+        const newData = data.filter((item) => {
+          return item.root.Tags.includes("hot");
+        });
         this.setState({
+          arrService: newData,
           isLoading: false,
-          arrService: data,
         });
       })
-      .catch((er) => console.log(er));
+      .catch((e) => console.log(e));
   };
 
   handleClick = (item) => {
@@ -51,7 +58,7 @@ export default class ServiceHotComponent extends React.Component {
     this.setState({
       active: 0,
     });
-  }
+  };
 
   componentDidUpdate(prevProps, prevState) {
     const { reset } = this.props;
@@ -63,6 +70,7 @@ export default class ServiceHotComponent extends React.Component {
 
   render() {
     const { arrService, isLoading, active } = this.state;
+
     const settingService = {
       className: "slider variable-width",
       dots: false,
@@ -82,14 +90,16 @@ export default class ServiceHotComponent extends React.Component {
               arrService.map((item, index) => {
                 return (
                   <div
-                    className={`item ${active === item.ID ? "active" : ""}`}
-                    key={item.ID}
-                    onClick={() => this.handleClick(item)}
+                    className={`item ${
+                      active === item.root.ID ? "active" : ""
+                    }`}
+                    key={index}
+                    onClick={() => this.handleClick(item.root)}
                     style={this.handStyle()}
                   >
                     <img
-                      src={SERVER_APP + "/Upload/image/" + item.FileName}
-                      alt={item.Title}
+                      src={SERVER_APP + "/Upload/image/" + item.root.Thumbnail}
+                      alt={item.root.Title}
                     />
                     <div className="icon">
                       <AiFillCheckCircle />

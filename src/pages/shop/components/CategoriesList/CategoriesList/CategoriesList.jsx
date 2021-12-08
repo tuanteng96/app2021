@@ -93,7 +93,7 @@ export default class CategoriesList extends React.Component {
               return (
                 <Link
                   //href={"/shop/" + item.ID + "/"}
-                  className={`page-news__list-item ${
+                  className={`${
                     Number(activeId) === Number(item.ID) && "active"
                   }`}
                   onClick={() => this.props.changeCate(item)}

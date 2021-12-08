@@ -660,20 +660,27 @@ export default class extends React.Component {
                   <div
                     className={
                       "price " +
-                      (checkSale(arrProduct.SaleBegin, arrProduct.SaleEnd) ===
-                      true
+                      (arrProduct.IsDisplayPrice === 1 &&
+                      checkSale(arrProduct.SaleBegin, arrProduct.SaleEnd) ===
+                        true
                         ? "hasSale"
                         : "")
                     }
                   >
-                    <p className="price-p">
-                      {formatPriceVietnamese(arrProduct.PriceProduct)}
-                      <b>₫</b>
-                    </p>
-                    <p className="price-s">
-                      {formatPriceVietnamese(arrProduct.PriceSale)}
-                      <b>₫</b>
-                    </p>
+                    {arrProduct.IsDisplayPrice === 1 ? (
+                      <React.Fragment>
+                        <p className="price-p">
+                          {formatPriceVietnamese(arrProduct.PriceProduct)}
+                          <b>₫</b>
+                        </p>
+                        <p className="price-s">
+                          {formatPriceVietnamese(arrProduct.PriceSale)}
+                          <b>₫</b>
+                        </p>
+                      </React.Fragment>
+                    ) : (
+                      <p className="price-p">Liên hệ</p>
+                    )}
                   </div>
                 </div>
               </div>

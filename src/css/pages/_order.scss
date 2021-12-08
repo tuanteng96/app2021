@@ -43,6 +43,12 @@
                     &.success {
                         color: $color-success;
                     }
+                    &.danger {
+                        color: $color-danger;
+                    }
+                    &.primary {
+                        color: $color-primary;
+                    }
                 }
             }
             .item-body {

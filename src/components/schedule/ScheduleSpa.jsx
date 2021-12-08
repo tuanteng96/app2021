@@ -247,14 +247,14 @@ export default class ScheduleSpa extends React.Component {
       this.setState({
         timeSelected: "",
         itemBook: null,
-        otherBook: null,
+        //otherBook: null,
       });
       this.props.handleTime({});
     } else {
       this.setState({
         timeSelected: time,
         itemBook: itemBookNew,
-        otherBook: null,
+        //otherBook: null,
       });
       this.props.handleTime(itemBookNew);
     }
@@ -276,9 +276,8 @@ export default class ScheduleSpa extends React.Component {
 
   handleSelectDate = async (date) => {
     const { CurrentStockID, CurrentStockName, StockSelected } = this.state;
-
     const itemBookNew = {};
-    itemBookNew.time = moment(date).format("LT");
+    //itemBookNew.time = moment(date).format("LT");
     itemBookNew.stock = StockSelected
       ? StockSelected
       : parseInt(CurrentStockID);
@@ -351,16 +350,16 @@ export default class ScheduleSpa extends React.Component {
     };
 
     const dateConfig = {
-      hour: {
-        format: "hh",
-        caption: "Giờ",
-        step: 1,
-      },
-      minute: {
-        format: "mm",
-        caption: "Phút",
-        step: 1,
-      },
+      // hour: {
+      //   format: "hh",
+      //   caption: "Giờ",
+      //   step: 1,
+      // },
+      // minute: {
+      //   format: "mm",
+      //   caption: "Phút",
+      //   step: 1,
+      // },
       date: {
         caption: "Ngày",
         format: "D",
@@ -459,11 +458,7 @@ export default class ScheduleSpa extends React.Component {
                     // is-active={isActive}
                     // is-index={index}
                   >
-                    {otherBook
-                      ? moment(otherBook).format("LT") +
-                        " " +
-                        moment(otherBook).format("L")
-                      : "Ngày khác"}
+                    {otherBook ? moment(otherBook).format("L") : "Ngày khác"}
                   </span>
                 </Link>
               </Col>
@@ -471,7 +466,7 @@ export default class ScheduleSpa extends React.Component {
                 theme="ios"
                 cancelText="Đóng"
                 confirmText="Chọn"
-                headerFormat="hh:mm Ngày DD/MM/YYYY"
+                headerFormat="Ngày DD/MM/YYYY"
                 showCaption={true}
                 dateConfig={dateConfig}
                 value={otherBook ? new Date(otherBook) : new Date()}

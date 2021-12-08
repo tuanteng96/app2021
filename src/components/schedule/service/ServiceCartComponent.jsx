@@ -84,7 +84,6 @@ export default class ServiceCartComponent extends React.Component {
 
   render() {
     const { arrCardsv, isLoading } = this.state;
-    console.log(arrCardsv);
     return (
       <>
         <h5 onClick={() => this.onRefresh()}>Thẻ dịch vụ của bạn</h5>

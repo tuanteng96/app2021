@@ -342,7 +342,7 @@
 
 .voucher-popup-swipe {
     min-height: 50%;
-    height: auto;
+    height: 85%;
     top: auto;
     bottom: 0;
     border-top-right-radius: 5px;
@@ -380,8 +380,11 @@
         }
     }
     .body {
+        height: calc(100% - 72px);
+        overflow: auto;
+        margin-top: 15px;
         ul {
-            padding: 15px;
+            padding: 0 15px;
             li {
                 @include flexbox();
                 //background-image: url(../../assets/images/coupon_bg.svg);

@@ -757,13 +757,15 @@ export default class extends React.Component {
           </div>
           <div className="body">
             {voucherList.length === 0 ? (
-              <div>Bạn không có mã khuyến mại.</div>
+              <ul>
+                <li>Bạn không có mã khuyến mại.</li>
+              </ul>
             ) : (
               ""
             )}
             <ul>
               {voucherList &&
-                voucherList.map((item, index) => (
+                voucherList.slice().reverse().map((item, index) => (
                   <li
                     key={index}
                     style={{

@@ -223,19 +223,151 @@ export default class extends React.Component {
                       </div>
                       {item.Status !== "cancel" && (
                         <div className="content-item">
-                          <span>Đã thanh toán :</span>
+                          {/* <span>Đã thanh toán :</span>
                           <span className="price">
                             {formatPriceVietnamese(item.Payed)}
                             <b>₫</b>
-                          </span>
+                          </span> */}
+                          {item.Status === "finish" && (
+                            <React.Fragment>
+                              {item.thanhtoan.thanh_toan_tien > 0 && (
+                                <React.Fragment>
+                                  <span className="px">,</span>
+                                  <span>Thanh toán thực tế :</span>
+                                  <span className="price">
+                                    {formatPriceVietnamese(
+                                      Math.abs(item.thanhtoan.thanh_toan_tien)
+                                    )}
+                                    <b>₫</b>
+                                  </span>
+                                </React.Fragment>
+                              )}
+                              {item.thanhtoan.thanh_toan_vi > 0 && (
+                                <React.Fragment>
+                                  <span className="px">,</span>
+                                  <span>Thanh toán ví :</span>
+                                  <span className="price">
+                                    {formatPriceVietnamese(
+                                      Math.abs(item.thanhtoan.thanh_toan_vi)
+                                    )}
+                                    <b>₫</b>
+                                  </span>
+                                </React.Fragment>
+                              )}
+                              {item.thanhtoan.hoan_vi_tra_hang > 0 && (
+                                <React.Fragment>
+                                  <span className="px">,</span>
+                                  <span>Hoàn ví khi trả hàng :</span>
+                                  <span className="price">
+                                    {formatPriceVietnamese(
+                                      Math.abs(item.thanhtoan.hoan_vi_tra_hang)
+                                    )}
+                                    <b>₫</b>
+                                  </span>
+                                </React.Fragment>
+                              )}
+                              {item.thanhtoan.hoan_vi_ket_thuc_the > 0 && (
+                                <React.Fragment>
+                                  <span className="px">,</span>
+                                  <span>Hoàn ví khi kết thúc thẻ :</span>
+                                  <span className="price">
+                                    {formatPriceVietnamese(
+                                      Math.abs(
+                                        item.thanhtoan.hoan_vi_ket_thuc_the
+                                      )
+                                    )}
+                                    <b>₫</b>
+                                  </span>
+                                </React.Fragment>
+                              )}
+                              {item.thanhtoan.ket_thuc_the_hoan_tien > 0 && (
+                                <React.Fragment>
+                                  <span className="px">,</span>
+                                  <span>Kết thúc thẻ hoàn tiền :</span>
+                                  <span className="price">
+                                    {formatPriceVietnamese(
+                                      Math.abs(
+                                        item.thanhtoan.ket_thuc_the_hoan_tien
+                                      )
+                                    )}
+                                    <b>₫</b>
+                                  </span>
+                                </React.Fragment>
+                              )}
+                              {item.thanhtoan.ket_thuc_the_hoan_vi > 0 && (
+                                <React.Fragment>
+                                  <span className="px">,</span>
+                                  <span>Kết thúc thẻ hoàn ví :</span>
+                                  <span className="price">
+                                    {formatPriceVietnamese(
+                                      Math.abs(
+                                        item.thanhtoan.ket_thuc_the_hoan_vi
+                                      )
+                                    )}
+                                    <b>₫</b>
+                                  </span>
+                                </React.Fragment>
+                              )}
+                              {/* {item.thanhtoan.thanh_toan_ao > 0 && (
+                                <React.Fragment>
+                                  <span className="px">,</span>
+                                  <span>Thanh toán ảo :</span>
+                                  <span className="price">
+                                    {formatPriceVietnamese(
+                                      Math.abs(item.thanhtoan.thanh_toan_ao)
+                                    )}
+                                    <b>₫</b>
+                                  </span>
+                                </React.Fragment>
+                              )} */}
+                              {item.thanhtoan.tra_hang_hoan_tien > 0 && (
+                                <React.Fragment>
+                                  <span className="px">,</span>
+                                  <span>Trả hàng hoàn tiền :</span>
+                                  <span className="price">
+                                    {formatPriceVietnamese(
+                                      Math.abs(
+                                        item.thanhtoan.tra_hang_hoan_tien
+                                      )
+                                    )}
+                                    <b>₫</b>
+                                  </span>
+                                </React.Fragment>
+                              )}
+                              {item.thanhtoan.tra_hang_hoan_vi > 0 && (
+                                <React.Fragment>
+                                  <span className="px">,</span>
+                                  <span>Trả hàng ví :</span>
+                                  <span className="price">
+                                    {formatPriceVietnamese(
+                                      Math.abs(item.thanhtoan.tra_hang_hoan_vi)
+                                    )}
+                                    <b>₫</b>
+                                  </span>
+                                </React.Fragment>
+                              )}
+                            </React.Fragment>
+                          )}
                           <span className="px">,</span>
                           <span>Còn nợ :</span>
                           <span className="price">
-                            {formatPriceVietnamese(Math.abs(item.RemainPay))}
+                            {formatPriceVietnamese(
+                              Math.abs(
+                                item.thanhtoan.tong_gia_tri_dh -
+                                  item.thanhtoan.thanh_toan_tien -
+                                  item.thanhtoan.thanh_toan_vi -
+                                  item.thanhtoan.thanh_toan_ao
+                              )
+                            )}
                             <b>₫</b>
                           </span>
                           <div className="btn-div">
-                            {Math.abs(item.RemainPay) > 0 && (
+                            {Math.abs(
+                              item.thanhtoan.tong_gia_tri_dh -
+                                item.thanhtoan.thanh_toan_tien -
+                                item.thanhtoan.thanh_toan_vi -
+                                item.thanhtoan.thanh_toan_ao
+                            ) > 0 && (
                               <Button
                                 sheetOpen={`.demo-sheet-${item.ID}`}
                                 className="show-more"

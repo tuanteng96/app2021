@@ -124,191 +124,197 @@ export default class extends React.Component {
             {!loading && (
               <React.Fragment>
                 {VoucherAll && VoucherAll.length > 0 ? (
-                  VoucherAll.map((item, index) => (
-                    <div className="page-voucher__list-item" key={index}>
-                      {console.log(item)}
-                      <div className="voucher-icon">
-                        <div className="voucher-icon__text">
-                          <img src={SERVER_APP + "/app/images/logo-app.png"} />
+                  VoucherAll.slice()
+                    .reverse()
+                    .map((item, index) => (
+                      <div className="page-voucher__list-item" key={index}>
+                        <div className="voucher-icon">
+                          <div className="voucher-icon__text">
+                            <img
+                              src={SERVER_APP + "/app/images/logo-app.png"}
+                            />
+                          </div>
+                          <div className="voucher-icon__line"></div>
                         </div>
-                        <div className="voucher-icon__line"></div>
-                      </div>
-                      <div className="voucher-text">
-                        <div className="code">
-                          <span>Mã</span>
-                          <span>{item.ma}</span>
+                        <div className="voucher-text">
+                          <div className="code">
+                            <span>Mã</span>
+                            <span>{item.ma}</span>
+                          </div>
+                          <div className="voucher-value">
+                            Giảm tối đa{" "}
+                            {item.gia_tri.Phan_tram > 0
+                              ? `${item.gia_tri.Phan_tram}%`
+                              : `${formatPriceVietnamese(item.gia_tri.Tien)}`}
+                          </div>
+                          <ul>
+                            <li>
+                              HSD :{" "}
+                              {item.ngay === null ? (
+                                "Không giới hạn"
+                              ) : (
+                                <React.Fragment>
+                                  Còn <b>{checkDateDiff(item.ngay.From)}</b>{" "}
+                                  ngày
+                                </React.Fragment>
+                              )}
+                            </li>
+                            <li>
+                              <Button
+                                sheetOpen={`.demo-sheet-${item.Voucher.ID}`}
+                                className="show-more"
+                              >
+                                Chi tiết
+                              </Button>
+                            </li>
+                          </ul>
                         </div>
-                        <div className="voucher-value">
-                          Giảm tối đa{" "}
-                          {item.gia_tri.Phan_tram > 0
-                            ? `${item.gia_tri.Phan_tram}%`
-                            : `${formatPriceVietnamese(item.gia_tri.Tien)}`}
-                        </div>
-                        <ul>
-                          <li>
-                            HSD :{" "}
-                            {item.ngay === null ? (
-                              "Không giới hạn"
-                            ) : (
-                              <React.Fragment>
-                                Còn <b>{checkDateDiff(item.ngay.From)}</b> ngày
-                              </React.Fragment>
-                            )}
-                          </li>
-                          <li>
-                            <Button
-                              sheetOpen={`.demo-sheet-${item.Voucher.ID}`}
-                              className="show-more"
-                            >
-                              Chi tiết
-                            </Button>
-                          </li>
-                        </ul>
-                      </div>
 
-                      <Sheet
-                        className={`sheet-swipe-product sheet-swipe-voucher sheet-swipe-service demo-sheet-${item.Voucher.ID}`}
-                        style={{
-                          height: "auto",
-                          "--f7-sheet-bg-color": "#fff",
-                        }}
-                        swipeToClose
-                        swipeToStep
-                        backdrop
-                      >
-                        <div className="sheet-modal-swipe-step">
-                          <div className="sheet-modal-swipe__close"></div>
-                          <div className="sheet-swipe-product__content sheet-swipe-service__content">
-                            <div className="sheet-pay-head sheet-service-header">
-                              <div className="title">
-                                <b>{item.ma}</b>
+                        <Sheet
+                          className={`sheet-swipe-product sheet-swipe-voucher sheet-swipe-service demo-sheet-${item.Voucher.ID}`}
+                          style={{
+                            height: "auto",
+                            "--f7-sheet-bg-color": "#fff",
+                          }}
+                          swipeToClose
+                          swipeToStep
+                          backdrop
+                        >
+                          <div className="sheet-modal-swipe-step">
+                            <div className="sheet-modal-swipe__close"></div>
+                            <div className="sheet-swipe-product__content sheet-swipe-service__content">
+                              <div className="sheet-pay-head sheet-service-header">
+                                <div className="title">
+                                  <b>{item.ma}</b>
+                                </div>
                               </div>
-                            </div>
-                            <div className="sheet-service-lst">
-                              <div className="sheet-service-lst__item">
-                                <div className="item-sub">
-                                  <div className="item-sub__box">
-                                    <h5>Bắt đầu - Kết thúc</h5>
-                                    <div className="price">
-                                      {item.ngay === null
-                                        ? "Không giới hạn"
-                                        : `${moment(item.ngay.To).format(
-                                            "HH:mm DD/MM/YYYY"
-                                          )} - ${moment(item.ngay.From).format(
-                                            "HH:mm DD/MM/YYYY"
-                                          )}`}
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="item-sub">
-                                  <div className="item-sub__box">
-                                    <h5>Giá trị giảm giá</h5>
-                                    <div className="price">
-                                      {item.gia_tri.Phan_tram > 0
-                                        ? `${item.gia_tri.Phan_tram}%`
-                                        : `${formatPriceVietnamese(
-                                            item.gia_tri.Tien
-                                          )} Vnđ`}
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="item-sub">
-                                  <div className="item-sub__box">
-                                    <h5>Số lần sử dụng / Tổng số lần</h5>
-                                    <div className="price">
-                                      {item.gioi_han_so_lan_su_dung === -1
-                                        ? `${item.so_lan_su_dung} / Không giới hạn`
-                                        : `${item.so_lan_su_dung} / ${item.gioi_han_so_lan_su_dung} lần`}
-                                    </div>
-                                  </div>
-                                </div>
-                                {item.aff && (
+                              <div className="sheet-service-lst">
+                                <div className="sheet-service-lst__item">
                                   <div className="item-sub">
                                     <div className="item-sub__box">
-                                      <h5>Mã dùng chia sẻ cho bạn bè</h5>
-                                      <div className="price flex-share">
-                                        <div>{item.ma_chia_se}</div>
-                                        <CopyToClipboard
-                                          text={item.ma_chia_se}
-                                          onCopy={() => {
-                                            this.setState({ copied: true });
-                                            setTimeout(() => {
-                                              toast.success(
-                                                "Copy mã thành công !",
-                                                {
-                                                  position:
-                                                    toast.POSITION.TOP_LEFT,
-                                                  autoClose: 1000,
-                                                }
-                                              );
-                                              this.setState({ copied: false });
-                                            }, 1000);
-                                          }}
-                                        >
-                                          <div
-                                            className={`code ${
-                                              copied && "btn-no-click"
-                                            }`}
-                                          >
-                                            {copied
-                                              ? "Đang Copy ..."
-                                              : "Copy mã"}
-                                          </div>
-                                        </CopyToClipboard>
+                                      <h5>Bắt đầu - Kết thúc</h5>
+                                      <div className="price">
+                                        {item.ngay === null
+                                          ? "Không giới hạn"
+                                          : `${moment(item.ngay.To).format(
+                                              "HH:mm DD/MM/YYYY"
+                                            )} - ${moment(
+                                              item.ngay.From
+                                            ).format("HH:mm DD/MM/YYYY")}`}
                                       </div>
                                     </div>
                                   </div>
-                                )}
+                                  <div className="item-sub">
+                                    <div className="item-sub__box">
+                                      <h5>Giá trị giảm giá</h5>
+                                      <div className="price">
+                                        {item.gia_tri.Phan_tram > 0
+                                          ? `${item.gia_tri.Phan_tram}%`
+                                          : `${formatPriceVietnamese(
+                                              item.gia_tri.Tien
+                                            )} Vnđ`}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="item-sub">
+                                    <div className="item-sub__box">
+                                      <h5>Số lần sử dụng / Tổng số lần</h5>
+                                      <div className="price">
+                                        {item.gioi_han_so_lan_su_dung === -1
+                                          ? `${item.so_lan_su_dung} / Không giới hạn`
+                                          : `${item.so_lan_su_dung} / ${item.gioi_han_so_lan_su_dung} lần`}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  {item.aff && (
+                                    <div className="item-sub">
+                                      <div className="item-sub__box">
+                                        <h5>Mã dùng chia sẻ cho bạn bè</h5>
+                                        <div className="price flex-share">
+                                          <div>{item.ma_chia_se}</div>
+                                          <CopyToClipboard
+                                            text={item.ma_chia_se}
+                                            onCopy={() => {
+                                              this.setState({ copied: true });
+                                              setTimeout(() => {
+                                                toast.success(
+                                                  "Copy mã thành công !",
+                                                  {
+                                                    position:
+                                                      toast.POSITION.TOP_LEFT,
+                                                    autoClose: 1000,
+                                                  }
+                                                );
+                                                this.setState({
+                                                  copied: false,
+                                                });
+                                              }, 1000);
+                                            }}
+                                          >
+                                            <div
+                                              className={`code ${
+                                                copied && "btn-no-click"
+                                              }`}
+                                            >
+                                              {copied
+                                                ? "Đang Copy ..."
+                                                : "Copy mã"}
+                                            </div>
+                                          </CopyToClipboard>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
 
-                                <div className="item-sub">
-                                  <div className="item-sub__box">
-                                    <h5>Điều kiện áp dụng</h5>
-                                    <div className="price cates">
-                                      Áp dụng cho{" "}
-                                      {!item.dieu_Kien.ap_dung_sp_km ||
-                                      item.dieu_Kien.danh_muc.length > 0 ||
-                                      item.dieu_Kien.san_pham.length > 0 ? (
-                                        <React.Fragment>
-                                          {item.dieu_Kien.ap_dung === "NG"
-                                            ? "cả những sản phẩm giảm giá."
-                                            : "những mặt hàng nguyên giá"}
-                                          <div>
-                                            Áp dụng cho các nhóm :{" "}
-                                            <span>
-                                              {item.dieu_Kien.danh_muc.length >
-                                              0
-                                                ? item.dieu_Kien.danh_muc
-                                                    .map((item) => item.Title)
-                                                    .join(", ")
-                                                : "Tất cả"}
-                                            </span>
-                                          </div>
-                                          <div>
-                                            Áp dụng cho các mặt hàng :{" "}
-                                            <span>
-                                              {" "}
-                                              {item.dieu_Kien.san_pham.length >
-                                              0
-                                                ? item.dieu_Kien.san_pham
-                                                    .map((item) => item.Title)
-                                                    .join(", ")
-                                                : "Tất cả"}
-                                            </span>
-                                          </div>
-                                        </React.Fragment>
-                                      ) : (
-                                        "tất cả."
-                                      )}
+                                  <div className="item-sub">
+                                    <div className="item-sub__box">
+                                      <h5>Điều kiện áp dụng</h5>
+                                      <div className="price cates">
+                                        Áp dụng cho{" "}
+                                        {!item.dieu_Kien.ap_dung_sp_km ||
+                                        item.dieu_Kien.danh_muc.length > 0 ||
+                                        item.dieu_Kien.san_pham.length > 0 ? (
+                                          <React.Fragment>
+                                            {item.dieu_Kien.ap_dung === "NG"
+                                              ? "cả những sản phẩm giảm giá."
+                                              : "những mặt hàng nguyên giá"}
+                                            <div>
+                                              Áp dụng cho các nhóm :{" "}
+                                              <span>
+                                                {item.dieu_Kien.danh_muc
+                                                  .length > 0
+                                                  ? item.dieu_Kien.danh_muc
+                                                      .map((item) => item.Title)
+                                                      .join(", ")
+                                                  : "Tất cả"}
+                                              </span>
+                                            </div>
+                                            <div>
+                                              Áp dụng cho các mặt hàng :{" "}
+                                              <span>
+                                                {" "}
+                                                {item.dieu_Kien.san_pham
+                                                  .length > 0
+                                                  ? item.dieu_Kien.san_pham
+                                                      .map((item) => item.Title)
+                                                      .join(", ")
+                                                  : "Tất cả"}
+                                              </span>
+                                            </div>
+                                          </React.Fragment>
+                                        ) : (
+                                          "tất cả."
+                                        )}
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </Sheet>
-                    </div>
-                  ))
+                        </Sheet>
+                      </div>
+                    ))
                 ) : (
                   <div className="page-voucher__out">
                     <img src={OutVoucher} alt="Không có mã giảm giá" />

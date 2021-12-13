@@ -42,7 +42,7 @@ export default class extends React.Component {
     UserService.getConfig("App.thanhtoan")
       .then(({ data }) => {
         this.setState({
-          textPay: data.data && data.data[0]?.Value,
+          textPay: data.data && data.data[0]?.ValueLines,
           loadingText: false,
         });
       })

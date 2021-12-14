@@ -70,6 +70,12 @@
                 .text-desc {
                     margin: 5px 0;
                     line-height: 22px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    -webkit-line-clamp: 3;
+                    height: 65px;
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
                 }
                 .text-time {
                     color: #a0a0a0;

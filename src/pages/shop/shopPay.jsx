@@ -626,14 +626,14 @@ export default class extends React.Component {
                             ) {VCode}
                           </span>
                           <AiOutlineClose
-                            onClick={() => this.handleVcode("")}
+                            onClick={() => this.handleVcode({ Code: "" })}
                           />
                         </div>
                       )}
                     </div>
                   </div>
                 </li>
-                <li className="wallet">
+                {/* <li className="wallet">
                   <div className="title">
                     <svg
                       width={18}
@@ -712,7 +712,7 @@ export default class extends React.Component {
                       )}
                     </div>
                   </div>
-                </li>
+                </li> */}
                 <li className="total">
                   <div className="title">
                     Tổng tiền :
@@ -746,7 +746,7 @@ export default class extends React.Component {
           className="voucher-popup-swipe"
           opened={popupOpened}
           onPopupClosed={() => this.setPopupClose()}
-          swipeToClose
+          // swipeToClose
         >
           <div className="voucher-popup-swipe__close"></div>
           <div className="head">
@@ -765,36 +765,41 @@ export default class extends React.Component {
             )}
             <ul>
               {voucherList &&
-                voucherList.slice().reverse().map((item, index) => (
-                  <li
-                    key={index}
-                    style={{
-                      backgroundImage: `url(${imgCoupon})`,
-                    }}
-                  >
-                    <div className="coupon">
-                      <div className="coupon-title">
-                        Mã <span>{item.Code}</span>
-                      </div>
-                      <div className="coupon-value">
-                        Ưu đãi
-                        <span>{item.Discount}%</span>
-                      </div>
-                      <div className="coupon-end">
-                        HSD :{" "}
-                        {item.EndDate === null
-                          ? "Không giới hạn"
-                          : `Còn ${checkDateDiff(item.EndDate)} ngày`}
-                      </div>
-                    </div>
-                    <div
-                      onClick={() => this.handleVcode(item)}
-                      className="apply-coupon"
+                voucherList
+                  .slice()
+                  .reverse()
+                  .map((item, index) => (
+                    <li
+                      key={index}
+                      style={{
+                        backgroundImage: `url(${imgCoupon})`,
+                      }}
                     >
-                      Chọn mã
-                    </div>
-                  </li>
-                ))}
+                      <div className="coupon">
+                        <div className="coupon-title">
+                          Mã <span>{item.Code}</span>
+                        </div>
+                        <div className="coupon-value">
+                          Ưu đãi
+                          <span>
+                            {item.Discount} {item.Discount > 100 ? "Vnd" : "%"}
+                          </span>
+                        </div>
+                        <div className="coupon-end">
+                          HSD :{" "}
+                          {item.EndDate === null
+                            ? "Không giới hạn"
+                            : `Còn ${checkDateDiff(item.EndDate)} ngày`}
+                        </div>
+                      </div>
+                      <div
+                        onClick={() => this.handleVcode(item)}
+                        className="apply-coupon"
+                      >
+                        Chọn mã
+                      </div>
+                    </li>
+                  ))}
             </ul>
           </div>
         </Popup>

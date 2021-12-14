@@ -2,6 +2,7 @@ import React from "react";
 import { Page, Navbar, Link, Toolbar } from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import userService from "../../service/user.service";
+import ReactHtmlParser from "react-html-parser";
 
 export default class extends React.Component {
   constructor() {
@@ -91,12 +92,11 @@ export default class extends React.Component {
                   <div>{data && data.CreateDateVN}</div>
                 </li>
                 <li className="readed">
-                  <div>Tiêu đề</div>
-                  <div>{data && data.Title}</div>
-                </li>
-                <li className="readed">
                   <div>Nội dung</div>
-                  <div>{data && data.Body}</div>
+                  <div>
+                    {data &&
+                      data.Body && ReactHtmlParser(data.Body.replaceAll("\n", "</br>"))}
+                  </div>
                 </li>
               </ul>
             )}

@@ -264,7 +264,7 @@ export default class extends React.Component {
                     </div>
                   </div>
                 </li>
-                <li className="wallet">
+                {/* <li className="wallet">
                   <div className="title">
                     <svg
                       width={18}
@@ -300,7 +300,7 @@ export default class extends React.Component {
                       }
                     </div>
                   </div>
-                </li>
+                </li> */}
                 <li className="total">
                   <div className="title">
                     Thành tiền :

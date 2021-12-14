@@ -85,8 +85,8 @@ export default class extends React.Component {
     );
   }
 
-  notiDefault = (event) => {
-    this.$f7.views.main.router.navigate("/notification/");
+  notiDefault = (evt) => {
+    this.$f7.views.main.router.navigate(`/notification/${evt.data.id}`);
   };
 
   notiCateProdID = (evt) => {

@@ -145,7 +145,7 @@ export default class extends React.Component {
                             Giảm tối đa{" "}
                             {item.gia_tri.Phan_tram > 0
                               ? `${item.gia_tri.Phan_tram}%`
-                              : `${formatPriceVietnamese(item.gia_tri.Tien)}`}
+                              : `${formatPriceVietnamese(item.gia_tri.Tien)} VND`}
                           </div>
                           <ul>
                             <li>

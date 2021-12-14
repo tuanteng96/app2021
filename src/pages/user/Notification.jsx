@@ -231,7 +231,7 @@ export default class extends React.Component {
                             {<Skeleton count={2} />}
                           </div>
                           <div className="text-time">
-                            <Skeleton count={1} style={{width: 80}} />
+                            <Skeleton count={1} style={{ width: 80 }} />
                           </div>
                         </div>
                       </div>

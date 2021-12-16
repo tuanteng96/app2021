@@ -3,6 +3,38 @@
     right: 12px;
     bottom: calc(var(--f7-toolbar-height) + var(--f7-safe-area-bottom) + 15px);
     z-index: 100005;
+    &.open {
+        .page-quick-list {
+            visibility: visible;
+            pointer-events: auto;
+        }
+        .item {
+            opacity: 1;
+            transform: translate3d(0, 0px, 0) scale(1)!important;
+        }
+        .item.call {
+            transition-delay: 50ms;
+        }
+        .btn-quick {
+            &-trans {
+                transform: translateX(-15px);
+                .headset {
+                    opacity: 0;
+                }
+                .times {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+    &-list {
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        visibility: hidden;
+        pointer-events: none;
+    }
     .item {
         width: 50px;
         height: 50px;
@@ -10,8 +42,11 @@
         @include flexbox();
         @include align-items(center);
         @include justify-content(center);
-        margin-top: 10px;
+        margin-bottom: 10px;
         box-shadow: 0 5px 5px 0px rgba(0, 0, 0, 0.25);
+        transition-duration: .3s;
+        opacity: 0;
+        transform: translate3d(0, 8px, 0) scale(.3);
         svg {
             width: 28px;
             height: 28px;
@@ -40,6 +75,30 @@
     }
     .mess {
         background: linear-gradient( 0deg, #0078FF, #00C6FF);
+    }
+    .btn-quick {
+        width: 53px;
+        height: 53px;
+        background: linear-gradient( 0deg, $color-app-bold, $color-app);
+        border-radius: 100%;
+        box-shadow: 0 5px 5px 0px rgb(0 0 0 / 25%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 30px;
+        overflow: hidden;
+        &-trans {
+            display: flex;
+            transform: translateX(15px);
+            transition: transform .3s ease;
+            .headset {
+                opacity: 1;
+            }
+            .times {
+                opacity: 0;
+            }
+        }
     }
 }
 

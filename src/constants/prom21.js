@@ -47,3 +47,9 @@ export const CALL_PHONE = (phone) => {
         t.prom('TEL', phone);
     }
 }
+export const OPEN_LINK = (link) => {
+    var t = window.app21 || {};
+    if (typeof t.prom !== 'undefined') {
+        t.prom('BROWSER', link);
+    }
+}

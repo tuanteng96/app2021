@@ -27,14 +27,13 @@ module.exports = {
         path: resolvePath('www'),
         filename: 'js/[name].js',
         chunkFilename: 'js/[name].js',
-        publicPath: 'https://cser.vn/app2021/',
+        publicPath: '',
         hotUpdateChunkFilename: 'hot/hot-update.js',
         hotUpdateMainFilename: 'hot/hot-update.json',
     },
     resolve: {
         extensions: ['.js', '.jsx', '.json'],
         alias: {
-
             '@': resolvePath('src'),
         },
 

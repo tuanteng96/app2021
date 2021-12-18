@@ -4,6 +4,8 @@ import IconForgot from "../../assets/images/forgot-password.png";
 import userService from "../../service/user.service";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { auth } from "../../firebase/firebase";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 
 toast.configure();
 
@@ -14,6 +16,23 @@ export default class extends React.Component {
       isLoading: false,
       input: "",
     };
+  }
+
+  componentDidMount() {
+    window.recaptchaVerifier = new RecaptchaVerifier(
+      "sign-in-button",
+      {
+        size: "invisible",
+        callback: (response) => {
+          this.handleSubmit();
+        },
+      },
+      auth
+    );
+
+    window.recaptchaVerifier.render().then((widgetId) => {
+      window.recaptchaWidgetId = widgetId;
+    });
   }
 
   handleChangeInput = (event) => {
@@ -27,7 +46,7 @@ export default class extends React.Component {
   };
 
   handleSubmit = (event) => {
-    event.preventDefault();
+    //event.preventDefault();
     if (this.state.input === "") {
       toast.error("Vui lòng nhập số điện thoại hoặc Email !", {
         position: toast.POSITION.TOP_LEFT,
@@ -38,10 +57,11 @@ export default class extends React.Component {
     this.setState({
       loading: true,
     });
+    var PhoneRegex = /(840|84|0[3|5|7|8|9])+([0-9]{8})\b/g;
+    var isPhone = PhoneRegex.test(this.state.input);
 
     var bodyFormData = new FormData();
     bodyFormData.append("input", this.state.input);
-    bodyFormData.append("mode", "email");
     bodyFormData.append("loading", true);
     bodyFormData.append("mess", "");
     bodyFormData.append("error", "");
@@ -59,19 +79,51 @@ export default class extends React.Component {
           if (data.error === "EMAIL_NOT_REG") {
             TextErr = "Email hoặc số điện thoại chưa đăng ký.";
           }
+          if (data.error === "FORGET_METHOD_OVER_SECTION") {
+            TextErr = "Vượt quá số lượng đổi mật khẩu trong ngày.";
+          }
           toast.error(TextErr, {
             position: toast.POSITION.TOP_LEFT,
             autoClose: 3000,
+          });
+          window.recaptchaVerifier.render().then(function (widgetId) {
+            grecaptcha.reset(widgetId);
           });
           this.setState({
             loading: false,
           });
           return;
         }
-        this.setState({
-          loading: false,
-        });
-        this.$f7router.navigate("/forgot-change/");
+
+        if (isPhone) {
+          const phoneNumber = `+84${this.state.input}`;
+          const appVerifier = window.recaptchaVerifier;
+          signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+            .then((confirmationResult) => {
+              // SMS sent. Prompt user to type the code from the message, then sign the
+              // user in with confirmationResult.confirm(code).
+              this.setState({
+                loading: false,
+              });
+              window.confirmationResult = confirmationResult;
+              this.$f7router.navigate(
+                `/forgot-change/?phone=${this.state.input}`
+              );
+            })
+            .catch((error) => {
+              window.recaptchaVerifier.render().then(function (widgetId) {
+                grecaptcha.reset(widgetId);
+              });
+              console.log(error);
+              // Error; SMS not sent
+              // ...
+            });
+        } else {
+          this.setState({
+            loading: false,
+          });
+          this.$f7router.navigate("/forgot-change/");
+        }
       })
       .catch((error) => console.log(error));
   };
@@ -93,25 +145,24 @@ export default class extends React.Component {
               một liên kết để đặt lại mật khẩu.
             </div>
             <img className="logo-reg" src={IconForgot} />
-            <form onSubmit={this.handleSubmit}>
-              <div className="page-login__form-item">
-                <input
-                  type="text"
-                  name="input"
-                  autoComplete="off"
-                  placeholder="Số điện thoại hoặc Email"
-                  onChange={this.handleChangeInput}
-                />
-              </div>
-              <div className="page-login__form-item">
-                <button
-                  type="submit"
-                  className={`btn-login btn-me ${loading ? "loading" : ""}`}
-                >
-                  <span>Nhận mã</span>
-                </button>
-              </div>
-            </form>
+            <div className="page-login__form-item">
+              <input
+                type="text"
+                name="input"
+                autoComplete="off"
+                placeholder="Số điện thoại hoặc Email"
+                onChange={this.handleChangeInput}
+              />
+            </div>
+            <div className="page-login__form-item">
+              <button
+                type="submit"
+                className={`btn-login btn-me ${loading ? "loading" : ""}`}
+                id="sign-in-button"
+              >
+                <span>Nhận mã</span>
+              </button>
+            </div>
           </div>
         </div>
       </Page>

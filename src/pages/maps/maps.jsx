@@ -38,7 +38,7 @@ export default class extends React.Component {
   };
   handleMaps = (item) => {
     this.setState({
-      currentMap: item.DescSEO,
+      currentMap: item.Map,
       currentID: item.ID,
     });
   };

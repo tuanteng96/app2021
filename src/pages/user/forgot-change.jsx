@@ -41,12 +41,38 @@ export default class extends React.Component {
       });
       return;
     }
+
     this.setState({
       loading: true,
     });
 
+    if (this.$f7route.query.phone && window.confirmationResult) {
+      window.confirmationResult
+        .confirm(this.state.secure)
+        .then((result) => {
+          this.submitDataReset(true);
+        })
+        .catch((error) => {
+          toast.error("Mã OTP không chính xác. Vui lòng kiểm tra lại.", {
+            position: toast.POSITION.TOP_LEFT,
+            autoClose: 3000,
+          });
+          this.setState({
+            loading: false,
+          });
+        });
+    } else {
+      this.submitDataReset();
+    }
+  };
+
+  submitDataReset = (isPhone) => {
     var bodyFormData = new FormData();
-    bodyFormData.append("secure", this.state.secure);
+    if (isPhone) {
+      bodyFormData.append("securePhone", this.$f7route.query.phone);
+    } else {
+      bodyFormData.append("secure", this.state.secure);
+    }
     bodyFormData.append("new_password", this.state.new_password);
     bodyFormData.append("re_newpassword", this.state.re_newpassword);
     bodyFormData.append("mess", "");
@@ -136,7 +162,7 @@ export default class extends React.Component {
                   type="submit"
                   className={`btn-login btn-me ${loading ? "loading" : ""}`}
                 >
-                  <span>Nhận mã</span>
+                  <span>Đổi mật khẩu</span>
                 </button>
               </div>
             </form>

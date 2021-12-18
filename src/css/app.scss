@@ -199,3 +199,21 @@ html {
 .ios .with-photo-browser-page .back span {
     font-size: 16px;
 }
+
+blockquote {
+    background: #f1f1f1;
+    margin: 0;
+    padding: 10px 15px;
+    border-radius: 3px;
+    margin-bottom: 8px;
+    border-left: 4px solid $color-app;
+    font-weight: 400;
+    font-style: italic;
+    p:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.grecaptcha-badge {
+    visibility: hidden;
+}

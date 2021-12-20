@@ -88,14 +88,17 @@ export default class extends React.Component {
             ) : (
               <ul className="page-noti__list noti-detail">
                 <li className="readed">
-                  <div>Ngày gửi</div>
+                  <div>
+                    Ngày gửi{" "}
+                  </div>
                   <div>{data && data.CreateDateVN}</div>
                 </li>
                 <li className="readed">
                   <div>Nội dung</div>
                   <div>
                     {data &&
-                      data.Body && ReactHtmlParser(data.Body.replaceAll("\n", "</br>"))}
+                      data.Body &&
+                      ReactHtmlParser(data.Body.replaceAll("\n", "</br>"))}
                   </div>
                 </li>
               </ul>

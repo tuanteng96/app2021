@@ -800,7 +800,9 @@ export default class extends React.Component {
                 type="text"
                 placeholder="Nhập mã"
                 onChange={(evt) =>
-                  this.setState({ voucherSearch: evt.target.value })
+                  this.setState({
+                    voucherSearch: evt.target.value.toUpperCase(),
+                  })
                 }
               />
               <button

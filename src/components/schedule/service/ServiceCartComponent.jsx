@@ -37,13 +37,15 @@ export default class ServiceCartComponent extends React.Component {
       .catch((er) => console.log(er));
   };
 
-  handleClick = (item) => {
+  handleClick = (index) => {
     const { arrCardsv } = this.state;
-    const id = item.OrderItemID;
-    const index = arrCardsv.findIndex((obj) => obj.OrderItemID === id);
-    if (index < 0) return false;
-    const isActive = arrCardsv[index].isActive;
-    arrCardsv[index].isActive = !isActive;
+    // const id = item.ProdServiceID;
+    // const index = arrCardsv.findIndex((obj) => obj.ProdServiceID === id);
+    
+    // if (index < 0) return false;
+    
+    arrCardsv[index].isActive = !arrCardsv[index].isActive;
+
     this.setState({
       arrCardsv: arrCardsv,
     });
@@ -71,8 +73,8 @@ export default class ServiceCartComponent extends React.Component {
   }
 
   checkNullProd = (prod, service) => {
-    if (prod !== null) return prod;
-    return service;
+    if (service !== null) return service;
+    return prod;
   };
 
   onRefresh = () => {
@@ -100,7 +102,7 @@ export default class ServiceCartComponent extends React.Component {
                       return (
                         <div
                           className={`item ${item.isActive ? "active" : ""}`}
-                          onClick={() => this.handleClick(item)}
+                          onClick={() => this.handleClick(index)}
                           key={index}
                         >
                           <div className="item-info">

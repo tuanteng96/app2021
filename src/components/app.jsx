@@ -86,6 +86,7 @@ export default class extends React.Component {
   }
 
   notiDefault = (evt) => {
+    alert(JSON.stringify(evt.data));
     this.$f7.views.main.router.navigate(`/notification/${evt.data.id}`);
   };
 
@@ -108,8 +109,8 @@ export default class extends React.Component {
   componentDidMount() {
     
     var $$ = this.Dom7;
-    $$("#preload").remove();
-
+    //$$("#preload").remove();
+    window.percent = 95;
     window.APP_READY = true;
     // const self = this;
     // self.$f7.dialog.preloader('Loading ...');

@@ -139,13 +139,15 @@ export default class extends React.Component {
                         <div className="voucher-text">
                           <div className="code">
                             <span>Mã</span>
-                            <span>{item.ma}</span>
+                            <span>{item.aff ? item.ma_chia_se : item.ma}</span>
                           </div>
                           <div className="voucher-value">
                             Giảm tối đa{" "}
                             {item.gia_tri.Phan_tram > 0
                               ? `${item.gia_tri.Phan_tram}%`
-                              : `${formatPriceVietnamese(item.gia_tri.Tien)} VND`}
+                              : `${formatPriceVietnamese(
+                                  item.gia_tri.Tien
+                                )} VND`}
                           </div>
                           <ul>
                             <li>
@@ -270,16 +272,14 @@ export default class extends React.Component {
                                     <div className="item-sub__box">
                                       <h5>Điều kiện áp dụng</h5>
                                       <div className="price cates">
-                                        Áp dụng cho{" "}
-                                        {!item.dieu_Kien.ap_dung_sp_km ||
-                                        item.dieu_Kien.danh_muc.length > 0 ||
-                                        item.dieu_Kien.san_pham.length > 0 ? (
-                                          <React.Fragment>
-                                            {item.dieu_Kien.ap_dung === "NG"
-                                              ? "cả những sản phẩm giảm giá."
-                                              : "những mặt hàng nguyên giá"}
+                                        {item.dieu_Kien.ap_dung === "NG"
+                                          ? "Khi mua sản phẩm, dịch vụ nguyên giá."
+                                          : "Khi mua sản phẩm, dịch vụ nguyên giá hoặc giảm giá."}
+                                        {item.dieu_Kien.danh_muc &&
+                                          item.dieu_Kien.danh_muc.length >
+                                            0 && (
                                             <div>
-                                              Áp dụng cho các nhóm :{" "}
+                                              Nhóm :{" "}
                                               <span>
                                                 {item.dieu_Kien.danh_muc
                                                   .length > 0
@@ -289,10 +289,13 @@ export default class extends React.Component {
                                                   : "Tất cả"}
                                               </span>
                                             </div>
+                                          )}
+                                        {item.dieu_Kien.danh_muc &&
+                                          item.dieu_Kien.danh_muc.length >
+                                            0 && (
                                             <div>
-                                              Áp dụng cho các mặt hàng :{" "}
+                                              Sản phẩm lẻ :{" "}
                                               <span>
-                                                {" "}
                                                 {item.dieu_Kien.san_pham
                                                   .length > 0
                                                   ? item.dieu_Kien.san_pham
@@ -301,13 +304,33 @@ export default class extends React.Component {
                                                   : "Tất cả"}
                                               </span>
                                             </div>
-                                          </React.Fragment>
-                                        ) : (
-                                          "tất cả."
+                                          )}
+
+                                        {item.nhom && (
+                                          <div>
+                                            Nhóm khách hàng :{" "}
+                                            <span>{item.nhom.Title}</span>
+                                          </div>
                                         )}
                                       </div>
                                     </div>
                                   </div>
+                                  {item.aff &&
+                                    item.Voucher.VoucherMeta?.Perc > 0 && (
+                                      <div className="item-sub">
+                                        <div className="item-sub__box">
+                                          <h5>Hoa hồng giới thiệu</h5>
+                                          <div className="price">
+                                            {item.Voucher.VoucherMeta?.Perc >
+                                            100
+                                              ? `${formatPriceVietnamese(
+                                                  item.Voucher.VoucherMeta?.Perc
+                                                )}`
+                                              : `${item.Voucher.VoucherMeta?.Perc}%`}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )}
                                 </div>
                               </div>
                             </div>

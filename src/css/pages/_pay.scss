@@ -383,6 +383,28 @@
         height: calc(100% - 72px);
         overflow: auto;
         margin-top: 15px;
+        .form-voucher {
+            padding: 0 15px;
+            display: flex;
+            margin-bottom: 15px;
+            button {
+                background: $color-app;
+                border: 1px solid $color-app;
+                font-size: 12px;
+                text-transform: uppercase;
+                font-weight: 600;
+                color: #fff;
+                width: 100px;
+                border-top-right-radius: 2px;
+                border-bottom-right-radius: 2px;
+            }
+            input {
+                background: #fff;
+                flex: 1;
+                height: 40px;
+                padding: 0 15px;
+            }
+        }
         ul {
             padding: 0 15px;
             li {

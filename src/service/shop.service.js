@@ -37,6 +37,9 @@ class ShopDataService {
     getUpdateOrder(data) {
         return http.post(`/api/v3/orderclient?cmd=get`, data);
     }
+    searchVoucher(data) {
+        return http.get(`/api/v3/VoucherClient?cmd=precheck&orderid=${data.orderId}&vcode=${data.vcode}`);
+    }
     searchProd(data) {
         return http.get(`/app/index.aspx?cmd=search_prods&key=${data.key}&cates=&pi=1&ps=${data.count}&tags=&stockid=${data.stockid}`);
     }

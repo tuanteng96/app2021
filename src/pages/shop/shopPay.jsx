@@ -7,7 +7,6 @@ import { AiOutlineClose } from "react-icons/ai";
 
 import imgCoupon from "../../assets/images/coupon_bg.svg";
 import { getStockIDStorage, getUser } from "../../constants/user";
-import UserService from "../../service/user.service";
 import ShopDataService from "./../../service/shop.service";
 import { Page, Link, Navbar, Popup } from "framework7-react";
 import { checkDateDiff } from "../../constants/format";
@@ -26,6 +25,7 @@ export default class extends React.Component {
       dfItem: [],
       items: [],
       order: [],
+      voucherSearch: "",
       deletedsOrder: [],
       editsOrder: [],
       voucherList: [],
@@ -38,6 +38,7 @@ export default class extends React.Component {
       VDiscount: "",
       isLoading: true,
       isBtn: false,
+      loadingBtn: false,
       isUpdate: false, // Trạng thái update đơn hàng
     };
   }
@@ -51,6 +52,7 @@ export default class extends React.Component {
   setPopupClose = () => {
     this.setState({
       popupOpened: false,
+      voucherSearch: "",
     });
   };
 
@@ -402,6 +404,43 @@ export default class extends React.Component {
       });
   };
 
+  onSearchVoucher = (e) => {
+    const { order, voucherSearch } = this.state;
+    e.preventDefault();
+    if (order.ID) {
+      this.setState({
+        loadingBtn: true,
+      });
+      const dataSubmit = {
+        orderId: order.ID,
+        vcode: voucherSearch,
+      };
+      ShopDataService.searchVoucher(dataSubmit)
+        .then(({ data }) => {
+          if (data.error) {
+            toast.error(data.error, {
+              position: toast.POSITION.TOP_LEFT,
+              autoClose: 2000,
+            });
+            this.setState({
+              loadingBtn: false,
+            });
+            return false;
+          }
+          this.handleVcode({ Code: voucherSearch });
+          this.setState({
+            loadingBtn: false,
+          });
+        })
+        .catch((error) => console.log(error));
+    } else {
+      toast.error("Đơn hàng không tồn tại hoặc chưa có mặt hàng.", {
+        position: toast.POSITION.TOP_LEFT,
+        autoClose: 2000,
+      });
+    }
+  };
+
   render() {
     const {
       items,
@@ -410,7 +449,7 @@ export default class extends React.Component {
       VCode,
       WalletMe,
       WalletPay,
-      WalletPaySuccess,
+      loadingBtn,
       popupWalletOpened,
       voucherList,
       isLoading,
@@ -756,6 +795,25 @@ export default class extends React.Component {
             </div>
           </div>
           <div className="body">
+            <form className="form-voucher" onSubmit={this.onSearchVoucher}>
+              <input
+                type="text"
+                placeholder="Nhập mã"
+                onChange={(evt) =>
+                  this.setState({ voucherSearch: evt.target.value })
+                }
+              />
+              <button
+                className={`btn-submit-order ${loadingBtn && "loading"}`}
+                type="submit"
+              >
+                <span>Thêm mã</span>
+                <div className="loading-icon">
+                  <div className="loading-icon__item item-1"></div>
+                  <div className="loading-icon__item item-2"></div>
+                </div>
+              </button>
+            </form>
             {voucherList.length === 0 ? (
               <ul>
                 <li>Bạn không có mã khuyến mại.</li>
@@ -782,7 +840,9 @@ export default class extends React.Component {
                         <div className="coupon-value">
                           Ưu đãi
                           <span>
-                            {item.Discount} {item.Discount > 100 ? "Vnd" : "%"}
+                            {item.Discount > 100
+                              ? `${formatPriceVietnamese(item.Discount)} Vnd`
+                              : `${item.Discount} %`}
                           </span>
                         </div>
                         <div className="coupon-end">

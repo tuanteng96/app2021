@@ -103,7 +103,6 @@ class MM {
   sumAvai(NAP_VI, NoOrderRemainPay) {
     var tt = 0;
     var data = this.data;
-
     data.Grouped.forEach(function (x) {
       var v = 0;
       if (NAP_VI && x.Desc.indexOf("DATCOC:") !== 0) v = x.Value;
@@ -119,6 +118,12 @@ class MM {
       tt += v;
     });
     return tt;
+  }
+  totalWallet() {
+    return this.data.Grouped.reduce((n, { Value }) => n + Value, 0);
+  }
+  availableWallet() {
+    return this.data.Grouped.filter(item => !item.Payd).reduce((n, { Value }) => n + Value, 0);
   }
   calc() {
     var data = this.data;
@@ -177,58 +182,58 @@ export default class extends React.Component {
         var mm = new MM(clone(response.data));
         this.setState({
           arrWallet: arrWallet,
-          totalWallet: mm.sumAvai(true), // Ví
-          demonsWallet: mm.sumAvai(true, true), // Quỷ
+          totalWallet: mm.totalWallet(), // Tổng Ví
+          demonsWallet: mm.availableWallet(), // Ví khả dụng
           depositWallet: mm.sumAvai(false), // Đặt cọc
+          //totalWallet: mm.sumAvai(true), // Ví
+          //demonsWallet: mm.sumAvai(true, true), // Quỷ
+          //depositWallet: mm.sumAvai(false), // Đặt cọc
         });
       })
       .catch((e) => console.log(e));
   };
 
   vietnamesText = (item) => {
-    if (item.Type === "NAP_QUY" && item.Source === "") {
-      return "Nạp ví";
+    switch (true) {
+      case item.Type === "NAP_QUY" && item.Source === "":
+        return "Nạp ví";
+      case item.Type === "NAP_QUY" && item.Value < 0 && item.Source === "":
+        return "Trừ ví";
+      case item.Source === "CHINH_SUA_SO_BUOI_DV":
+        return "Hoàn tiền khi hoàn buổi dịch vụ";
+      case item.Type === "MUA_HANG" && item?.Desc.indexOf("KHAU_TRU_TRA_HANG") === -1:
+        return "Tích lũy mua hàng";
+      case item.Type === "MUA_HANG" && item?.Desc.indexOf("KHAU_TRU_TRA_HANG") > -1:
+        return "Giảm bớt tích lũy do trả hàng";
+      case item.SumType === "TRA_HANG_HOAN_VI":
+        return "Hoàn tiền khi trả hàng";
+      case item.SumType === "TRA_HANG_PHI_VI":
+        return "Phí dịch vụ trả hàng";
+      case item.Type === "GIOI_THIEU" && item?.Desc.indexOf("KHAU_TRU_TRA_HANG") === -1:
+        return "Hoa hồng giới thiệu";
+      case item.Type === "GIOI_THIEU" && item?.Desc.indexOf("KHAU_TRU_TRA_HANG") > -1:
+        return "Giảm bớt hoa hồng do trả hàng";
+      case item.Type === "CHIA_SE_MAGIAMGIA":
+        return "Hoa hồng giới thiệu ( Chia sẻ voucher )";
+      case item.SumType === "KET_THUC_THE_HOAN_VI":
+        return "Hoàn tiền khi kết thúc thẻ";
+      case item.SumType === "KET_THUC_THE_PHI_VI":
+        return "Phí dịch vụ kết thúc thẻ";
+      case item.SumType === "DANG_KY_THANH_VIEN":
+        return "Ưu đãi đăng ký tài khoản";
+      case item.SumType === "DANG_NHAP_LAN_DAU":
+        return "Ưu đãi khi đăng nhập lần đầu";
+      case item.SumType === "CHUC_MUNG_SN":
+        return "Ưu đãi mừng sinh nhật";
+      case item.SumType === "CHUC_MUNG_SN_THANG":
+        return "Ưu đãi tháng sinh nhật";
+      case item.Type === "THANH_TOAN_DH":
+        return "Thanh toán đơn hàng";
+      case item.Type === "PHI" && item.SumType === "":
+        return "Phí dịch vụ";
+      default:
+        return "Chưa xác định";
     }
-    if (item.Type === "NAP_QUY" && item.Value < 0 && item.Source === "") {
-      return "Trừ ví";
-    }
-    if (item.Source === "CHINH_SUA_SO_BUOI_DV") {
-      return "Hoàn tiền khi hoàn buổi dịch vụ";
-    }
-    if (
-      item.Type === "MUA_HANG" &&
-      item?.Desc.indexOf("KHAU_TRU_TRA_HANG") === -1
-    ) {
-      return "Tích lũy mua hàng";
-    }
-    if (
-      item.Type === "MUA_HANG" &&
-      item?.Desc.indexOf("KHAU_TRU_TRA_HANG") > -1
-    ) {
-      return "Giảm bớt tích lũy do trả hàng";
-    }
-    if (item.SumType === "TRA_HANG_HOAN_VI") {
-      return "Hoàn tiền khi trả hàng";
-    }
-    if (item.SumType === "TRA_HANG_PHI_VI") {
-      return "Phí dịch vụ trả hàng";
-    }
-    if (
-      item.Type === "GIOI_THIEU" &&
-      item?.Desc.indexOf("KHAU_TRU_TRA_HANG") === -1
-    ) {
-      return "Hoa hồng giới thiệu";
-    }
-    if (
-      item.Type === "GIOI_THIEU" &&
-      item?.Desc.indexOf("KHAU_TRU_TRA_HANG") > -1
-    ) {
-      return "Giảm bớt hoa hồng do trả hàng";
-    }
-    if (item.Type === "CHIA_SE_MAGIAMGIA") {
-      return "Hoa hồng giới thiệu ( Chia sẻ voucher )";
-    }
-    return "Chưa xác định";
   };
 
   render() {
@@ -246,7 +251,7 @@ export default class extends React.Component {
             <span className="number">
               {formatPriceVietnamese(totalWallet && totalWallet)}
             </span>
-            <span className="text">Số dư trong ví</span>
+            <span className="text">Tổng Ví</span>
           </div>
         </div>
         <div className="wallet-detail">
@@ -258,7 +263,7 @@ export default class extends React.Component {
                     <span className="number">
                       {formatPriceVietnamese(demonsWallet && demonsWallet)}
                     </span>
-                    <span className="text">Tiền quỹ</span>
+                    <span className="text">Ví khả dụng</span>
                   </div>
                 </Col>
                 <Col width="50">
@@ -266,7 +271,7 @@ export default class extends React.Component {
                     <span className="number">
                       {formatPriceVietnamese(depositWallet && depositWallet)}
                     </span>
-                    <span className="text">Tiền Đặt Cọc</span>
+                    <span className="text">Chờ xử lý</span>
                   </div>
                 </Col>
               </Row>

@@ -198,11 +198,11 @@ export default class extends React.Component {
                                       <div className="price">
                                         {item.ngay === null
                                           ? "Không giới hạn"
-                                          : `${moment(item.ngay.To).format(
+                                          : `${moment(item.ngay.From).format(
                                               "HH:mm DD/MM/YYYY"
-                                            )} - ${moment(
-                                              item.ngay.From
-                                            ).format("HH:mm DD/MM/YYYY")}`}
+                                            )} - ${moment(item.ngay.To).format(
+                                              "HH:mm DD/MM/YYYY"
+                                            )}`}
                                       </div>
                                     </div>
                                   </div>

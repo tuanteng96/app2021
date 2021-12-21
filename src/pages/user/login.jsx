@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { SERVER_APP } from "./../../constants/config";
 import { setUserStorage } from "../../constants/user";
 import { Page, Link, Toolbar } from "framework7-react";
@@ -69,12 +69,18 @@ export default class extends React.Component {
     });
   };
 
+  onFind (value) {
+    this.setState({ value, watching: false })
+  }
+
   render() {
     const isLoading = this.state.isLoading;
     const password = this.state.password;
     return (
       <Page noNavbar noToolbar name="login">
-        <div className={`page-wrapper page-login ${iOS() && "page-login-iphone"}`}>
+        <div
+          className={`page-wrapper page-login ${iOS() && "page-login-iphone"}`}
+        >
           <div className="page-login__back">
             <Link onClick={() => this.$f7router.back()}>
               <i className="las la-arrow-left"></i>
@@ -85,16 +91,11 @@ export default class extends React.Component {
               <div className="logo">
                 <img src={SERVER_APP + "/app/images/logo-app.png"} />
               </div>
-              <div className="title">
-                Xin chào, Bắt đầu đăng nhập nào
-              </div>
+              <div className="title">Xin chào, Bắt đầu đăng nhập nào</div>
             </div>
             <div className="page-login__form">
-
               <form>
-                <div className="title">
-                  Đăng nhập tài khoản
-                </div>
+                <div className="title">Đăng nhập tài khoản</div>
                 <div className="page-login__form-item">
                   <input
                     type="text"

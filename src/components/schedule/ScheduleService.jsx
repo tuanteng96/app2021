@@ -29,7 +29,7 @@ export default class ScheduleService extends React.Component {
     });
     this.props.handleDataService(item, data, loading);
   };
-
+  
   handleMultiService = (item) => {
     this.props.handleService(item.length > 0 ? item : null);
     this.setState({

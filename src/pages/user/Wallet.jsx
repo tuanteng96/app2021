@@ -185,17 +185,50 @@ export default class extends React.Component {
       .catch((e) => console.log(e));
   };
 
-  vietnamesText = (text) => {
-    switch (text) {
-      case "THE_TIEN":
-        return "Thẻ tiền";
-      case "MUA_HANG_DANHMUC":
-        return "Tích lũy khi mua hàng";
-      case "MUA _HANG_SANPHAM":
-        return "Tích lũy khi mua hàng";
-      default:
-        return text;
+  vietnamesText = (item) => {
+    if (item.Type === "NAP_QUY" && item.Source === "") {
+      return "Nạp ví";
     }
+    if (item.Type === "NAP_QUY" && item.Value < 0 && item.Source === "") {
+      return "Trừ ví";
+    }
+    if (item.Source === "CHINH_SUA_SO_BUOI_DV") {
+      return "Hoàn tiền khi hoàn buổi dịch vụ";
+    }
+    if (
+      item.Type === "MUA_HANG" &&
+      item?.Desc.indexOf("KHAU_TRU_TRA_HANG") === -1
+    ) {
+      return "Tích lũy mua hàng";
+    }
+    if (
+      item.Type === "MUA_HANG" &&
+      item?.Desc.indexOf("KHAU_TRU_TRA_HANG") > -1
+    ) {
+      return "Giảm bớt tích lũy do trả hàng";
+    }
+    if (item.SumType === "TRA_HANG_HOAN_VI") {
+      return "Hoàn tiền khi trả hàng";
+    }
+    if (item.SumType === "TRA_HANG_PHI_VI") {
+      return "Phí dịch vụ trả hàng";
+    }
+    if (
+      item.Type === "GIOI_THIEU" &&
+      item?.Desc.indexOf("KHAU_TRU_TRA_HANG") === -1
+    ) {
+      return "Hoa hồng giới thiệu";
+    }
+    if (
+      item.Type === "GIOI_THIEU" &&
+      item?.Desc.indexOf("KHAU_TRU_TRA_HANG") > -1
+    ) {
+      return "Giảm bớt hoa hồng do trả hàng";
+    }
+    if (item.Type === "CHIA_SE_MAGIAMGIA") {
+      return "Hoa hồng giới thiệu ( Chia sẻ voucher )";
+    }
+    return "Chưa xác định";
   };
 
   render() {
@@ -256,9 +289,7 @@ export default class extends React.Component {
                         {moment(item.CreateDate).fromNow()}
                       </div>
                     </div>
-                    <div className="note">
-                      {this.vietnamesText(item.TypeText)}
-                    </div>
+                    <div className="note">{this.vietnamesText(item)}</div>
                   </li>
                 ))}
             </ul>

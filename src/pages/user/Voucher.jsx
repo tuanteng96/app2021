@@ -156,7 +156,7 @@ export default class extends React.Component {
                                 "Không giới hạn"
                               ) : (
                                 <React.Fragment>
-                                  Còn <b>{checkDateDiff(item.ngay.From)}</b>{" "}
+                                  Còn <b>{checkDateDiff(item.ngay.To)}</b>{" "}
                                   ngày
                                 </React.Fragment>
                               )}

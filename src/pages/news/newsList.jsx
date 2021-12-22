@@ -43,7 +43,7 @@ export default class extends React.Component {
               </Link>
             </div>
             <div className="page-navbar__title">
-              <span className="title">Ưu đãi / Blog làm đẹp</span>
+              <span className="title">Blog làm đẹp</span>
             </div>
             <div className="page-navbar__noti">
               <NotificationIcon />

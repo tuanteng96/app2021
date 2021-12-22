@@ -515,13 +515,13 @@ export default class extends React.Component {
                     <li className="product-sale">
                       <div className="title">
                         <span>Giảm</span>
-                        <div className="badges badges-danger">
+                        {/* <div className="badges badges-danger">
                           {percentagesSale(
                             arrProductCurrent.PriceProduct,
                             arrProductCurrent.PriceSale
                           )}
                           %
-                        </div>
+                        </div> */}
                       </div>
                       <div className="text">
                         {formatPriceVietnamese(arrProduct.PriceSale)}

@@ -23,7 +23,7 @@ export default class extends React.Component {
         const newAll = all.filter((item) => item.ID !== 778);
         this.setState({
           arrMaps: newAll,
-          currentMap: newAll[0].DescSEO,
+          currentMap: newAll[0].Map,
           currentID: newAll[0].ID,
         });
       })

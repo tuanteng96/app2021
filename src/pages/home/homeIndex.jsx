@@ -140,7 +140,7 @@ export default class extends React.Component {
                       onFocus={this.searchPage}
                     ></input>
                   </div>
-                  <SlideList />
+                  <SlideList BannerName="App.Banner" />
                   <ListService id="42" />
                   {getUser() && <ListService id="45" />}
                 </div>
@@ -151,6 +151,9 @@ export default class extends React.Component {
                 </div>
               </div>
               <ListImage />
+              <div className="pl-15px pr-15px slider-hot">
+                <SlideList BannerName="App.DVHOT" />
+              </div>
               <div className="home-page__product">
                 <div className="head">
                   <h5>Sản phẩm mới</h5>

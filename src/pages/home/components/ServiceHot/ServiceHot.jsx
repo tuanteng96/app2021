@@ -44,6 +44,7 @@ export default class ServiceHot extends React.Component {
   };
 
   handleUrl = (item) => {
+    console.log(item)
     this.props.f7.navigate(
       `/shop/${item.root.Paths[0].ID}/?ids=${item.root.ID}&cateid=${item.root.Paths[0].ParentID}`
     );

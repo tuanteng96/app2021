@@ -17,7 +17,7 @@ export default class SlideList extends React.Component {
   }
 
   getBanner = () => {
-    NewsDataService.getBannerName(this.props.BannerName)
+    NewsDataService.getBannerName("App.DVHOT")
       .then((response) => {
         const arrBanner = response.data.data;
         this.setState({
@@ -53,7 +53,7 @@ export default class SlideList extends React.Component {
                 <Link
                   noLinkClass
                   href={item.Link ? item.Link : `/adv/${item.ID}`}
-                  className={`body-slide__item rounded overflow-hidden ${
+                  className={`body-slide__item ${
                     item.Follow === "true" ? "external" : ""
                   }`}
                   key={item.ID}

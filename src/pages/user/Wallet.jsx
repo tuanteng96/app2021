@@ -123,7 +123,13 @@ class MM {
     return this.data.Grouped.reduce((n, { Value }) => n + Value, 0);
   }
   availableWallet() {
-    return this.data.Grouped.filter(item => !item.Payd).reduce((n, { Value }) => n + Value, 0);
+    return this.data.Grouped.filter((item) => {
+      return item.Type === "MUA_HANG" ||
+        item.Type === "GIOI_THIEU" ||
+        item.Type === "CHIA_SE_MAGIAMGIA"
+        ? item.Order?.RemainPay === 0
+        : item;
+    }).reduce((n, { Value }) => n + Value, 0);
   }
   calc() {
     var data = this.data;
@@ -195,23 +201,27 @@ export default class extends React.Component {
 
   vietnamesText = (item) => {
     switch (true) {
-      case item.Type === "NAP_QUY" && item.Source === "":
+      case item.Type === "NAP_QUY" && item.Source === "" && item.Value >= 0:
         return "Nạp ví";
       case item.Type === "NAP_QUY" && item.Value < 0 && item.Source === "":
         return "Trừ ví";
       case item.Source === "CHINH_SUA_SO_BUOI_DV":
         return "Hoàn tiền khi hoàn buổi dịch vụ";
-      case item.Type === "MUA_HANG" && item?.Desc.indexOf("KHAU_TRU_TRA_HANG") === -1:
+      case item.Type === "MUA_HANG" &&
+        item?.Desc.indexOf("KHAU_TRU_TRA_HANG") === -1:
         return "Tích lũy mua hàng";
-      case item.Type === "MUA_HANG" && item?.Desc.indexOf("KHAU_TRU_TRA_HANG") > -1:
+      case item.Type === "MUA_HANG" &&
+        item?.Desc.indexOf("KHAU_TRU_TRA_HANG") > -1:
         return "Giảm bớt tích lũy do trả hàng";
       case item.SumType === "TRA_HANG_HOAN_VI":
         return "Hoàn tiền khi trả hàng";
       case item.SumType === "TRA_HANG_PHI_VI":
         return "Phí dịch vụ trả hàng";
-      case item.Type === "GIOI_THIEU" && item?.Desc.indexOf("KHAU_TRU_TRA_HANG") === -1:
+      case item.Type === "GIOI_THIEU" &&
+        item?.Desc.indexOf("KHAU_TRU_TRA_HANG") === -1:
         return "Hoa hồng giới thiệu";
-      case item.Type === "GIOI_THIEU" && item?.Desc.indexOf("KHAU_TRU_TRA_HANG") > -1:
+      case item.Type === "GIOI_THIEU" &&
+        item?.Desc.indexOf("KHAU_TRU_TRA_HANG") > -1:
         return "Giảm bớt hoa hồng do trả hàng";
       case item.Type === "CHIA_SE_MAGIAMGIA":
         return "Hoa hồng giới thiệu ( Chia sẻ voucher )";
@@ -269,7 +279,10 @@ export default class extends React.Component {
                 <Col width="50">
                   <div className="wallet-detail__box-item">
                     <span className="number">
-                      {formatPriceVietnamese(depositWallet && depositWallet)}
+                      {formatPriceVietnamese(
+                        (totalWallet && totalWallet) -
+                          (demonsWallet && demonsWallet)
+                      )}
                     </span>
                     <span className="text">Chờ xử lý</span>
                   </div>

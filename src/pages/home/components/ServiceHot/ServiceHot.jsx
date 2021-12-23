@@ -29,24 +29,50 @@ export default class ServiceHot extends React.Component {
   getServicesAll = () => {
     let stockid = getStockIDStorage();
     stockid ? stockid : 0;
-    ShopDataService.getServiceParent(795, stockid)
-      .then((response) => {
-        const { data } = response.data;
-        const newData = data.filter((item) => {
-          return item.root.Tags.includes("hot");
-        });
-        this.setState({
-          arrService: newData,
-          isLoading: false,
-        });
+
+    ShopDataService.getServiceOriginal()
+      .then(({ data }) => {
+        const result = data.data;
+        if (result) {
+          let newData = [];
+          if (stockid > 0) {
+            newData = result.filter((item) => {
+              return (
+                item.root.OnStocks.includes("*") ||
+                (item.root.OnStocks.includes(stockid) &&
+                  item.root.OnStocks.includes("hot"))
+              );
+            });
+          } else {
+            newData = result.filter((item) => {
+              return item.root.OnStocks.includes("hot");
+            });
+          }
+          this.setState({
+            arrService: newData,
+            isLoading: false,
+          });
+        }
       })
-      .catch((e) => console.log(e));
+      .catch((err) => console.log(err));
+
+    // ShopDataService.getServiceParent(795, stockid)
+    //   .then((response) => {
+    //     const { data } = response.data;
+    //     const newData = data.filter((item) => {
+    //       return item.root.Tags.includes("hot");
+    //     });
+    //     this.setState({
+    //       arrService: newData,
+    //       isLoading: false,
+    //     });
+    //   })
+    //   .catch((e) => console.log(e));
   };
 
   handleUrl = (item) => {
-    console.log(item)
     this.props.f7.navigate(
-      `/shop/${item.root.Paths[0].ID}/?ids=${item.root.ID}&cateid=${item.root.Paths[0].ParentID}`
+      `/shop/${item.cate.ID}/?ids=${item.root.ID}&cateid=795`
     );
   };
 

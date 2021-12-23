@@ -29,7 +29,6 @@ export default class ServiceHot extends React.Component {
   getServicesAll = () => {
     let stockid = getStockIDStorage();
     stockid ? stockid : 0;
-
     ShopDataService.getServiceOriginal()
       .then(({ data }) => {
         const result = data.data;
@@ -40,12 +39,12 @@ export default class ServiceHot extends React.Component {
               return (
                 item.root.OnStocks.includes("*") ||
                 (item.root.OnStocks.includes(stockid) &&
-                  item.root.OnStocks.includes("hot"))
+                  item.root.Tags.includes("hot"))
               );
             });
           } else {
             newData = result.filter((item) => {
-              return item.root.OnStocks.includes("hot");
+              return item.root.Tags.includes("hot");
             });
           }
           this.setState({

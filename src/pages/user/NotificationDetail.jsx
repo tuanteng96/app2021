@@ -3,6 +3,7 @@ import { Page, Navbar, Link, Toolbar } from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import userService from "../../service/user.service";
 import ReactHtmlParser from "react-html-parser";
+import { SET_BADGE } from "../../constants/prom21";
 
 export default class extends React.Component {
   constructor() {
@@ -15,6 +16,8 @@ export default class extends React.Component {
 
   componentDidMount() {
     this.getDetialNoti();
+
+    SET_BADGE(99);
   }
 
   getDetialNoti = async () => {

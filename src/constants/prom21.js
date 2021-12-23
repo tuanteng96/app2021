@@ -53,3 +53,10 @@ export const OPEN_LINK = (link) => {
         t.prom('BROWSER', link);
     }
 }
+
+export const SET_BADGE = (count) => {
+    var t = window.app21 || {};
+    if (typeof t.prom !== 'undefined') {
+        t.prom('SET_BADGE', count);
+    }
+}

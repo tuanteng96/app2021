@@ -86,7 +86,6 @@ export default class extends React.Component {
   }
 
   notiDefault = (evt) => {
-    alert(JSON.stringify(evt.data));
     this.$f7.views.main.router.navigate(`/notification/${evt.data.id}`);
   };
 

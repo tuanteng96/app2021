@@ -4,8 +4,10 @@ import IconForgot from "../../assets/images/forgot-password.png";
 import userService from "../../service/user.service";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import IframeResizer from "iframe-resizer-react";
 import { auth } from "../../firebase/firebase";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { iOS } from "../../constants/helpers";
 
 toast.configure();
 
@@ -15,24 +17,26 @@ export default class extends React.Component {
     this.state = {
       isLoading: false,
       input: "",
+      iFrameHeight: "0px",
     };
   }
 
   componentDidMount() {
-    window.recaptchaVerifier = new RecaptchaVerifier(
-      "sign-in-button",
-      {
-        size: "invisible",
-        callback: (response) => {
-          this.handleSubmit();
+    if (!iOS()) {
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        "sign-in-button",
+        {
+          size: "invisible",
+          callback: (response) => {
+            this.handleSubmit();
+          },
         },
-      },
-      auth
-    );
-
-    window.recaptchaVerifier.render().then((widgetId) => {
-      window.recaptchaWidgetId = widgetId;
-    });
+        auth
+      );
+      window.recaptchaVerifier.render().then((widgetId) => {
+        window.recaptchaWidgetId = widgetId;
+      });
+    }
   }
 
   handleChangeInput = (event) => {
@@ -145,23 +149,32 @@ export default class extends React.Component {
               một liên kết để đặt lại mật khẩu.
             </div>
             <img className="logo-reg" src={IconForgot} />
-            <div className="page-login__form-item">
-              <input
-                type="text"
-                name="input"
-                autoComplete="off"
-                placeholder="Số điện thoại hoặc Email"
-                onChange={this.handleChangeInput}
+            {iOS() && (
+              <IframeResizer
+                heightCalculationMethod="bodyScroll"
+                src="https://cser.vn/App2021/forgotUI"
+                style={{ border: 0, height: 300, width: "100%" }}
               />
-            </div>
-            <div className="page-login__form-item">
-              <button
-                type="submit"
-                className={`btn-login btn-me ${loading ? "loading" : ""}`}
-                id="sign-in-button"
-              >
-                <span>Nhận mã</span>
-              </button>
+            )}
+            <div className={`${iOS() && "d-none"}`}>
+              <div className="page-login__form-item">
+                <input
+                  type="text"
+                  name="input"
+                  autoComplete="off"
+                  placeholder="Số điện thoại hoặc Email"
+                  onChange={this.handleChangeInput}
+                />
+              </div>
+              <div className="page-login__form-item">
+                <button
+                  type="submit"
+                  className={`btn-login btn-me ${loading ? "loading" : ""}`}
+                  id="sign-in-button"
+                >
+                  <span>Nhận mã</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

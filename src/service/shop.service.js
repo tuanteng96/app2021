@@ -4,8 +4,8 @@ class ShopDataService {
     getCate(id, stockid) {
         return http.get(`/app/index.aspx?cmd=cate_parentid&id=${id}&stockid=${stockid}`);
     }
-    getList(id, pi, ps, tags, keys, stockid) {
-        return http.get(`/app/index.aspx?cmd=search_prods&key=${keys}&cates=${id}&pi=${pi}&ps=${ps}&tags=${tags}&stockid=${stockid}`);
+    getList(id, pi, ps, tags, keys, stockid, status) {
+        return http.get(`/app/index.aspx?cmd=search_prods&key=${keys}&cates=${id}&pi=${pi}&ps=${ps}&tags=${tags}&stockid=${stockid}&status=${status ? status : ""}`);
     }
     getListProduct(id, stockid, count) {
         return http.get(`/app/index.aspx?cmd=search_prods&key=&cates=${id}&pi=1&ps=${count}&tags=&stockid=${stockid}`);

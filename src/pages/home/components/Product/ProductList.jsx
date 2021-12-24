@@ -14,7 +14,7 @@ export default class ProductList extends React.Component {
   }
 
   componentDidMount() {
-    this.getDataList(794, "1", 4, "hot", "");
+    this.getDataList(794, "1", 4, "", "");
   }
 
   getDataList = (ID, pi, ps, tag, keys) => {
@@ -28,11 +28,9 @@ export default class ProductList extends React.Component {
     if (!stockid) {
       stockid = 0;
     }
-
-    ShopDataService.getList(ID, pi, ps, tag, keys, stockid)
+    ShopDataService.getList(ID, pi, ps, tag, keys, stockid, "2")
       .then((response) => {
         const arrCateList = response.data.data.lst;
-
         this.setState({
           arrCateList: arrCateList,
           isLoading: false,

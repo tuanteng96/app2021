@@ -51,8 +51,17 @@ export default class extends React.Component {
     if (!stockid) {
       stockid = 0;
     }
-
-    ShopDataService.getList(ID, pi, ps, tag, keys, stockid)
+    ShopDataService.getList(
+      ID,
+      pi,
+      ps,
+      tag,
+      keys,
+      stockid,
+      this.state.currentId !== "hot" || this.$f7route.params.cateId !== "hot"
+        ? ""
+        : "3"
+    )
       .then((response) => {
         const arrCateList = response.data.data.lst;
         const countCateList = response.data.data.pcount;
@@ -127,6 +136,11 @@ export default class extends React.Component {
     const tag = isState.isTag && !isState.keySearch ? isState.isTag : "";
     const keys = isState.keySearch ? isState.keySearch : "";
 
+    let stockid = getStockIDStorage();
+    if (!stockid) {
+      stockid = 0;
+    }
+
     if (!self.state.allowInfinite) return;
     self.setState({
       allowInfinite: false,
@@ -143,7 +157,9 @@ export default class extends React.Component {
         isState.piCateList + 1,
         itemView,
         tag,
-        keys
+        keys,
+        stockid,
+        this.$f7route.params.cateId === "hot" ? "3" : ""
       )
         .then((response) => {
           const arrCateList = response.data.data.lst;
@@ -177,7 +193,6 @@ export default class extends React.Component {
         });
         this.getDataList(CateID, "1", itemView, "hot", "");
       } else {
-        console.log(this.state.keySearch);
         this.getDataList(CateID, "1", itemView, "", this.state.keySearch);
         this.getTitleCate();
       }
@@ -266,13 +281,15 @@ export default class extends React.Component {
             onClickClear={() => this.hideSearch()}
             onClickDisable={() => this.hideSearch()}
           ></Searchbar>
-          <Subnavbar className="subnavbar-prod">
-            <CategoriesList
-              id={CateID}
-              currentId={currentId}
-              changeCate={(cate) => this.changeCate(cate)}
-            />
-          </Subnavbar>
+          {this.$f7route.params.cateId !== "hot" && (
+            <Subnavbar className="subnavbar-prod">
+              <CategoriesList
+                id={CateID}
+                currentId={currentId}
+                changeCate={(cate) => this.changeCate(cate)}
+              />
+            </Subnavbar>
+          )}
         </Navbar>
         <div className="page-render page-render-shop no-bg p-0">
           <div className="page-shop no-bg p-15">

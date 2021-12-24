@@ -36,10 +36,14 @@ export default class ServiceHot extends React.Component {
           let newData = [];
           if (stockid > 0) {
             newData = result.filter((item) => {
+              const arrayStatus = item?.root?.Status
+                ? item.root.Status.split(",")
+                : [];
               return (
-                item.root.OnStocks.includes("*") ||
+                (item.root.OnStocks.includes("*") &&
+                  arrayStatus.indexOf("2") > -1) ||
                 (item.root.OnStocks.includes(stockid) &&
-                  item.root.Tags.includes("hot"))
+                  arrayStatus.indexOf("2") > -1)
               );
             });
           } else {

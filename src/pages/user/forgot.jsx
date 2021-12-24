@@ -5,9 +5,11 @@ import userService from "../../service/user.service";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import IframeResizer from "iframe-resizer-react";
-import { auth } from "../../firebase/firebase";
+import { auth, database } from "../../firebase/firebase";
+import { ref, onValue, query } from "firebase/database";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { iOS } from "../../constants/helpers";
+import { SERVER_APP } from "../../constants/config";
 
 toast.configure();
 
@@ -18,10 +20,30 @@ export default class extends React.Component {
       isLoading: false,
       input: "",
       iFrameHeight: "0px",
+      Token: []
     };
   }
 
   componentDidMount() {
+    const starCountRef = ref(database, 'token');
+    onValue(starCountRef, (snapshot) => {
+      const data = snapshot.val();
+      const dataArr = Object.keys(data).map((key) => {
+        return data[key]
+      });
+
+      if (this.state.Token.length > 0 && dataArr.length > this.state.Token.length) {
+        this.$f7router.navigate("/login/");
+        toast.success("Mật khẩu mới đã được thay đổi thành công !", {
+          position: toast.POSITION.TOP_LEFT,
+          autoClose: 3000,
+        });
+      }
+      else {
+        this.setState({ Token: dataArr });
+      }
+    });
+
     if (!iOS()) {
       window.recaptchaVerifier = new RecaptchaVerifier(
         "sign-in-button",
@@ -136,24 +158,26 @@ export default class extends React.Component {
     const { loading } = this.state;
     return (
       <Page noNavbar noToolbar name="forgot">
-        <div className="page-forgot h-100">
+        <div className={`page-forgot h-100 ${!iOS() && "page-forgot-ios"}`}>
           <div className="to-back">
             <Link onClick={() => this.$f7router.back()}>
               <i className="las la-arrow-left"></i>
             </Link>
           </div>
           <div className="page-forgot__content text-center">
-            <h4>Quên mật khẩu</h4>
-            <div className="desc">
-              Nhập địa chỉ email hoặc số điện thoại và chúng tôi sẽ gửi cho bạn
-              một liên kết để đặt lại mật khẩu.
+            <div className="page-forgot-about">
+              <h4>Quên mật khẩu</h4>
+              <div className="desc">
+                Nhập địa chỉ email hoặc số điện thoại và chúng tôi sẽ gửi cho bạn
+                một liên kết để đặt lại mật khẩu.
+              </div>
+              <img className="logo-reg" src={IconForgot} />
             </div>
-            <img className="logo-reg" src={IconForgot} />
             {iOS() && (
               <IframeResizer
                 heightCalculationMethod="bodyScroll"
-                src="https://cser.vn/App2021/forgotUI"
-                style={{ border: 0, height: 300, width: "100%" }}
+                src={`${SERVER_APP}/App2021/forgotUI`}
+                style={{ border: 0 }}
               />
             )}
             <div className={`${iOS() && "d-none"}`}>

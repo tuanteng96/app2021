@@ -158,7 +158,7 @@ export default class extends React.Component {
     const { loading } = this.state;
     return (
       <Page noNavbar noToolbar name="forgot">
-        <div className={`page-forgot h-100 ${!iOS() && "page-forgot-ios"}`}>
+        <div className={`page-forgot h-100 ${iOS() && "page-forgot-ios"}`}>
           <div className="to-back">
             <Link onClick={() => this.$f7router.back()}>
               <i className="las la-arrow-left"></i>

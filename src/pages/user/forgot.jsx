@@ -20,26 +20,28 @@ export default class extends React.Component {
       isLoading: false,
       input: "",
       iFrameHeight: "0px",
-      Token: []
+      Token: [],
     };
   }
 
   componentDidMount() {
-    const starCountRef = ref(database, 'token');
+    const starCountRef = ref(database, "token");
     onValue(starCountRef, (snapshot) => {
       const data = snapshot.val();
       const dataArr = Object.keys(data).map((key) => {
-        return data[key]
+        return data[key];
       });
 
-      if (this.state.Token.length > 0 && dataArr.length > this.state.Token.length) {
+      if (
+        this.state.Token.length > 0 &&
+        dataArr.length > this.state.Token.length
+      ) {
         this.$f7router.navigate("/login/");
         toast.success("Mật khẩu mới đã được thay đổi thành công !", {
           position: toast.POSITION.TOP_LEFT,
           autoClose: 3000,
         });
-      }
-      else {
+      } else {
         this.setState({ Token: dataArr });
       }
     });
@@ -168,16 +170,16 @@ export default class extends React.Component {
             <div className="page-forgot-about">
               <h4>Quên mật khẩu</h4>
               <div className="desc">
-                Nhập địa chỉ email hoặc số điện thoại và chúng tôi sẽ gửi cho bạn
-                một liên kết để đặt lại mật khẩu.
+                Nhập địa chỉ email hoặc số điện thoại và chúng tôi sẽ gửi cho
+                bạn một liên kết để đặt lại mật khẩu.
               </div>
               <img className="logo-reg" src={IconForgot} />
             </div>
             {iOS() && (
               <IframeResizer
-                heightCalculationMethod="bodyScroll"
+                heightCalculationMethod="lowestElement"
                 src={`${SERVER_APP}/App2021/forgotUI`}
-                style={{ border: 0 }}
+                style={{ border: 0, overflowY: "auto !important" }}
               />
             )}
             <div className={`${iOS() && "d-none"}`}>

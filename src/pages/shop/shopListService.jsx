@@ -223,7 +223,7 @@ export default class extends React.Component {
                                   alt={item.root.Title}
                                 />
                               </div>
-                              {item.Desc !== "" ? (
+                              {item.root.Desc !== "" ? (
                                 <div className="service-about__content">
                                   <div className="service-about__content-text">
                                     {ReactHtmlParser(item.root.Desc)}

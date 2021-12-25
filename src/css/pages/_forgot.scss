@@ -5,7 +5,6 @@
     position: relative;
     background: $white;
     z-index: 1;
-
     &::after {
         content: "";
         position: absolute;
@@ -26,42 +25,35 @@
         height: 2px;
         background: $white;
     }
-
     .to-back {
         position: absolute;
         top: 0;
         left: 0;
         z-index: 10;
-
         a {
             width: 45px;
             height: 45px;
             display: flex;
             align-items: center;
             justify-content: center;
-
             i {
                 font-size: 20px;
                 color: $white;
             }
         }
     }
-
     .page-forgot__content {
         text-align: center;
         padding: 0 20px;
-
         h4 {
             margin: 0 0 12px 0;
             font-size: 22px;
             color: $white;
         }
-
         .logo-reg {
             width: 140px;
             margin-bottom: 20px;
         }
-
         .desc {
             font-size: 14px;
             color: $white;
@@ -94,16 +86,21 @@
                 padding-top: 12px;
                 padding-left: 20px;
                 padding-right: 20px;
+                position: relative;
                 .logo-reg {
                     width: 120px;
                     margin-bottom: 0;
+                    position: absolute;
+                    bottom: 10%;
+                    left: 50%;
+                    transform: translateX(-50%);
                 }
             }
         }
         iframe {
             height: calc(100% - 40% - 18px);
             width: 100%;
-            overflow: auto;
+            overflow-y: auto !important;
         }
     }
 }

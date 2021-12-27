@@ -109,7 +109,7 @@ export default class extends React.Component {
     
     var $$ = this.Dom7;
     //$$("#preload").remove();
-    window.percent = 95;
+    window.percent = 99;
     window.APP_READY = true;
     // const self = this;
     // self.$f7.dialog.preloader('Loading ...');

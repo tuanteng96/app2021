@@ -6,11 +6,11 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import IframeResizer from "iframe-resizer-react";
 import { auth, database } from "../../firebase/firebase";
-import { ref, onValue, query } from "firebase/database";
+import { ref, onValue, set } from "firebase/database";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { iOS } from "../../constants/helpers";
 import { SERVER_APP } from "../../constants/config";
-
+import { uuid } from "../../constants/helpers";
 toast.configure();
 
 export default class extends React.Component {
@@ -20,27 +20,28 @@ export default class extends React.Component {
       isLoading: false,
       input: "",
       iFrameHeight: "0px",
-      Token: []
+      Uuid: "",
+      Token: [],
     };
   }
 
   componentDidMount() {
+
     const starCountRef = ref(database, 'token');
     onValue(starCountRef, (snapshot) => {
       const data = snapshot.val();
-      const dataArr = Object.keys(data).map((key) => {
-        return data[key]
-      });
-
-      if (this.state.Token.length > 0 && dataArr.length > this.state.Token.length) {
-        this.$f7router.navigate("/login/");
+      const { Uuid } = this.state;
+      const dataArr = data ? Object.keys(data).map((key) => {
+        return { ...data[key], Key: key }
+      }) : [];
+      if (dataArr.findIndex(item => item.Key === Uuid) > -1) {
         toast.success("Mật khẩu mới đã được thay đổi thành công !", {
           position: toast.POSITION.TOP_LEFT,
           autoClose: 3000,
         });
-      }
-      else {
-        this.setState({ Token: dataArr });
+        set(ref(database, `/token/${this.state.Uuid}`), null).then(() => {
+          this.$f7router.navigate("/login/");
+        });
       }
     });
 
@@ -59,6 +60,11 @@ export default class extends React.Component {
         window.recaptchaWidgetId = widgetId;
       });
     }
+    else {
+      this.setState({ Uuid: uuid()});
+      this.$f7.dialog.preloader('Đang tải ...');
+    }
+
   }
 
   handleChangeInput = (event) => {
@@ -155,7 +161,7 @@ export default class extends React.Component {
   };
 
   render() {
-    const { loading } = this.state;
+    const { loading, Uuid } = this.state;
     return (
       <Page noNavbar noToolbar name="forgot">
         <div className={`page-forgot h-100 ${iOS() && "page-forgot-ios"}`}>
@@ -173,11 +179,13 @@ export default class extends React.Component {
               </div>
               <img className="logo-reg" src={IconForgot} />
             </div>
-            {iOS() && (
+            {iOS() && Uuid && (
+              // <ForgotIframe src={`${SERVER_APP}/App2021/forgotUI?uuid=${Uuid}`}/>
               <IframeResizer
                 heightCalculationMethod="bodyScroll"
-                src={`${SERVER_APP}/App2021/forgotUI`}
+                src={`${SERVER_APP}/App2021/forgotUI?uuid=${Uuid}`}
                 style={{ border: 0 }}
+                onLoad={() => this.$f7.dialog.close()}
               />
             )}
             <div className={`${iOS() && "d-none"}`}>

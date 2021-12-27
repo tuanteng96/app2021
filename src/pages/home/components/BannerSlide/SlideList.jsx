@@ -4,6 +4,7 @@ import NewsDataService from "../../../../service/news.service";
 import Slider from "react-slick";
 import { SERVER_APP } from "../../../../constants/config";
 import Skeleton from "react-loading-skeleton";
+import { validURL } from "../../../../constants/helpers";
 export default class SlideList extends React.Component {
   constructor() {
     super();
@@ -54,10 +55,11 @@ export default class SlideList extends React.Component {
                   noLinkClass
                   href={item.Link ? item.Link : `/adv/${item.ID}`}
                   className={`body-slide__item rounded overflow-hidden ${
-                    item.Follow === "true" ? "external" : ""
+                    validURL(item.Link) ? "external" : ""
                   }`}
                   key={item.ID}
                 >
+                  
                   <img
                     src={SERVER_APP + "/Upload/image/" + item.FileName}
                     alt={item.Title}

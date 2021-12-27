@@ -1,4 +1,4 @@
-import { Link, Page, Toolbar } from "framework7-react";
+import { Link, Page, Preloader, Toolbar } from "framework7-react";
 import React from "react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import { GrClock, GrClose } from "react-icons/gr";
@@ -19,6 +19,7 @@ export default class extends React.Component {
     this.state = {
       isSearch: false,
       isLoading: false,
+      showPreloader: false,
     };
   }
 
@@ -120,6 +121,28 @@ export default class extends React.Component {
     });
   };
 
+  async loadRefresh(done) {
+    const { valueSearch } = this.state;
+    this.setState({
+      showPreloader: true,
+    });
+    if (valueSearch) {
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      await this.getkeySeach(valueSearch);
+      this.setState({
+        showPreloader: false,
+      });
+      done();
+    } else {
+      setTimeout(() => {
+        this.setState({
+          showPreloader: false,
+        });
+        done();
+      }, 800);
+    }
+  }
+
   render() {
     const {
       isSearch,
@@ -128,10 +151,17 @@ export default class extends React.Component {
       getVieweds,
       getKeySearchs,
       valueSearch,
+      showPreloader,
     } = this.state;
     return (
-      <Page noNavbar name="search">
-        <div className="page-search">
+      <Page
+        noNavbar
+        name="search"
+        ptr
+        //infiniteDistance={50}
+        onPtrRefresh={this.loadRefresh.bind(this)}
+      >
+        <div className={`page-search ${showPreloader && "show-preloader"}`}>
           <div className="page-search__header">
             <Link onClick={() => this.$f7router.back()}>
               <i className="las la-angle-left"></i>
@@ -151,6 +181,15 @@ export default class extends React.Component {
             </div>
           </div>
           {isLoading && <div className="line-loading"></div>}
+
+          <div
+            className="text-align-center"
+            style={{ padding: "20px 0 10px 0" }}
+            className="preloader-custom"
+          >
+            <Preloader size={28} />
+          </div>
+
           {!isSearch && (
             <div className="page-search__content">
               <div className="history">

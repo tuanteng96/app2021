@@ -1,3 +1,17 @@
+.page[data-name="wallet"] {
+    .ptr-preloader {
+        background: $color-app;
+        .preloader-inner {
+            .preloader-inner-line {
+                background: #fff;
+            }
+        }
+        .ptr-arrow {
+            color: #fff;
+        }
+    }
+}
+
 .wallet {
     &-bg {
         height: 220px;

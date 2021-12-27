@@ -14,6 +14,7 @@ export default class extends React.Component {
       arrCateAdv: [],
       isLoading: true,
       isOpenStock: false,
+      showPreloader: false,
     };
   }
 
@@ -41,10 +42,28 @@ export default class extends React.Component {
     });
   };
 
+  loadRefresh(done) {
+    setTimeout(() => {
+      this.$f7.views.main.router.navigate(this.$f7.views.main.router.url, {
+        reloadCurrent: true,
+      });
+      this.setState({
+        showPreloader: true,
+      });
+      done();
+    }, 600);
+  }
+
   render() {
     const { arrCateAdv, isLoading } = this.state;
     return (
-      <Page name="shop">
+      <Page
+        name="shop"
+        ptr
+        infiniteDistance={50}
+        infinitePreloader={this.state.showPreloader}
+        onPtrRefresh={this.loadRefresh.bind(this)}
+      >
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">

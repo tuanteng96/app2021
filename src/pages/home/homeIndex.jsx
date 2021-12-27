@@ -32,6 +32,7 @@ export default class extends React.Component {
       arrNews: [],
       isOpenStock: false,
       width: window.innerWidth,
+      showPreloader: false,
     };
   }
 
@@ -95,11 +96,30 @@ export default class extends React.Component {
     this.$f7router.navigate("/search/");
   };
 
+  loadRefresh(done) {
+    setTimeout(() => {
+      this.$f7.views.main.router.navigate(this.$f7.views.main.router.url, {
+        reloadCurrent: true,
+      });
+      this.setState({
+        showPreloader: true,
+      });
+      done();
+    }, 1000);
+  }
+
   render() {
     const { isOpenStock, stockName } = this.state;
-
     return (
-      <Page noNavbar name="news" onPageBeforeIn={() => this.onPageBeforeIn()}>
+      <Page
+        noNavbar
+        name="home"
+        onPageBeforeIn={() => this.onPageBeforeIn()}
+        ptr
+        infiniteDistance={50}
+        infinitePreloader={this.state.showPreloader}
+        onPtrRefresh={this.loadRefresh.bind(this)}
+      >
         <div className="page-wrapper">
           <div className="page-render p-0">
             <div className="home-page">

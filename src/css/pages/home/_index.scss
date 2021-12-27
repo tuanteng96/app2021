@@ -269,6 +269,20 @@
     }
 }
 
+.page[data-name="home"] {
+    .ptr-preloader {
+        background: $color-app;
+        .preloader-inner {
+            .preloader-inner-line {
+                background: #fff;
+            }
+        }
+    }
+    .ptr-arrow {
+        color: #fff;
+    }
+}
+
 .slider-hot {
     background: #fff;
     padding-top: 12px;

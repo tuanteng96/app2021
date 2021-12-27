@@ -19,6 +19,7 @@ export default class extends React.Component {
     this.state = {
       memberInfo: {},
       isLoading: true,
+      showPreloader: false,
     };
   }
   componentDidMount() {
@@ -70,10 +71,29 @@ export default class extends React.Component {
     }
   };
 
+  loadRefresh(done) {
+    setTimeout(() => {
+      this.$f7.views.main.router.navigate(this.$f7.views.main.router.url, {
+        reloadCurrent: true,
+      });
+      this.setState({
+        showPreloader: true,
+      });
+      done();
+    }, 600);
+  }
+
   render() {
     const { memberInfo, isLoading } = this.state;
     return (
-      <Page name="profile" noNavbar>
+      <Page
+        name="profile-list"
+        noNavbar
+        ptr
+        infiniteDistance={50}
+        infinitePreloader={this.state.showPreloader}
+        onPtrRefresh={this.loadRefresh.bind(this)}
+      >
         <div className="profile-bg">
           <div className="page-login__back">
             <Link onClick={() => this.$f7router.back()}>

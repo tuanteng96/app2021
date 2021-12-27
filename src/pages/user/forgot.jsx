@@ -20,51 +20,28 @@ export default class extends React.Component {
       isLoading: false,
       input: "",
       iFrameHeight: "0px",
-<<<<<<< HEAD
-=======
       Uuid: "",
->>>>>>> d1422cb72fa9fa015feb781241c8dcc552e0e698
-      Token: [],
     };
   }
 
   componentDidMount() {
-<<<<<<< HEAD
     const starCountRef = ref(database, "token");
     onValue(starCountRef, (snapshot) => {
       const data = snapshot.val();
-      const dataArr = Object.keys(data).map((key) => {
-        return data[key];
-      });
-
-      if (
-        this.state.Token.length > 0 &&
-        dataArr.length > this.state.Token.length
-      ) {
-        this.$f7router.navigate("/login/");
-=======
-
-    const starCountRef = ref(database, 'token');
-    onValue(starCountRef, (snapshot) => {
-      const data = snapshot.val();
       const { Uuid } = this.state;
-      const dataArr = data ? Object.keys(data).map((key) => {
-        return { ...data[key], Key: key }
-      }) : [];
-      if (dataArr.findIndex(item => item.Key === Uuid) > -1) {
->>>>>>> d1422cb72fa9fa015feb781241c8dcc552e0e698
+      const dataArr = data
+        ? Object.keys(data).map((key) => {
+            return { ...data[key], Key: key };
+          })
+        : [];
+      if (dataArr.findIndex((item) => item.Key === Uuid) > -1) {
         toast.success("Mật khẩu mới đã được thay đổi thành công !", {
           position: toast.POSITION.TOP_LEFT,
           autoClose: 3000,
         });
-<<<<<<< HEAD
-      } else {
-        this.setState({ Token: dataArr });
-=======
         set(ref(database, `/token/${this.state.Uuid}`), null).then(() => {
           this.$f7router.navigate("/login/");
         });
->>>>>>> d1422cb72fa9fa015feb781241c8dcc552e0e698
       }
     });
 
@@ -82,12 +59,10 @@ export default class extends React.Component {
       window.recaptchaVerifier.render().then((widgetId) => {
         window.recaptchaWidgetId = widgetId;
       });
+    } else {
+      this.setState({ Uuid: uuid() });
+      this.$f7.dialog.preloader("Đang tải ...");
     }
-    else {
-      this.setState({ Uuid: uuid()});
-      this.$f7.dialog.preloader('Đang tải ...');
-    }
-
   }
 
   handleChangeInput = (event) => {
@@ -203,18 +178,11 @@ export default class extends React.Component {
               <img className="logo-reg" src={IconForgot} />
             </div>
             {iOS() && Uuid && (
-              // <ForgotIframe src={`${SERVER_APP}/App2021/forgotUI?uuid=${Uuid}`}/>
               <IframeResizer
-<<<<<<< HEAD
-                heightCalculationMethod="lowestElement"
-                src={`${SERVER_APP}/App2021/forgotUI`}
-                style={{ border: 0, overflowY: "auto !important" }}
-=======
                 heightCalculationMethod="bodyScroll"
                 src={`${SERVER_APP}/App2021/forgotUI?uuid=${Uuid}`}
                 style={{ border: 0 }}
                 onLoad={() => this.$f7.dialog.close()}
->>>>>>> d1422cb72fa9fa015feb781241c8dcc552e0e698
               />
             )}
             <div className={`${iOS() && "d-none"}`}>

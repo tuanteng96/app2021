@@ -3,7 +3,7 @@ import { SERVER_APP } from "./../../constants/config";
 import ReactHtmlParser from "react-html-parser";
 import NewsDataService from "../../service/news.service";
 import { Page, Link, Navbar, Toolbar } from "framework7-react";
-import ToolBar from "../../components/ToolBar";
+import ToolBarBottom from "../../components/ToolBarBottom";
 import NotificationIcon from "../../components/NotificationIcon";
 import SkeletonNews from "../news/SkeletonNews";
 
@@ -13,6 +13,7 @@ export default class extends React.Component {
     this.state = {
       arrNews: [],
       isLoading: true,
+      showPreloader: false,
     };
   }
 
@@ -30,11 +31,34 @@ export default class extends React.Component {
       });
   }
 
+  loadRefresh(done) {
+    NewsDataService.getNewsIdCate("835")
+      .then((response) => {
+        setTimeout(() => {
+          const arrNews = response.data.data;
+          this.setState({
+            arrNews: arrNews,
+            isLoading: false,
+          });
+          done();
+        }, 300);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
   render() {
     const arrNews = this.state.arrNews;
     const { isLoading } = this.state;
     return (
-      <Page name="news-list">
+      <Page
+        name="news-list"
+        ptr
+        infiniteDistance={50}
+        infinitePreloader={this.state.showPreloader}
+        onPtrRefresh={this.loadRefresh.bind(this)}
+      >
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
@@ -85,7 +109,7 @@ export default class extends React.Component {
           </div>
         </div>
         <Toolbar tabbar position="bottom">
-          <ToolBar />
+          <ToolBarBottom />
         </Toolbar>
       </Page>
     );

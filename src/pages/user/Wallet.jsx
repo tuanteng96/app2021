@@ -168,6 +168,7 @@ export default class extends React.Component {
       totalWallet: 0, // Ví
       demonsWallet: 0, // Quỷ
       depositWallet: 0, // Đặt cọc
+      showPreloader: false,
     };
   }
   componentDidMount() {
@@ -246,10 +247,30 @@ export default class extends React.Component {
     }
   };
 
+  loadRefresh(done) {
+    setTimeout(() => {
+      this.$f7.views.main.router.navigate(this.$f7.views.main.router.url, {
+        reloadCurrent: true,
+      });
+      this.setState({
+        showPreloader: true,
+      });
+      done();
+    }, 600);
+  }
+
   render() {
     const { arrWallet, totalWallet, demonsWallet, depositWallet } = this.state;
     return (
-      <Page noNavbar name="wallet" className="wallet">
+      <Page
+        noNavbar
+        name="wallet"
+        className="wallet"
+        ptr
+        infiniteDistance={50}
+        infinitePreloader={this.state.showPreloader}
+        onPtrRefresh={this.loadRefresh.bind(this)}
+      >
         <div className="profile-bg wallet-bg">
           <div className="page-login__back">
             <Link onClick={() => this.$f7router.back()}>

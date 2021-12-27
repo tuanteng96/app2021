@@ -143,6 +143,11 @@ export default class extends React.Component {
     this.getTitleCate(cate.ID);
   };
 
+  fixedContentDomain = (content) => {
+    if (!content) return "";
+    return content.replace(/src=\"\//g, 'src="' + SERVER_APP + "/");
+  };
+
   render() {
     const {
       arrService,
@@ -259,7 +264,11 @@ export default class extends React.Component {
                                         </div>
                                         <div className="content">
                                           {ReactHtmlParser(item.root.Desc)}
-                                          {ReactHtmlParser(item.root.Detail)}
+                                          {ReactHtmlParser(
+                                            this.fixedContentDomain(
+                                              item.root.Detail
+                                            )
+                                          )}
                                         </div>
                                       </div>
                                     </PageContent>

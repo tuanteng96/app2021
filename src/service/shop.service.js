@@ -20,7 +20,7 @@ class ShopDataService {
         return http.get(`/api/v3/prod?cmd=getid&id=${id}&mid=${userId}`);
     }
     getServiceParent(id, stock) {
-        return http.get(`/api/v3/app2?get=sv&cid=${id}&stockid=${stock}&takes=detail,desc`);
+        return http.get(`/api/v3/app2?get=sv&cid=${id}&stockid=${stock}&takes=Detail,Desc`);
     }
     getServiceParentID(id, stockid) {
         return http.get(`/app/index.aspx?cmd=service_parentid&id=${id}&stockid=${stockid}`);

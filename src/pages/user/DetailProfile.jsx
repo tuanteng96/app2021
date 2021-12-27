@@ -25,6 +25,7 @@ export default class extends React.Component {
       IDStockName: "",
       isOpen: false,
       isOpenStock: false,
+      showPreloader: false,
     };
   }
 
@@ -143,6 +144,17 @@ export default class extends React.Component {
     }
   };
 
+  loadRefresh(done) {
+    setTimeout(() => {
+      this.getInfoMember();
+      this.getStockCurrent();
+      this.setState({
+        showPreloader: true,
+      });
+      done();
+    }, 600);
+  }
+
   render() {
     const { memberInfo } = this.state;
     const IDStockName = this.state.IDStockName;
@@ -163,11 +175,16 @@ export default class extends React.Component {
         step: 1,
       },
     };
+
     return (
       <Page
         onPageBeforeIn={this.onPageBeforeIn.bind(this)}
         name="detail-profile"
         noToolbar
+        ptr
+        infiniteDistance={50}
+        infinitePreloader={this.state.showPreloader}
+        onPtrRefresh={this.loadRefresh.bind(this)}
       >
         <Navbar>
           <div className="page-navbar">

@@ -12,6 +12,7 @@ export default class extends React.Component {
     super();
     this.state = {
       arrMaps: [],
+      showPreloader: false,
     };
   }
   componentDidMount() {
@@ -55,7 +56,9 @@ export default class extends React.Component {
       variableWidth: true,
     };
     return (
-      <Page name="maps">
+      <Page
+        name="maps"
+      >
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
@@ -64,7 +67,19 @@ export default class extends React.Component {
               </Link>
             </div>
             <div className="page-navbar__title">
-              <span className="title">Hệ thống Spa / Thẩm mỹ</span>
+              <span
+                className="title"
+                onClick={() =>
+                  this.$f7.views.main.router.navigate(
+                    this.$f7.views.main.router.url,
+                    {
+                      reloadCurrent: true,
+                    }
+                  )
+                }
+              >
+                Hệ thống Spa / Thẩm mỹ
+              </span>
             </div>
             <div className="page-navbar__noti">
               <NotificationIcon />
@@ -95,7 +110,9 @@ export default class extends React.Component {
               {arrMaps &&
                 arrMaps.map((item, index) => (
                   <div
-                    className={`page-maps__list-item ${currentID === item.ID ? "active" : ""}`}
+                    className={`page-maps__list-item ${
+                      currentID === item.ID ? "active" : ""
+                    }`}
                     key={index}
                     style={this.handStyle()}
                     onClick={() => this.handleMaps(item)}

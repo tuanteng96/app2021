@@ -13,6 +13,7 @@ export default class extends React.Component {
     this.state = {
       arrayItem: [],
       isLoading: true,
+      showPreloader: false,
     };
   }
 
@@ -33,10 +34,28 @@ export default class extends React.Component {
       .catch((er) => console.log(er));
   }
 
+  loadRefresh(done) {
+    setTimeout(() => {
+      this.$f7.views.main.router.navigate(this.$f7.views.main.router.url, {
+        reloadCurrent: true,
+      });
+      this.setState({
+        showPreloader: true,
+      });
+      done();
+    }, 1000);
+  }
+
   render() {
     const { arrayItem, isLoading } = this.state;
     return (
-      <Page name="news-list-detail">
+      <Page
+        name="news-list-detail"
+        ptr
+        infiniteDistance={50}
+        infinitePreloader={this.state.showPreloader}
+        onPtrRefresh={this.loadRefresh.bind(this)}
+      >
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">

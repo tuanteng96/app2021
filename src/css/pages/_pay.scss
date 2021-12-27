@@ -3,6 +3,17 @@
     overflow: hidden;
 }
 
+.page[data-name="shop-pay"] {
+    .ptr-preloader {
+        background: #fff;
+    }
+    .loader-show {
+        .page-pay-1 {
+            height: calc(100% - 142px) !important;
+        }
+    }
+}
+
 .page-pay {
     height: 100%;
     position: relative;

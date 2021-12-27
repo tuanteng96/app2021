@@ -9,7 +9,7 @@ export default class SkeletonPay extends React.Component {
   }
   render() {
     return (
-      <div className="page-pay__list">
+      <div className={`page-pay__list ${this.props.className}`}>
         {Array(3)
           .fill()
           .map((item, index) => {

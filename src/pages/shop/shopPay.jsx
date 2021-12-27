@@ -40,6 +40,8 @@ export default class extends React.Component {
       isBtn: false,
       loadingBtn: false,
       isUpdate: false, // Trạng thái update đơn hàng
+      showPreloader: false,
+      Preloaders: false,
     };
   }
 
@@ -441,6 +443,22 @@ export default class extends React.Component {
     }
   };
 
+  loadRefresh(done) {
+    this.setState({
+      Preloaders: true,
+    });
+    setTimeout(() => {
+      this.$f7.views.main.router.navigate(this.$f7.views.main.router.url, {
+        reloadCurrent: true,
+      });
+      this.setState({
+        showPreloader: true,
+        Preloaders: false,
+      });
+      done();
+    }, 600);
+  }
+
   render() {
     const {
       items,
@@ -455,6 +473,7 @@ export default class extends React.Component {
       isLoading,
       isBtn,
       VDiscount,
+      Preloaders
     } = this.state;
 
     return (
@@ -463,6 +482,10 @@ export default class extends React.Component {
         onPageBeforeOut={this.onPageBeforeOut}
         onPageBeforeRemove={this.onPageBeforeRemove}
         name="shop-pay"
+        ptr
+        infiniteDistance={50}
+        infinitePreloader={this.state.showPreloader}
+        onPtrRefresh={this.loadRefresh.bind(this)}
       >
         <Navbar>
           <div className="page-navbar">
@@ -498,9 +521,13 @@ export default class extends React.Component {
             </div>
           </div>
         </Navbar>
-        <div className="page-render page-render-pay no-bg p-0">
+        <div
+          className={`${
+            Preloaders && "loader-show"
+          } page-render page-render-pay no-bg p-0`}
+        >
           <div className="page-pay no-bg">
-            {isLoading && <SkeletonPay />}
+            {isLoading && <SkeletonPay className="page-pay-1" />}
             {!isLoading && (
               <div className="page-pay__list page-pay-1">
                 {items.length > 0

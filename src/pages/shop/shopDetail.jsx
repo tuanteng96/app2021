@@ -45,6 +45,7 @@ export default class extends React.Component {
       statusLoading: true,
       isOpenStock: false,
       copied: false,
+      showPreloader: false,
     };
   }
 
@@ -396,6 +397,23 @@ export default class extends React.Component {
     }
   };
 
+  fixedContentDomain = (content) => {
+    if (!content) return "";
+    return content.replace(/src=\"\//g, 'src="' + SERVER_APP + "/");
+  };
+
+  loadRefresh(done) {
+    setTimeout(() => {
+      this.$f7.views.main.router.navigate(this.$f7.views.main.router.url, {
+        reloadCurrent: true,
+      });
+      this.setState({
+        showPreloader: true,
+      });
+      done();
+    }, 600);
+  }
+
   render() {
     const {
       arrProductCurrent,
@@ -418,6 +436,10 @@ export default class extends React.Component {
         onPageBeforeOut={this.onPageBeforeOut}
         onPageBeforeRemove={this.onPageBeforeRemove}
         name="shop-detail"
+        ptr
+        infiniteDistance={50}
+        infinitePreloader={this.state.showPreloader}
+        onPtrRefresh={this.loadRefresh.bind(this)}
       >
         <Navbar>
           <div className="page-navbar">
@@ -622,7 +644,9 @@ export default class extends React.Component {
                         <>
                           <div className="content-post">
                             {ReactHtmlParser(arrProduct.Desc)}
-                            {ReactHtmlParser(arrProduct.Detail)}
+                            {ReactHtmlParser(
+                              this.fixedContentDomain(arrProduct.Detail)
+                            )}
                           </div>
                         </>
                       )}

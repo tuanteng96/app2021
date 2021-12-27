@@ -4,7 +4,7 @@ import {
   checkImageProduct,
 } from "../../constants/format";
 import { AiOutlineClose } from "react-icons/ai";
-
+import { iOS } from "../../constants/helpers";
 import imgCoupon from "../../assets/images/coupon_bg.svg";
 import { getStockIDStorage, getUser } from "../../constants/user";
 import ShopDataService from "./../../service/shop.service";
@@ -523,7 +523,7 @@ export default class extends React.Component {
         </Navbar>
         <div
           className={`${
-            Preloaders && "loader-show"
+            iOS() && Preloaders && "loader-show"
           } page-render page-render-pay no-bg p-0`}
         >
           <div className="page-pay no-bg">

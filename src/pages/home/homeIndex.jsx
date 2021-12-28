@@ -19,11 +19,18 @@ import {
 } from "../../constants/user";
 import ListService from "./components/Service/ListService";
 import SlideList from "../home/components/BannerSlide/SlideList";
-import ListImage from "../home/components/Customer/ListImage";
-import ProductList from "../home/components/Product/ProductList";
-import NewsList from "../home/components/news/NewsList";
-import QuickAction from "../../components/quickAction";
-import ServiceHot from "./components/ServiceHot/ServiceHot";
+
+const ListImage = React.lazy(() =>
+  import("../home/components/Customer/ListImage")
+);
+const NewsList = React.lazy(() => import("../home/components/news/NewsList"));
+const QuickAction = React.lazy(() => import("../../components/quickAction"));
+const ServiceHot = React.lazy(() =>
+  import("./components/ServiceHot/ServiceHot")
+);
+const ProductList = React.lazy(() =>
+  import("../home/components/Product/ProductList")
+);
 
 export default class extends React.Component {
   constructor() {
@@ -167,12 +174,19 @@ export default class extends React.Component {
               </div>
               <div className="home-page__news mb-8">
                 <div className="page-news__list">
-                  <ServiceHot f7={this.$f7router} />
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <ServiceHot f7={this.$f7router} />
+                  </Suspense>
                 </div>
               </div>
-              <ListImage />
+              <Suspense fallback={<div>Loading...</div>}>
+                <ListImage />
+              </Suspense>
+
               <div className="pl-15px pr-15px slider-hot">
-                <SlideList BannerName="App.DVHOT" />
+                <Suspense fallback={<div>Loading...</div>}>
+                  <SlideList BannerName="App.DVHOT" />
+                </Suspense>
               </div>
               <div className="home-page__product">
                 <div className="head">
@@ -183,7 +197,9 @@ export default class extends React.Component {
                     </Link>
                   </div>
                 </div>
-                <ProductList />
+                <Suspense fallback={<div>Loading...</div>}>
+                  <ProductList />
+                </Suspense>
               </div>
               <div className="home-page__news">
                 <div className="page-news__list">
@@ -195,7 +211,9 @@ export default class extends React.Component {
                       </Link>
                     </div>
                   </div>
-                  <NewsList />
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <NewsList />
+                  </Suspense>
                 </div>
               </div>
             </div>

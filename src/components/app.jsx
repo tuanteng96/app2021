@@ -28,6 +28,7 @@ import {
   setUserStorage,
 } from "../constants/user";
 import UserService from "../service/user.service";
+import { setNotiID, getNotiID } from "./../constants/user";
 
 import routes from "../js/routes";
 import { NAME_APP } from "../constants/config";
@@ -86,7 +87,10 @@ export default class extends React.Component {
   }
 
   notiDefault = (evt) => {
-    this.$f7.views.main.router.navigate(`/notification/${evt.data.id}`);
+    if (Number(getNotiID()) !== Number(evt.data.id)) {
+      setNotiID(evt.data.id);
+      this.$f7.views.main.router.navigate(`/notification/${evt.data.id}`);
+    }
   };
 
   notiCateProdID = (evt) => {
@@ -106,7 +110,6 @@ export default class extends React.Component {
   };
 
   componentDidMount() {
-    
     var $$ = this.Dom7;
     //$$("#preload").remove();
     window.percent = 99;

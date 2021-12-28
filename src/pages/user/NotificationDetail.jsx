@@ -3,6 +3,7 @@ import { Page, Navbar, Link, Toolbar } from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import userService from "../../service/user.service";
 import ReactHtmlParser from "react-html-parser";
+import Skeleton from "react-loading-skeleton";
 import { SET_BADGE } from "../../constants/prom21";
 
 export default class extends React.Component {
@@ -16,19 +17,22 @@ export default class extends React.Component {
 
   componentDidMount() {
     this.getDetialNoti();
-
-    SET_BADGE(99);
+    // if (this.$f7route.query && this.$f7route.query.remove) {
+    //   SET_BADGE();
+    // }
   }
 
   getDetialNoti = async () => {
     const Id = this.$f7route.params.id;
-
+    this.setState({
+      isLoading: true,
+    });
     try {
       const { data } = await userService.getNotiDetail(Id);
       const dataPost = new FormData();
       dataPost.append("ids", Id);
       await userService.readedNotification(dataPost);
-      this.setState({ data: data.data[0] });
+      this.setState({ data: data.data[0], isLoading: false });
     } catch (error) {
       console.log(error);
     }
@@ -48,9 +52,7 @@ export default class extends React.Component {
             <div className="page-navbar__back">
               <Link
                 onClick={() =>
-                  this.$f7router.navigate(`/notification/`, {
-                    reloadCurrent: true,
-                  })
+                  this.$f7router.navigate(`/notification/`)
                 }
               >
                 <i className="las la-angle-left"></i>
@@ -91,9 +93,7 @@ export default class extends React.Component {
             ) : (
               <ul className="page-noti__list noti-detail">
                 <li className="readed">
-                  <div>
-                    Ngày gửi{" "}
-                  </div>
+                  <div>Ngày gửi </div>
                   <div>{data && data.CreateDateVN}</div>
                 </li>
                 <li className="readed">

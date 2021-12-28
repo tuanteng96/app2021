@@ -21,6 +21,7 @@ import Skeleton from "react-loading-skeleton";
 
 import moment from "moment";
 import "moment/locale/vi";
+import { SET_BADGE } from "../../constants/prom21";
 moment.locale("vi");
 
 export default class extends React.Component {
@@ -34,13 +35,15 @@ export default class extends React.Component {
     };
   }
   componentDidMount() {
+    //SET_BADGE();
     this.getNotification();
   }
 
   getNotification = () => {
+    
     const infoUser = getUser();
     if (!infoUser) {
-      _this.$f7.views.main.router.navigate("/notification/");
+      _this.$f7.views.main.router.navigate("/");
       return false;
     }
 
@@ -63,6 +66,7 @@ export default class extends React.Component {
           arrNoti: dataNew,
           isLoading: false,
         });
+        SET_BADGE();
       })
       .catch((er) => console.log(er));
   };
@@ -83,6 +87,7 @@ export default class extends React.Component {
       </svg>
     );
   };
+
   handleCheckAll = () => {
     this.setState((prevState) => {
       let { arrNoti, allChecked, isActive, isCheckAll } = prevState;
@@ -105,6 +110,7 @@ export default class extends React.Component {
       return { arrNoti, allChecked, isActive, isCheckAll };
     });
   };
+
   handleChangeInput = (e) => {
     let itemID = e.target.name;
     let checked = e.target.checked;
@@ -128,7 +134,7 @@ export default class extends React.Component {
   };
 
   handleDetail = (item) => {
-    this.$f7router.navigate(`/notification/${item.ID}/`, { reloadCurrent: true });
+    this.$f7router.navigate(`/notification/${item.ID}/?remove=true`);
   };
 
   handleReaded = (item) => {
@@ -192,7 +198,19 @@ export default class extends React.Component {
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
-              <Link onClick={() => this.$f7router.back()}>
+              <Link
+                onClick={() => {
+                  if (
+                    this.$f7router.history[
+                      this.$f7router.history.length - 2
+                    ]?.indexOf("/notification/") > -1
+                  ) {
+                    this.$f7router.navigate(`/`);
+                  } else {
+                    this.$f7router.back();
+                  }
+                }}
+              >
                 <i className="las la-angle-left"></i>
               </Link>
             </div>

@@ -1,4 +1,13 @@
 // return the user data from the storage
+export const getNotiID = () => {
+    const NotiID = localStorage.getItem('NOTI_ID');
+    if (NotiID) return NotiID;
+    else return null;
+}
+export const setNotiID = (id) => {
+        localStorage.setItem('NOTI_ID', id);
+    }
+    // return the user data from the storage
 export const getUser = () => {
     const userStr = localStorage.getItem('user');
     if (userStr) return JSON.parse(userStr);

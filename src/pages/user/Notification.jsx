@@ -21,7 +21,8 @@ import Skeleton from "react-loading-skeleton";
 
 import moment from "moment";
 import "moment/locale/vi";
-import { SET_BADGE } from "../../constants/prom21";
+import { REMOVE_BADGE, SET_BADGE } from "../../constants/prom21";
+import { iOS } from "../../constants/helpers";
 moment.locale("vi");
 
 export default class extends React.Component {
@@ -40,7 +41,6 @@ export default class extends React.Component {
   }
 
   getNotification = () => {
-    
     const infoUser = getUser();
     if (!infoUser) {
       _this.$f7.views.main.router.navigate("/");
@@ -66,7 +66,7 @@ export default class extends React.Component {
           arrNoti: dataNew,
           isLoading: false,
         });
-        SET_BADGE();
+        !iOS() && SET_BADGE();
       })
       .catch((er) => console.log(er));
   };
@@ -154,7 +154,7 @@ export default class extends React.Component {
       .catch((er) => console.log(er));
   };
 
-  handleDelete = (id) => {
+  handleDelete = (id, all) => {
     const data = new FormData();
     data.append("ids", id);
     UserService.deleteNotification(data)
@@ -167,6 +167,7 @@ export default class extends React.Component {
           this.setState({
             isCheckAll: false,
           });
+          all && iOS() && REMOVE_BADGE();
           this.getNotification();
         }
       })
@@ -182,7 +183,7 @@ export default class extends React.Component {
         arrNotiDelete.push(x.ID);
       });
     const listItemDelete = arrNotiDelete.join(",");
-    this.handleDelete(listItemDelete);
+    this.handleDelete(listItemDelete, true);
   };
 
   async loadRefresh(done) {

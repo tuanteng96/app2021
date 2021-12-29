@@ -5,6 +5,7 @@ import userService from "../../service/user.service";
 import ReactHtmlParser from "react-html-parser";
 import Skeleton from "react-loading-skeleton";
 import { SET_BADGE } from "../../constants/prom21";
+import { iOS } from "../../constants/helpers";
 
 export default class extends React.Component {
   constructor() {
@@ -17,9 +18,6 @@ export default class extends React.Component {
 
   componentDidMount() {
     this.getDetialNoti();
-    // if (this.$f7route.query && this.$f7route.query.remove) {
-    //   SET_BADGE();
-    // }
   }
 
   getDetialNoti = async () => {
@@ -30,9 +28,12 @@ export default class extends React.Component {
     try {
       const { data } = await userService.getNotiDetail(Id);
       const dataPost = new FormData();
-      dataPost.append("ids", Id);
-      await userService.readedNotification(dataPost);
       this.setState({ data: data.data[0], isLoading: false });
+      if (data.data[0] && !data.data[0].IsReaded) {
+        iOS() && SET_BADGE();
+        dataPost.append("ids", Id);
+        await userService.readedNotification(dataPost);
+      }
     } catch (error) {
       console.log(error);
     }

@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { setSubscribe } from "../../constants/subscribe";
 import { iOS } from "../../constants/helpers";
+import { OPEN_QRCODE } from "../../constants/prom21";
 
 toast.configure();
 
@@ -73,6 +74,12 @@ export default class extends React.Component {
     this.setState({ value, watching: false })
   }
 
+  openQRCode = () => {
+    OPEN_QRCODE().then((response) => {
+      alert(response.data);
+    }).catch(error => console.log(error));
+  }
+
   render() {
     const isLoading = this.state.isLoading;
     const password = this.state.password;
@@ -125,6 +132,13 @@ export default class extends React.Component {
                     }
                   >
                     <span>Đăng nhập</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => this.openQRCode()}
+                    className={"btn-login btn-me mt-12px"}
+                  >
+                    <span>Quét QR Code</span>
                   </button>
                   <div className="or">
                     <span>hoặc</span>

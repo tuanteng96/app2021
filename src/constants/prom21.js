@@ -66,3 +66,10 @@ export const REMOVE_BADGE = (count) => {
         t.prom('REMOVE_BADGE', count);
     }
 }
+
+export const OPEN_QRCODE = () => {
+    var t = window.app21 || {};
+    if (typeof t.prom !== 'undefined') {
+        return t.prom('OPEN_QRCODE');
+    }
+}

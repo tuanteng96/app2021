@@ -1,5 +1,4 @@
 import React from "react";
-import NewsDataService from "../../../service/news.service";
 import ShopDataService from "../../../service/shop.service";
 import Slider from "react-slick";
 import { SERVER_APP } from "../../../constants/config";
@@ -27,18 +26,35 @@ export default class ServiceHotComponent extends React.Component {
   getService = () => {
     let stockid = getStockIDStorage();
     stockid ? stockid : 0;
-    ShopDataService.getServiceParent(795, stockid)
-      .then((response) => {
-        const { data } = response.data;
-        const newData = data.filter((item) => {
-          return item.root.Tags.includes("hot");
-        });
+    ShopDataService.getServiceOriginal()
+    .then(({ data }) => {
+      const result = data.data;
+      if (result) {
+        let newData = [];
+        if (stockid > 0) {
+          newData = result.filter((item) => {
+            const arrayStatus = item?.root?.Status
+              ? item.root.Status.split(",")
+              : [];
+            return (
+              (item.root.OnStocks.includes("*") &&
+                arrayStatus.indexOf("2") > -1) ||
+              (item.root.OnStocks.includes(stockid) &&
+                arrayStatus.indexOf("2") > -1)
+            );
+          });
+        } else {
+          newData = result.filter((item) => {
+            return item.root.Tags.includes("hot");
+          });
+        }
         this.setState({
           arrService: newData,
           isLoading: false,
         });
-      })
-      .catch((e) => console.log(e));
+      }
+    })
+    .catch((err) => console.log(err));
   };
 
   handleClick = (item) => {

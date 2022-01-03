@@ -8,6 +8,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { setSubscribe } from "../../constants/subscribe";
 import { iOS } from "../../constants/helpers";
 import { OPEN_QRCODE } from "../../constants/prom21";
+import { ref, set } from "firebase/database";
+import { database } from "../../firebase/firebase";
+
 
 toast.configure();
 
@@ -70,19 +73,39 @@ export default class extends React.Component {
     });
   };
 
-  onFind (value) {
+  onFind(value) {
     this.setState({ value, watching: false })
   }
 
   openQRCode = () => {
+    var self = this;
     OPEN_QRCODE().then((response) => {
-      alert(response.data);
+      this.setState({ Code: response.data })
+      const qrcode = iOS() ? response.data?.split('"')[1] : response.data
+      self.$f7.dialog.preloader('Đang xử lý ...');
+      UserService.QRCodeLogin(qrcode).then(({ data }) => {
+        if (data.error) {
+          toast.error("Mã QR Code không hợp lệ hoặc hết hạn.", {
+            position: toast.POSITION.TOP_LEFT,
+            autoClose: 3000,
+          });
+          self.$f7.dialog.close();
+        }
+        else {
+          setUserStorage(data.etoken, data, data.password || "8700");
+          setSubscribe(data, data.password || "8700");
+          set(ref(database, `/qrcode/${qrcode}`), null).then(() => {
+            self.$f7.dialog.close();
+            this.$f7router.navigate("/", { reloadCurrent: true });
+          });
+        }
+      }).catch(err => self.$f7.dialog.close());
+
     }).catch(error => console.log(error));
   }
 
   render() {
-    const isLoading = this.state.isLoading;
-    const password = this.state.password;
+    const { isLoading, password } = this.state;
     return (
       <Page noNavbar noToolbar name="login">
         <div

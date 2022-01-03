@@ -21,7 +21,14 @@ export default class extends React.Component {
     super();
     this.state = {
       isRefresh: false,
+      tabCurrent: "bookcard"
     };
+  }
+
+  componentDidMount() {
+    if(this.$f7route.query.tab) {
+      this.setState({tabCurrent: this.$f7route.query.tab})
+    }
   }
 
   handleLoadRefresh = () => {
@@ -38,7 +45,7 @@ export default class extends React.Component {
   }
 
   render() {
-    const { isRefresh } = this.state;
+    const { isRefresh, tabCurrent } = this.state;
     return (
       <Page
         name="schedule-manage"
@@ -62,10 +69,10 @@ export default class extends React.Component {
           </div>
           <Subnavbar className="cardservice-tab-head">
             <div className="cardservice-title card-book">
-              <Link noLinkClass tabLink="#bookcard" tabLinkActive>
+              <Link noLinkClass tabLink="#bookcard" tabLinkActive={tabCurrent === "bookcard"}>
                 Đặt lịch tư vấn
               </Link>
-              <Link noLinkClass tabLink="#booksupport">
+              <Link noLinkClass tabLink="#booksupport" tabLinkActive={tabCurrent === "booksupport"}>
                 Đặt lịch thẻ
               </Link>
             </div>
@@ -74,10 +81,10 @@ export default class extends React.Component {
         <div className="page-wrapper">
           <div className="chedule-manage">
             <Tabs>
-              <Tab id="bookcard" tabActive>
+              <Tab id="bookcard" tabActive={tabCurrent === "bookcard"}>
                 <CardSchedulingComponent isRefresh={isRefresh} />
               </Tab>
-              <Tab id="booksupport">
+              <Tab id="booksupport" tabActive={tabCurrent === "booksupport"}>
                 <AdvisorySchedulesComponent isRefresh={isRefresh} />
               </Tab>
             </Tabs>

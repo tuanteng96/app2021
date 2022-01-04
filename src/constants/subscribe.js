@@ -1,4 +1,4 @@
-import { subscribe } from "../constants/user";
+import { getToken, subscribe } from "../constants/user";
 import UserService from "../service/user.service";
 export const setSubscribe = (userData, PWD) => {
     if (!userData) return false;
@@ -10,7 +10,7 @@ export const setSubscribe = (userData, PWD) => {
         // if (IsUser) {
         //     const StockID = userData.ByStockID;
         // }
-    UserService.getSubscribe(USN, PWD, IsUser)
+    UserService.getSubscribe(USN, IsUser, getToken())
         .then(response => {
             const data = response.data;
             subscribe(data);

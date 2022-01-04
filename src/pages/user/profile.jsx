@@ -23,19 +23,21 @@ export default class extends React.Component {
     };
   }
   componentDidMount() {
-    const infoUser = getUser();
-    if (!infoUser) return false;
-    const username = infoUser.MobilePhone
-      ? infoUser.MobilePhone
-      : infoUser.UserName;
-    const password = getPassword();
-    UserService.getInfo(username, password)
-      .then((response) => {
-        const memberInfo = response.data;
-        this.setState({
-          memberInfo: memberInfo,
-          isLoading: false,
-        });
+    // const username = infoUser.MobilePhone
+    //   ? infoUser.MobilePhone
+    //   : infoUser.UserName;
+    // const password = getPassword();
+    UserService.getInfo()
+      .then(({ data }) => {
+        if (data.error) {
+          this.$f7router.navigate("/login/");
+        }
+        else {
+          this.setState({
+            memberInfo: data,
+            isLoading: false,
+          });
+        }
       })
       .catch((err) => console.log(err));
   }

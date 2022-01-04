@@ -23,7 +23,6 @@ import {
 
 import {
   getUser,
-  getPassword,
   removeUserStorage,
   setUserStorage,
 } from "../constants/user";
@@ -49,16 +48,17 @@ export default class extends React.Component {
           init: function () {
             const infoUser = getUser();
             if (infoUser) {
-              const username = infoUser.MobilePhone
-                ? infoUser.MobilePhone
-                : infoUser.UserName;
-              const pwd = getPassword();
-              UserService.getInfo(username, pwd).then((response) => {
+              // const username = infoUser.MobilePhone
+              //   ? infoUser.MobilePhone
+              //   : infoUser.UserName;
+              // const pwd = getPassword();
+              UserService.getInfo().then((response) => {
                 if (response.data.error) {
                   removeUserStorage();
                 } else {
+                  console.log(response);
                   const data = response.data;
-                  setUserStorage(data.etoken, data, pwd);
+                  setUserStorage(data.token, data);
                 }
               });
             }
@@ -69,6 +69,7 @@ export default class extends React.Component {
           },
         },
         view: {
+          allowDuplicateUrls: true,
           routesBeforeEnter: function (to, from, resolve, reject) {
             //console.log("All Page resolve + App.jsx");
             resolve();

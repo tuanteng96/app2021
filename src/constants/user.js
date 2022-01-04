@@ -27,14 +27,14 @@ export const getToken = () => {
 export const removeUserStorage = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    localStorage.removeItem('password');
+    //localStorage.removeItem('password');
 }
 
 // set the token and user from the storage
-export const setUserStorage = (token, user, password) => {
+export const setUserStorage = (token, user) => {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('password', password);
+        //localStorage.setItem('password', password);
     }
     // get Stock
 export const getStockIDStorage = () => {

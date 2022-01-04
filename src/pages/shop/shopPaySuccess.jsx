@@ -11,8 +11,6 @@ import React from "react";
 import IconSucces from "../../assets/images/box.svg";
 import NotificationIcon from "../../components/NotificationIcon";
 import ToolBarBottom from "../../components/ToolBarBottom";
-import UserService from "../../service/user.service";
-import { getPassword, setUserStorage, getUser } from "../../constants/user";
 import userService from "../../service/user.service";
 import Skeleton from "react-loading-skeleton";
 import ReactHtmlParser from "react-html-parser";
@@ -27,15 +25,15 @@ export default class extends React.Component {
     };
   }
   componentDidMount() {
-    const userInfo = getUser();
-    if (!userInfo) return false;
-    const pwd = getPassword();
-    UserService.getInfo(userInfo.MobilePhone, pwd)
-      .then((response) => {
-        const data = response.data.info;
-        setUserStorage(data.etoken, data, pwd);
-      })
-      .catch((er) => console.log(er));
+    // const userInfo = getUser();
+    // if (!userInfo) return false;
+    // const pwd = getPassword();
+    // UserService.getInfo(userInfo.MobilePhone, pwd)
+    //   .then((response) => {
+    //     const data = response.data.info;
+    //     setUserStorage(data.etoken, data, pwd);
+    //   })
+    //   .catch((er) => console.log(er));
 
     this.setState({
       loadingText: true,
@@ -52,7 +50,6 @@ export default class extends React.Component {
   }
   render() {
     const { loadingText, textPay } = this.state;
-    console.log(this.$f7route);
     return (
       <Page
         onPageBeforeOut={this.onPageBeforeOut}

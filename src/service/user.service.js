@@ -1,3 +1,4 @@
+import { getToken } from "../constants/user";
 import http from "../service/http-common";
 
 class UserService {
@@ -10,14 +11,14 @@ class UserService {
     register(fullname, password, phone, stock) {
         return http.get(`/app/index.aspx?Fn=${fullname}&Phone=${phone}&NewPWD=${password}&cmd=reg&ByStock=${stock}&USN=${phone}`);
     }
-    getInfo(username, password) {
-        return http.get(`/app/index.aspx?cmd=authen&USN=${username}&PWD=${password}`)
+    getInfo() {
+        return http.get(`/app/index.aspx?cmd=authen&token=${getToken()}`)
     }
-    getSubscribe(usn, pwd, isuser) {
-        return http.get(`/app/index.aspx?cmd=authen&USN=${usn}&PWD=${pwd}&IsUser=${isuser}`);
+    getSubscribe(usn, isUser, token) {
+        return http.get(`/app/index.aspx?cmd=authen&USN=${usn}&token=${token}&IsUser=${isUser}`);
     }
     getListTagService(username, password, memberid) {
-        return http.get(`/services/preview.aspx?a=1&USN=${username}&PWD=${password}&cmd=loadOrderService&MemberID=${memberid}&IsMember=1&fromOrderAdd=0`);
+        return http.get(`/services/preview.aspx?a=1&token=${getToken()}&cmd=loadOrderService&MemberID=${memberid}&IsMember=1&fromOrderAdd=0`);
     }
     getBarCode(memberid) {
         return http.get(`/services/preview.aspx?cmd=Barcode&mid=${memberid}`);
@@ -26,8 +27,7 @@ class UserService {
         return http.get(`/api/v1/?cmd=member_update_birth`, {
             params: {
                 birth: date,
-                USN: username,
-                PWD: password
+                token: getToken(),
             }
         })
     }
@@ -36,13 +36,12 @@ class UserService {
             params: {
                 email: email,
                 crpwd: crpwd,
-                USN: username,
-                PWD: password
+                token: getToken()
             }
         })
     }
     updatePassword(username, password, data) {
-        return http.post(`/app/index.aspx?cmd=chgpwd&USN=${username}&PWD=${password}`, data);
+        return http.post(`/app/index.aspx?cmd=chgpwd&token=${getToken()}`, data);
     }
     getStock() {
         return http.post(`/api/v3/web?cmd=getStock`)
@@ -57,7 +56,7 @@ class UserService {
         return http.post(`/services/preview.aspx?cmd=list_money`, data);
     }
     getDiary(username, password) {
-        return http.post(`/app/index.aspx?cmd=noti&USN=${username}&PWD=${password}`);
+        return http.post(`/app/index.aspx?cmd=noti&token=${getToken()}`);
     }
     getReviews(memberid) {
         return http.get(`/api/v3/OrderService?cmd=get_service_unrate&mid=${memberid}`);
@@ -80,8 +79,8 @@ class UserService {
     getOrderAll(memberID) {
         return http.get(`/services/preview.aspx?cmd=search_order&key=kh:${memberID}&getitems=1`);
     }
-    getOrderAll2(member) {
-        return http.get(`/app/index.aspx?cmd=orders&USN=${member.USN}&PWD=${member.PWD}&IsUser=0`)
+    getOrderAll2() {
+        return http.get(`/app/index.aspx?cmd=orders&token=${getToken()}&IsUser=0`)
     }
     getConfig(name) {
         return http.get(`/api/v3/config?cmd=getnames&names=${name}`);

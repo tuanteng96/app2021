@@ -50,18 +50,8 @@ export default class extends React.Component {
   }
 
   getOrderAll = () => {
-    const infoUser = getUser();
-    const PWD = getPassword();
-    if (!infoUser || !PWD) {
-      this.$f7router.navigate("/login/");
-      return;
-    }
     this.setState(() => ({ loading: true }));
-    const member = {
-      USN: infoUser.MobilePhone,
-      PWD: PWD,
-    };
-    UserService.getOrderAll2(member)
+    UserService.getOrderAll2()
       .then((response) => {
         const data = response.data;
         this.setState({

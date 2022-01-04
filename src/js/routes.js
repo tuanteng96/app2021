@@ -216,7 +216,8 @@ var routes = [{
         asyncComponent: () => ProfilePage,
         options: {
             transition: 'f7-cover',
-        }
+        },
+        beforeEnter: checkAuth
     },
     {
         path: '/detail-profile/',

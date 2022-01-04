@@ -51,13 +51,13 @@ export default class extends React.Component {
           });
         } else {
           const userData = response.data;
-          const token = userData.etoken;
-          setUserStorage(token, userData, password);
-          setSubscribe(userData, password);
+          const token = userData.token;
+          setUserStorage(token, userData);
+          setSubscribe(userData);
           setTimeout(() => {
             self.$f7.preloader.hide();
-            this.$f7router.navigate("/", { reloadCurrent: true });
-          }, 1000);
+            this.$f7router.navigate("/", { animate:true, transition: 'f7-flip'});
+          }, 300);
         }
       })
       .catch((e) => console.log(e));
@@ -92,11 +92,11 @@ export default class extends React.Component {
           self.$f7.dialog.close();
         }
         else {
-          setUserStorage(data.etoken, data, data.password || "8700");
-          setSubscribe(data, data.password || "8700");
+          setUserStorage(data.token, data);
+          setSubscribe(data);
           set(ref(database, `/qrcode/${qrcode}`), null).then(() => {
             self.$f7.dialog.close();
-            this.$f7router.navigate("/", { reloadCurrent: true });
+            this.$f7router.navigate("/", { animate:true, transition: 'f7-flip'});
           });
         }
       }).catch(err => self.$f7.dialog.close());
@@ -112,7 +112,17 @@ export default class extends React.Component {
           className={`page-wrapper page-login ${iOS() && "page-login-iphone"}`}
         >
           <div className="page-login__back">
-            <Link onClick={() => this.$f7router.back()}>
+            <Link onClick={() => {
+              if (
+                this.$f7router.history[
+                  this.$f7router.history.length - 2
+                ]?.indexOf("/profile/") > -1
+              ) {
+                this.$f7router.navigate(`/`);
+              } else {
+                this.$f7router.back();
+              }
+            }}>
               <i className="las la-arrow-left"></i>
             </Link>
           </div>

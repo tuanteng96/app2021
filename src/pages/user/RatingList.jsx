@@ -11,6 +11,9 @@ import { getUser } from "../../constants/user";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Skeleton from "react-loading-skeleton";
+import moment from 'moment';
+import 'moment/locale/vi';
+moment.locale('vi');
 
 toast.configure();
 
@@ -188,7 +191,7 @@ export default class extends React.Component {
                       ))}
                     </div>
                     <div className="time">
-                      Hoàn thành {getDateFacebook(item.os.BookDate)}
+                      Hoàn thành lúc {moment(item.os.UseDate).format("HH:mm DD/MM/YYYY")}
                     </div>
                     <div className="rating">
                       <StarComponent

@@ -1,5 +1,16 @@
 import React from "react";
-import { Page, Link, Navbar, Toolbar, Sheet, Row, Col } from "framework7-react";
+import {
+  Page,
+  Link,
+  Navbar,
+  Toolbar,
+  Sheet,
+  Row,
+  Col,
+  Subnavbar,
+  Tabs,
+  Tab,
+} from "framework7-react";
 import ScheduleSpa from "../../components/schedule/ScheduleSpa";
 import ScheduleService from "../../components/schedule/ScheduleService";
 import ScheduleSuccess from "../../components/schedule/ScheduleSuccess";
@@ -59,6 +70,8 @@ export default class extends React.Component {
       isLoadingSheet: true,
       sheetOpened: false,
       sheetServiceOpened: false,
+      //new
+      tabCurrent: 0,
     };
   }
   componentDidMount() {}
@@ -98,14 +111,14 @@ export default class extends React.Component {
   };
 
   nextStep = () => {
-    if (this.state.activeStep < this.state.steps.length - 1) {
-      this.setState({ activeStep: this.state.activeStep + 1 });
+    if (this.state.tabCurrent < 3) {
+      this.setState({ tabCurrent: this.state.tabCurrent + 1 });
     }
   };
 
   previousStep = () => {
-    if (this.state.activeStep > 0) {
-      this.setState({ activeStep: this.state.activeStep - 1 });
+    if (this.state.tabCurrent > 0) {
+      this.setState({ tabCurrent: this.state.tabCurrent - 1 });
     }
   };
 
@@ -139,7 +152,7 @@ export default class extends React.Component {
         isLoadingStep1: false,
       });
       this.nextStep();
-    }, 1000);
+    }, 300);
   };
   nextSuccessService = () => {
     this.setState({
@@ -316,6 +329,14 @@ export default class extends React.Component {
     }
   };
 
+  loadRefresh(done) {
+    const _this = this;
+    setTimeout(function () {
+      _this.setState({ showPreloader: false });
+      done();
+    }, 1000);
+  }
+
   render() {
     const {
       activeStep,
@@ -329,30 +350,17 @@ export default class extends React.Component {
       itemAdvisory,
       lstAdvisory,
       selectedService,
+      //new
+      tabCurrent,
     } = this.state;
-
-    const stepIndicators =
-      steps &&
-      steps.map((step, i) => {
-        return (
-          <div
-            key={i}
-            className={`page-schedule__step-item ${
-              activeStep === i && "active"
-            }`}
-            onClick={() => this.handleStepChange(i)}
-          >
-            <div className="number">{i + 1}</div>
-            {i !== steps.length && (
-              <div className="text">
-                <span>{step.label}</span>
-              </div>
-            )}
-          </div>
-        );
-      });
     return (
-      <Page name="schedule">
+      <Page
+        name="schedule"
+        ptr
+        infiniteDistance={50}
+        //infinitePreloader={showPreloader}
+        onPtrRefresh={this.loadRefresh.bind(this)}
+      >
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
@@ -367,10 +375,64 @@ export default class extends React.Component {
               <BooksIcon />
             </div>
           </div>
+          <Subnavbar className="subnavbar-booking">
+            <div className="page-schedule__step">
+              <Link
+                className={`page-schedule__step-item`}
+                noLinkClass
+                tabLink={`#book-${0}`}
+                tabLinkActive={tabCurrent === 0}
+              >
+                <div className="number">1</div>
+                <div className="text">
+                  <span>Thời gian</span>
+                </div>
+              </Link>
+              <Link
+                className={`page-schedule__step-item`}
+                noLinkClass
+                tabLink={`#book-${1}`}
+                tabLinkActive={tabCurrent === 1}
+              >
+                <div className="number">2</div>
+                <div className="text">
+                  <span>Đặt lịch</span>
+                </div>
+              </Link>
+              <Link
+                className={`page-schedule__step-item`}
+                noLinkClass
+                tabLink={`#book-${2}`}
+                tabLinkActive={tabCurrent === 2}
+              >
+                <div className="number">3</div>
+                <div className="text">
+                  <span>Hoàn tất</span>
+                </div>
+              </Link>
+            </div>
+          </Subnavbar>
         </Navbar>
-        <div className="page-schedule">
-          <div className="page-schedule__step">{stepIndicators}</div>
-          {steps[activeStep].component}
+        <div className={`page-schedule ${activeStep === 1 && "h-100"}`}>
+          {/* <div className="page-schedule__step">{stepIndicators}</div> */}
+          {/* {steps[activeStep].component} */}
+          <Tabs>
+            <Tab id={`#book-${2}`} tabActive={tabCurrent === 0}>
+              <ScheduleSpa handleTime={(item) => this.handleTime(item)} />
+            </Tab>
+            <Tab id={`#book-${0}`} tabActive={tabCurrent === 1}>
+              <ScheduleService
+                handleService={(item) => this.handleService(item)}
+                handleDataService={(item, data, loading) =>
+                  this.handleDataService(item, data, loading)
+                }
+                tabCurrent={tabCurrent}
+              />
+            </Tab>
+            <Tab id={`#book-${1}`} tabActive={tabCurrent === 2}>
+              <ScheduleSuccess onResetStep={() => this.onResetStep()} />
+            </Tab>
+          </Tabs>
         </div>
         <Sheet
           className="sheet-swipe-product sheet-swipe-service"

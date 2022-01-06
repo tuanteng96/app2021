@@ -11,7 +11,6 @@ import { OPEN_QRCODE } from "../../constants/prom21";
 import { ref, set } from "firebase/database";
 import { database } from "../../firebase/firebase";
 
-
 toast.configure();
 
 export default class extends React.Component {
@@ -56,7 +55,10 @@ export default class extends React.Component {
           setSubscribe(userData);
           setTimeout(() => {
             self.$f7.preloader.hide();
-            this.$f7router.navigate("/", { animate:true, transition: 'f7-flip'});
+            this.$f7router.navigate("/", {
+              animate: true,
+              transition: "f7-flip",
+            });
           }, 300);
         }
       })
@@ -74,35 +76,47 @@ export default class extends React.Component {
   };
 
   onFind(value) {
-    this.setState({ value, watching: false })
+    this.setState({ value, watching: false });
   }
 
   openQRCode = () => {
     var self = this;
-    OPEN_QRCODE().then((response) => {
-      this.setState({ Code: response.data })
-      const qrcode = iOS() ? response.data?.split('"')[1] : response.data
-      self.$f7.dialog.preloader('Đang xử lý ...');
-      UserService.QRCodeLogin(qrcode).then(({ data }) => {
-        if (data.error) {
-          toast.error("Mã QR Code không hợp lệ hoặc hết hạn.", {
-            position: toast.POSITION.TOP_LEFT,
-            autoClose: 3000,
-          });
-          self.$f7.dialog.close();
-        }
-        else {
-          setUserStorage(data.token, data);
-          setSubscribe(data);
-          set(ref(database, `/qrcode/${qrcode}`), null).then(() => {
-            self.$f7.dialog.close();
-            this.$f7router.navigate("/", { animate:true, transition: 'f7-flip'});
-          });
-        }
-      }).catch(err => self.$f7.dialog.close());
-
-    }).catch(error => console.log(error));
-  }
+    OPEN_QRCODE()
+      .then((response) => {
+        this.setState({ Code: response.data });
+        const qrcode = iOS() ? response.data?.split('"')[1] : response.data;
+        const qrcodeLogin = qrcode.split("&")[0];
+        const qrcodeStock = qrcode.split("&")[1];
+        self.$f7.dialog.preloader(
+          `Đang xử lý ...`
+        );
+        UserService.QRCodeLogin(qrcodeLogin)
+          .then(({ data }) => {
+            if (data.error) {
+              toast.error("Mã QR Code không hợp lệ hoặc hết hạn.", {
+                position: toast.POSITION.TOP_LEFT,
+                autoClose: 3000,
+              });
+              self.$f7.dialog.close();
+            } else {
+              setUserStorage(data.token, data);
+              setSubscribe(data);
+              set(
+                ref(database, `/qrcode/${qrcodeStock}/${qrcodeLogin}`),
+                null
+              ).then(() => {
+                self.$f7.dialog.close();
+                this.$f7router.navigate("/", {
+                  animate: true,
+                  transition: "f7-flip",
+                });
+              });
+            }
+          })
+          .catch((err) => self.$f7.dialog.close());
+      })
+      .catch((error) => console.log(error));
+  };
 
   render() {
     const { isLoading, password } = this.state;
@@ -112,17 +126,19 @@ export default class extends React.Component {
           className={`page-wrapper page-login ${iOS() && "page-login-iphone"}`}
         >
           <div className="page-login__back">
-            <Link onClick={() => {
-              if (
-                this.$f7router.history[
-                  this.$f7router.history.length - 2
-                ]?.indexOf("/profile/") > -1
-              ) {
-                this.$f7router.navigate(`/`);
-              } else {
-                this.$f7router.back();
-              }
-            }}>
+            <Link
+              onClick={() => {
+                if (
+                  this.$f7router.history[
+                    this.$f7router.history.length - 2
+                  ]?.indexOf("/profile/") > -1
+                ) {
+                  this.$f7router.navigate(`/`);
+                } else {
+                  this.$f7router.back();
+                }
+              }}
+            >
               <i className="las la-arrow-left"></i>
             </Link>
           </div>
@@ -166,15 +182,17 @@ export default class extends React.Component {
                   >
                     <span>Đăng nhập</span>
                   </button>
-                  <button
+                  {/* <button
                     type="button"
                     onClick={() => this.openQRCode()}
                     className={"btn-login btn-me mt-12px"}
                   >
                     <span>Quét QR Code</span>
-                  </button>
+                  </button> */}
                   <div className="or">
-                    <span>hoặc</span>
+                    <button className="btn-qr" type="button" onClick={() => this.openQRCode()}>
+                      <i className="las la-qrcode"></i>
+                    </button>
                   </div>
                   <div className="forgot">
                     <Link href="/forgot/">Quên mật khẩu ?</Link>

@@ -56,7 +56,6 @@ export default class extends React.Component {
                 if (response.data.error) {
                   removeUserStorage();
                 } else {
-                  console.log(response);
                   const data = response.data;
                   setUserStorage(data.token, data);
                 }

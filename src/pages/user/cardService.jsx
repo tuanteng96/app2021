@@ -14,6 +14,8 @@ import ToolBarBottom from "../../components/ToolBarBottom";
 import ItemCardService from "../../components/ItemCardService";
 import NotificationIcon from "../../components/NotificationIcon";
 import SelectStock from "../../components/SelectStock";
+import PageNoData from "../../components/PageNoData";
+import SkeletonCardService from "./CardService/SkeletonCardService";
 
 export default class extends React.Component {
   constructor() {
@@ -25,6 +27,7 @@ export default class extends React.Component {
       insuranceSV: [], // Thẻ bảo hành
       excessiveSv: [], // Thẻ hết hạn,
       showPreloader: false,
+      loading: false,
     };
   }
 
@@ -36,28 +39,19 @@ export default class extends React.Component {
 
     this.getTagService(infoUsername, infoPassword, infoMemberID);
   }
+
   getTagService = (username, password, memberid) => {
+    this.setState({
+      loading: true,
+    });
     UserService.getListTagService(username, password, memberid)
-      .then((response) => {
-        const cardService = response.data;
-        const countSv = cardService.length;
-        const excessiveSv = [];
-        const insuranceSV = [];
-        const cardSv = [];
-        cardService.map((item) => {
-          if (item.IsEnd === true) {
-            excessiveSv.push(item);
-          } else if (item.Services[0].IsWarrant === true) {
-            insuranceSV.push(item);
-          } else {
-            cardSv.push(item);
-          }
-        });
+      .then(({ data }) => {
         this.setState({
-          countSv: countSv,
-          cardSv: cardSv,
-          insuranceSV: insuranceSV,
-          excessiveSv: excessiveSv,
+          countSv: data.length || 0,
+          cardSv: data ? data.filter((item) => item.TabIndex === 0) : [],
+          insuranceSV: data ? data.filter((item) => item.TabIndex === 1) : [],
+          excessiveSv: data ? data.filter((item) => item.TabIndex === 2) : [],
+          loading: false,
         });
       })
       .catch((e) => console.log(e));
@@ -84,10 +78,8 @@ export default class extends React.Component {
   }
 
   render() {
-    const { isOpenStock, countSv } = this.state;
-    const cardSv = this.state.cardSv && this.state.cardSv;
-    const insuranceSV = this.state.insuranceSV && this.state.insuranceSV;
-    const excessiveSv = this.state.excessiveSv && this.state.excessiveSv;
+    const { isOpenStock, countSv, cardSv, insuranceSV, excessiveSv, loading } =
+      this.state;
     return (
       <Page
         name="tagservice"
@@ -128,23 +120,59 @@ export default class extends React.Component {
           <Tabs>
             <Tab id="cardSv" tabActive>
               <div className="cardservice-item">
-                {cardSv.map((item, index) => (
-                  <ItemCardService key={index} item={item} />
-                ))}
+                {loading &&
+                  Array(2)
+                    .fill()
+                    .map((item, index) => <SkeletonCardService key={index} />)}
+                {!loading && (
+                  <React.Fragment>
+                    {cardSv && cardSv.length > 0 ? (
+                      cardSv.map((item, index) => (
+                        <ItemCardService key={index} item={item} />
+                      ))
+                    ) : (
+                      <PageNoData />
+                    )}
+                  </React.Fragment>
+                )}
               </div>
             </Tab>
             <Tab id="insuranceSV">
               <div className="cardservice-item">
-                {insuranceSV.map((item, index) => (
-                  <ItemCardService key={index} item={item} />
-                ))}
+                {loading &&
+                  Array(2)
+                    .fill()
+                    .map((item, index) => <SkeletonCardService key={index} />)}
+                {!loading && (
+                  <React.Fragment>
+                    {insuranceSV && insuranceSV.length > 0 ? (
+                      insuranceSV.map((item, index) => (
+                        <ItemCardService key={index} item={item} />
+                      ))
+                    ) : (
+                      <PageNoData data="Không có thẻ bảo hành" />
+                    )}
+                  </React.Fragment>
+                )}
               </div>
             </Tab>
             <Tab id="excessiveSv">
               <div className="cardservice-item">
-                {excessiveSv.map((item, index) => (
-                  <ItemCardService key={index} item={item} />
-                ))}
+                {loading &&
+                  Array(2)
+                    .fill()
+                    .map((item, index) => <SkeletonCardService key={index} />)}
+                {!loading && (
+                  <React.Fragment>
+                    {excessiveSv && excessiveSv.length > 0 ? (
+                      excessiveSv.map((item, index) => (
+                        <ItemCardService key={index} item={item} />
+                      ))
+                    ) : (
+                      <PageNoData data="Không có thẻ hết hạn" />
+                    )}
+                  </React.Fragment>
+                )}
               </div>
             </Tab>
           </Tabs>

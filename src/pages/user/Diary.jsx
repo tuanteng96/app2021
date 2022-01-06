@@ -25,7 +25,7 @@ export default class extends React.Component {
   getDiary = () => {
     const infoUser = getUser();
     if (!infoUser) return false;
-    const member = infoUser.MobilePhone;
+    const member = infoUser?.MobilePhone;
     const password = getPassword();
     UserService.getDiary(member, password).then((response) => {
       const arrDiary = response.data;

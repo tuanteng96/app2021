@@ -1,6 +1,5 @@
 import React from "react";
 import bgImage from '../../assets/images/headerbottombgapp.png';
-import { SERVER_APP } from "../../constants/config";
 import { checkAvt } from "../../constants/format";
 import { getUser,getPassword } from "../../constants/user";
 import { Page, Link } from "framework7-react";
@@ -22,7 +21,7 @@ export default class extends React.Component {
         const infoUser = getUser();
         const password = getPassword();
         if(!infoUser) return false;
-        const username = infoUser.MobilePhone;
+        const username = infoUser?.MobilePhone;
         this.setState({
             MemberID : infoUser.ID
         })

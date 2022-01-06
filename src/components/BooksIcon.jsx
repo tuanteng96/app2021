@@ -23,7 +23,7 @@ export default class BooksIcon extends React.Component {
         }
       );
     } else {
-      _this.$f7.views.main.router.navigate("/manage-schedules/");
+      _this.$f7.views.main.router.navigate("/manage-schedules/?tab=booksupport");
     }
   };
   render() {

@@ -81,7 +81,7 @@ export default class extends React.Component {
   handleSelectBirthday = (date) => {
     var date = formatDateUTC(date);
     const infoUser = getUser();
-    const username = infoUser.MobilePhone;
+    const username = infoUser?.MobilePhone;
     const password = getPassword();
 
     UserService.updateBirthday(date, username, password)

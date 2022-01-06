@@ -1,8 +1,8 @@
 import http from "../service/http-common";
 
 class BookDataService {
-    getCardService(id) {
-        return http.get(`/api/v3/bookclient?cmd=get&MemberID=${id}`);
+    getCardService(data) {
+        return http.get(`/api/v3/mbook?cmd=getroot&memberid=${data.MemberID}&ps=${data.Ps}&pi=${data.Pi}&key=${data.Key}&stockid=${data.StockID}`);
     }
     postBook(data) {
         return http.post(`/api/v3/bookclient?cmd=book`, data);
@@ -10,6 +10,7 @@ class BookDataService {
     bookDelete(id) {
         return http.post(`/api/v3/bookclient?cmd=delete&ids=${id}`)
     }
+
 }
 
 export default new BookDataService();

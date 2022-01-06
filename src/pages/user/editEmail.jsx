@@ -23,7 +23,7 @@ export default class extends React.Component {
   getInfoMember = () => {
     const infoUser = getUser();
     if (!infoUser) return false;
-    const username = infoUser.MobilePhone;
+    const username = infoUser?.MobilePhone;
     const password = getPassword();
 
     UserService.getInfo(username, password)
@@ -49,7 +49,7 @@ export default class extends React.Component {
   saveEmail = () => {
     const self = this;
     const infoUser = getUser();
-    const username = infoUser.MobilePhone;
+    const username = infoUser?.MobilePhone;
     const email = this.state.email;
     const password = this.state.password;
     const PWD = getPassword();

@@ -53,10 +53,10 @@ import { getStockIDStorage, getUser } from "../../constants/user";
 import BookDataService from "../../service/book.service";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-function ScheduleService({ tabCurrent }) {
+function ScheduleService({ height, selectedService, handleService }) {
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
-    Ps: 5,
+    Ps: 10,
     Pi: 1,
     Key: "",
     Total: 0,
@@ -64,15 +64,6 @@ function ScheduleService({ tabCurrent }) {
   const [Total, setTotal] = useState(0);
   const [listService, setListService] = useState([]);
   const [hasMore, setHasMore] = useState(true);
-  const [height, setHeight] = useState(0);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    if (tabCurrent === 1) {
-      console.log(ref.current.clientHeight);
-      setHeight(ref.current.clientHeight);
-    }
-  }, [tabCurrent]);
 
   useEffect(() => {
     async function getServices() {
@@ -99,45 +90,46 @@ function ScheduleService({ tabCurrent }) {
       setHasMore(false);
       return;
     }
-
-    setTimeout(() => {
-      setFilters({
-        ...filters,
-        Pi: filters.Pi + 1,
-      });
-    }, 500);
+    setFilters({
+      ...filters,
+      Pi: filters.Pi + 1,
+    });
   };
-
-  if (tabCurrent === 1)
-    return (
-      <div className="page-schedule__box h-100">
-        <div className="service-me h-100" id="abc" ref={ref}>
-          {listService && listService.length > 0 && (
-            <InfiniteScroll
-              dataLength={listService.length}
-              next={fetchMoreData}
-              hasMore={hasMore}
-              loader={<div>Đang tải ...</div>}
-              // endMessage={
-              //   <p style={{ textAlign: "center" }}>
-              //     <b>Tổng có {filters.Total} nhân viên</b>
-              //   </p>
-              // }
-              scrollableTarget="#abc"
-            >
-              <div className="service-me__list">
-                {listService.map((item, index) => (
-                  <div className="item" key={index}>
+  console.log(selectedService)
+  return (
+    <div className="page-schedule__box h-100">
+      <div className="service-me h-100">
+        {listService && listService.length > 0 && (
+          <InfiniteScroll
+            dataLength={listService.length}
+            next={fetchMoreData}
+            hasMore={hasMore}
+            loader={listService.length < Total && <div>Đang tải ...</div>}
+            height={height}
+            // endMessage={
+            //   <p style={{ textAlign: "center" }}>
+            //     <b>Tổng có {filters.Total} nhân viên</b>
+            //   </p>
+            // }
+          >
+            <div className="service-me__list">
+              {listService.map((item, index) => (
+                <div className={`item ${selectedService.some(service => service.ID === item.ID) && "active"}`} key={index} onClick={() => handleService(item)}>
+                  <div className="item-title">
                     {item.Title}
                   </div>
-                ))}
-              </div>
-            </InfiniteScroll>
-          )}
-        </div>
+                  <div className="item-desc">
+                    {index + 3} buổi liệu trình
+                  </div>
+                  <i className="las la-check-circle"></i>
+                </div>
+              ))}
+            </div>
+          </InfiniteScroll>
+        )}
       </div>
-    );
-  return "";
+    </div>
+  );
 }
 
 export default ScheduleService;

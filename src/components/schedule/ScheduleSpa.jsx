@@ -378,6 +378,7 @@ export default class ScheduleSpa extends React.Component {
     };
     return (
       <div className="page-schedule__box">
+        <div className="pt-8px"></div>
         <div className="page-schedule__location">
           <h5>1. Chọn spa gần bạn</h5>
           <div className="page-schedule__location-list">

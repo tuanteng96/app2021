@@ -28,6 +28,8 @@ import "moment/locale/vi";
 import { checkSale, formatPriceVietnamese } from "../../constants/format";
 import { SERVER_APP } from "../../constants/config";
 import _ from "lodash";
+import { Animated } from "react-animated-css";
+
 
 moment.locale("vi");
 
@@ -35,78 +37,26 @@ export default class extends React.Component {
   constructor() {
     super();
     this.state = {
-      steps: [
-        {
-          label: "Thời gian",
-          component: (
-            <ScheduleSpa handleTime={(item) => this.handleTime(item)} />
-          ),
-          exitValidation: false,
-        },
-        {
-          label: "Dịch vụ",
-          component: (
-            <ScheduleService
-              handleService={(item) => this.handleService(item)}
-              handleDataService={(item, data, loading) =>
-                this.handleDataService(item, data, loading)
-              }
-            />
-          ),
-        },
-        {
-          label: "Hoàn tất",
-          component: <ScheduleSuccess onResetStep={() => this.onResetStep()} />,
-        },
-      ],
       onFinish: false,
       activeStep: 0,
-      selectedService: {
-        ID: 0,
-        subitemID: 0,
-      },
+      selectedService: [],
       isLoadingStep1: false,
       isLoading: false,
       isLoadingSheet: true,
       sheetOpened: false,
-      sheetServiceOpened: false,
       //new
       tabCurrent: 0,
+      height: 0,
     };
   }
-  componentDidMount() {}
+  componentDidMount() {
+    const height = this.divElement.clientHeight - this.divBtn.clientHeight;
+    this.setState({ height })
+  }
 
   onResetStep = () => {
     this.setState({
       activeStep: 0,
-    });
-  };
-
-  handleDataService = (item, data, loading) => {
-    this.setState({
-      sheetServiceOpened: true,
-      itemAdvisory: item,
-    });
-    if (loading) return false;
-    this.setState({
-      lstAdvisory: data,
-      isLoadingSheet: false,
-    });
-  };
-
-  closeSheetService = () => {
-    this.setState({
-      sheetServiceOpened: false,
-      isLoadingSheet: true,
-    });
-  };
-
-  handleStepChange = (active) => {
-    const { activeStep } = this.state;
-    if (activeStep < active) return false;
-    if (activeStep === 2) return false;
-    this.setState({
-      activeStep: active,
     });
   };
 
@@ -128,21 +78,13 @@ export default class extends React.Component {
     });
   };
 
-  handleService = (item) => {
-    this.setState({
-      itemBooks: item,
-      selectedService: {
-        ID: 0,
-        subitemID: 0,
-      },
-    });
-  };
   handleNote = (evt) => {
     const { value } = evt.target;
     this.setState({
       serviceNote: value,
     });
   };
+
   nextService = () => {
     this.setState({
       isLoadingStep1: true,
@@ -250,39 +192,22 @@ export default class extends React.Component {
     });
   };
 
-  handleItemService = (item, subitem) => {
-    const selectedData = {};
-    selectedData.ID = item.ID;
-    selectedData.subitemID = subitem.ID;
-
-    subitem.ServiceNew = true;
-    subitem.ServiceID = subitem.ID;
-    subitem.Titles = subitem.Title;
-
-    this.setState({
-      selectedService: selectedData,
-      itemBooks: [subitem],
-    });
-  };
-
   controlsStep = () => {
-    const { itemStepTime, isLoadingStep1, itemBooks } = this.state;
+    const { itemStepTime, isLoadingStep1, selectedService } = this.state;
 
-    switch (this.state.activeStep) {
+    switch (this.state.tabCurrent) {
       case 0:
         return (
           <div className="schedule-toolbar">
             <button
               type="button"
-              className={`btn-submit-order btn-submit-order ${
-                (itemStepTime && !itemStepTime["time"]) ||
+              className={`btn-submit-order btn-submit-order ${(itemStepTime && !itemStepTime["time"]) ||
                 (itemStepTime && isNaN(itemStepTime["stock"])) ||
                 !itemStepTime
-                  ? "btn-no-click"
-                  : ""
-              } ${!itemStepTime && "btn-no-click"} ${
-                isLoadingStep1 && "loading"
-              }`}
+                ? "btn-no-click"
+                : ""
+                } ${!itemStepTime && "btn-no-click"} ${isLoadingStep1 && "loading"
+                }`}
               onClick={() => this.nextService()}
             >
               <span>Chọn dịch vụ</span>
@@ -302,7 +227,7 @@ export default class extends React.Component {
             <button
               type="button"
               className={`btn-submit-order btn-submit-order 
-              ${!itemBooks && "btn-no-click"}`}
+              ${!selectedService || selectedService.length === 0 && "btn-no-click"}`}
               onClick={() => this.nextSuccessService()}
             >
               <span>Đặt lịch ngay</span>
@@ -322,12 +247,27 @@ export default class extends React.Component {
   };
 
   onToBack = () => {
-    if (this.state.activeStep === 0) {
+    if (this.state.tabCurrent === 0) {
       this.$f7router.back();
     } else {
       this.previousStep();
     }
   };
+
+  handleService = (item) => {
+    const { selectedService } = this.state;
+    const index = this.state.selectedService.findIndex(service => service.ID === item.ID);
+    if (index > -1) {
+      this.setState({
+        selectedService: selectedService.filter(service => service.ID !== item.ID)
+      })
+    }
+    else {
+      this.setState({
+        selectedService: [...selectedService, item]
+      })
+    }
+  }
 
   loadRefresh(done) {
     const _this = this;
@@ -339,10 +279,7 @@ export default class extends React.Component {
 
   render() {
     const {
-      activeStep,
-      steps,
       isLoading,
-      isLoadingSheet,
       sheetOpened,
       itemStepTime,
       itemBooks,
@@ -352,6 +289,7 @@ export default class extends React.Component {
       selectedService,
       //new
       tabCurrent,
+      height
     } = this.state;
     return (
       <Page
@@ -376,12 +314,13 @@ export default class extends React.Component {
             </div>
           </div>
           <Subnavbar className="subnavbar-booking">
-            <div className="page-schedule__step">
+            <div className="page-schedule__step" ref={(divBtn) => { this.divBtn = divBtn }}>
               <Link
                 className={`page-schedule__step-item`}
                 noLinkClass
                 tabLink={`#book-${0}`}
                 tabLinkActive={tabCurrent === 0}
+                onClick={() => this.state.tabCurrent > 0 && this.setState({ tabCurrent: 0 })}
               >
                 <div className="number">1</div>
                 <div className="text">
@@ -393,6 +332,7 @@ export default class extends React.Component {
                 noLinkClass
                 tabLink={`#book-${1}`}
                 tabLinkActive={tabCurrent === 1}
+                onClick={() => this.state.tabCurrent > 1 && this.setState({ tabCurrent: 1 })}
               >
                 <div className="number">2</div>
                 <div className="text">
@@ -413,24 +353,26 @@ export default class extends React.Component {
             </div>
           </Subnavbar>
         </Navbar>
-        <div className={`page-schedule ${activeStep === 1 && "h-100"}`}>
-          {/* <div className="page-schedule__step">{stepIndicators}</div> */}
-          {/* {steps[activeStep].component} */}
+        <div className={`page-schedule h-100`} ref={(divElement) => { this.divElement = divElement }}>
           <Tabs>
-            <Tab id={`#book-${2}`} tabActive={tabCurrent === 0}>
-              <ScheduleSpa handleTime={(item) => this.handleTime(item)} />
+            <Tab id={`#book-${0}`} tabActive={tabCurrent === 0}>
+              <Animated animationIn="bounceInLeft" animationOut="bounceInLeft" animationInDuration={700} isVisible={true}>
+                <ScheduleSpa handleTime={(item) => this.handleTime(item)} />
+              </Animated>
             </Tab>
-            <Tab id={`#book-${0}`} tabActive={tabCurrent === 1}>
-              <ScheduleService
-                handleService={(item) => this.handleService(item)}
-                handleDataService={(item, data, loading) =>
-                  this.handleDataService(item, data, loading)
-                }
-                tabCurrent={tabCurrent}
-              />
+            <Tab className="h-100" id={`#book-${1}`} tabActive={tabCurrent === 1}>
+              {tabCurrent === 1 && <Animated animationIn="bounceInRight" animationOut="bounceInLeft" isVisible={true}>
+                <ScheduleService
+                  height={height}
+                  selectedService={selectedService}
+                  handleService={(ID) => this.handleService(ID)}
+                />
+              </Animated>}
             </Tab>
-            <Tab id={`#book-${1}`} tabActive={tabCurrent === 2}>
-              <ScheduleSuccess onResetStep={() => this.onResetStep()} />
+            <Tab id={`#book-${2}`} tabActive={tabCurrent === 2}>
+              {tabCurrent === 2 && <Animated animationIn="bounceInLeft" animationOut="bounceInLeft" animationInDuration={700} isVisible={true}>
+                <ScheduleSuccess onResetStep={() => this.onResetStep()} />
+              </Animated>}
             </Tab>
           </Tabs>
         </div>
@@ -488,10 +430,10 @@ export default class extends React.Component {
                       <TiHeart />
                       Dịch vụ đã chọn
                     </div>
-                    {itemBooks &&
-                      itemBooks.map((item, index) => (
+                    {selectedService &&
+                      selectedService.map((item, index) => (
                         <div className="text" key={index}>
-                          {item.Titles}
+                          {item.Title}
                           <BiCheckDouble />
                         </div>
                       ))}
@@ -526,17 +468,15 @@ export default class extends React.Component {
         </Sheet>
 
         <div
-          className={`page-schedule--order ${
-            itemBooks && itemBooks[0].ServiceNew > 0 ? "show" : ""
-          }`}
+          className={`page-schedule--order ${itemBooks && itemBooks[0].ServiceNew > 0 ? "show" : ""
+            }`}
         >
           <div className="item">
             <div className="image">
               <img
                 src={`
-                  ${SERVER_APP}/Upload/image/${
-                  itemBooks && itemBooks[0].Thumbnail
-                }
+                  ${SERVER_APP}/Upload/image/${itemBooks && itemBooks[0].Thumbnail
+                  }
                 `}
                 alt={itemBooks && itemBooks[0].Title}
               />
@@ -574,97 +514,10 @@ export default class extends React.Component {
           </div>
         </div>
 
-        <Sheet
-          className="sheet-swipe-product sheet-swipe-service"
-          style={{ height: "auto", "--f7-sheet-bg-color": "#fff" }}
-          opened={sheetServiceOpened}
-          onSheetClosed={() => this.closeSheetService()}
-          swipeToClose
-          swipeToStep
-          backdrop
-        >
-          <div className="sheet-modal-swipe-step">
-            <div className="sheet-modal-swipe__close"></div>
-            <div className="sheet-swipe-product__content sheet-swipe-service__content">
-              <div className="sheet-pay-head sheet-service-header">
-                {itemAdvisory && itemAdvisory.Title}
-                <div className="close" onClick={() => this.closeSheetService()}>
-                  <IoCloseOutline />
-                </div>
-              </div>
-              <div className="sheet-service-lst">
-                {isLoadingSheet && <ServiceSheetSkeleton />}
-                {!isLoadingSheet &&
-                  lstAdvisory &&
-                  lstAdvisory.map((item, index) => (
-                    <div className="sheet-service-lst__item" key={index}>
-                      <h4>
-                        <div className="title">{item.Title}</div>
-                        <div className="count">
-                          ( <span>{item.lst && item.lst.length}</span> dịch vụ )
-                        </div>
-                      </h4>
-                      <div className="item-sub">
-                        {item.lst &&
-                          item.lst.map((subitem, index) => (
-                            <div
-                              className="item-sub__box"
-                              key={index}
-                              onClick={() =>
-                                this.handleItemService(item, subitem)
-                              }
-                            >
-                              <h5>{subitem.Title}</h5>
-                              <div
-                                className={
-                                  "price " +
-                                  (checkSale(
-                                    subitem.SaleBegin,
-                                    subitem.SaleEnd
-                                  ) === true
-                                    ? "sale"
-                                    : "")
-                                }
-                              >
-                                <span className="price-to">
-                                  {formatPriceVietnamese(subitem.PriceProduct)}
-                                  <b>đ</b>
-                                </span>
-                                <span className="price-sale">
-                                  {formatPriceVietnamese(subitem.PriceSale)}
-                                  <b>đ</b>
-                                </span>
-                              </div>
-                              <div
-                                className={`icon-succes-animated ${
-                                  selectedService.ID === item.ID &&
-                                  selectedService.subitemID === subitem.ID
-                                    ? "active"
-                                    : ""
-                                }`}
-                              >
-                                <span className="icon-line line-tip"></span>
-                                <span className="icon-line line-long"></span>
-                                <div className="icon-circle"></div>
-                                <div className="icon-fix"></div>
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-                    </div>
-                  ))}
-                {!isLoadingSheet && lstAdvisory && lstAdvisory.length === 0 && (
-                  <div className="text-empty">Không có dịch vụ</div>
-                )}
-              </div>
-            </div>
-          </div>
-        </Sheet>
-
         <Toolbar tabbar position="bottom">
           {this.controlsStep()}
         </Toolbar>
-      </Page>
+      </Page >
     );
   }
 }

@@ -37,6 +37,7 @@
         "prop-types": "^15.7.2",
         "querystring": "^0.2.0",
         "react": "^16.13.1",
+        "react-animated-css": "^1.2.1",
         "react-barcode": "^1.4.0",
         "react-before-after-slider": "^1.0.4",
         "react-copy-to-clipboard": "^5.0.4",

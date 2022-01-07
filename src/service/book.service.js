@@ -4,13 +4,18 @@ class BookDataService {
     getCardService(data) {
         return http.get(`/api/v3/mbook?cmd=getroot&memberid=${data.MemberID}&ps=${data.Ps}&pi=${data.Pi}&key=${data.Key}&stockid=${data.StockID}`);
     }
-    postBook(data) {
-        return http.post(`/api/v3/bookclient?cmd=book`, data);
+    postBooking(data) {
+        return http.post(`/api/v3/mbook?cmd=booking`, JSON.stringify(data));
     }
-    bookDelete(id) {
-        return http.post(`/api/v3/bookclient?cmd=delete&ids=${id}`)
+    bookDelete(data) {
+        return http.post(`/api/v3/mbook?cmd=booking`, JSON.stringify(data));
     }
-
+    getListBook(MemberID) {
+        return http.get(`/api/v3/mbook?cmd=getbook&memberid=${MemberID}`);
+    }
+    getBookId(ID) {
+        return http.get(`/api/v3/mbook?cmd=getbookid&id=${ID}`);
+    }
 }
 
 export default new BookDataService();

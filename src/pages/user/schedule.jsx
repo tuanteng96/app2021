@@ -15,21 +15,20 @@ import ScheduleSpa from "../../components/schedule/ScheduleSpa";
 import ScheduleService from "../../components/schedule/ScheduleService";
 import ScheduleSuccess from "../../components/schedule/ScheduleSuccess";
 import BooksIcon from "../../components/BooksIcon";
-import ServiceSheetSkeleton from "../../components/schedule/service/ServiceSheetSkeleton";
 import { TiLocation, TiTime, TiCalendarOutline, TiHeart } from "react-icons/ti";
-import { getUser } from "../../constants/user";
+import {
+  getStockIDStorage,
+  getStockNameStorage,
+  getUser,
+} from "../../constants/user";
 import { BiCheckDouble } from "react-icons/bi";
 import BookDataService from "../../service/book.service";
 import { toast } from "react-toastify";
 import ToolBarBottom from "../../components/ToolBarBottom";
-import { IoCloseOutline } from "react-icons/io5";
 import moment from "moment";
 import "moment/locale/vi";
-import { checkSale, formatPriceVietnamese } from "../../constants/format";
-import { SERVER_APP } from "../../constants/config";
 import _ from "lodash";
 import { Animated } from "react-animated-css";
-
 
 moment.locale("vi");
 
@@ -47,16 +46,50 @@ export default class extends React.Component {
       //new
       tabCurrent: 0,
       height: 0,
+      DateTimeBook: {
+        date: moment(new Date()).format("DD/MM/YYYY"),
+        stock: getStockIDStorage(),
+        nameStock: getStockNameStorage(),
+        AtHome: false,
+      },
+      onRefresh: {
+        fn: null,
+        isRefresh: false,
+      },
+      isParams: true,
     };
   }
   componentDidMount() {
-    const height = this.divElement.clientHeight - this.divBtn.clientHeight;
-    this.setState({ height })
+    const height = this.divElement.clientHeight - this.divBtn.clientHeight - 67;
+    this.setState({ height });
+    const self = this;
+    if (this.$f7route.params.ID && this.state.isParams) {
+      self.$f7.dialog.preloader("Đang tải ...");
+      const { ID } = this.$f7route.params;
+      BookDataService.getBookId(ID)
+        .then(({ data }) => {
+          const currentBook = data.data;
+          this.setState({
+            DateTimeBook: {
+              date: moment(currentBook.BookDate).format("DD/MM/YYYY"),
+              time: moment(currentBook.BookDate).format("HH:mm"),
+              stock: currentBook.Stock.ID,
+              nameStock: currentBook.StockID,
+              AtHome: currentBook.AtHome,
+              isOther: false,
+            },
+            serviceNote: currentBook.Desc,
+            selectedService: currentBook.Roots,
+          });
+          self.$f7.dialog.close();
+        })
+        .catch((error) => console.log(error));
+    }
   }
 
   onResetStep = () => {
     this.setState({
-      activeStep: 0,
+      tabCurrent: 0,
     });
   };
 
@@ -74,7 +107,7 @@ export default class extends React.Component {
 
   handleTime = (item) => {
     this.setState({
-      itemStepTime: item,
+      DateTimeBook: item,
     });
   };
 
@@ -103,50 +136,40 @@ export default class extends React.Component {
   };
 
   submitBooks = () => {
-    const { itemStepTime, serviceNote, itemBooks } = this.state;
+    const { DateTimeBook, serviceNote, selectedService } = this.state;
     const infoUser = getUser();
     const self = this;
     if (!infoUser) {
       return false;
     }
+    const date =
+      moment(DateTimeBook.date).format("YYYY/DD/MM") + " " + DateTimeBook.time;
 
-    const date = itemStepTime.date + " " + itemStepTime.time;
-
-    const itemBooksList = [];
-    if (itemBooks[0].Prod) {
-      itemBooks.map((item, index) => {
-        const itemBook = {};
-        itemBook.stock_id = itemStepTime && itemStepTime.stock;
-        itemBook.service_id = item.Prod.ID;
-        itemBook.desc = serviceNote ? serviceNote : "Không có ghi chú .";
-        itemBook.date = date;
-        itemBooksList.push(itemBook);
-      });
-    } else {
-      itemBooks.map((item, index) => {
-        const itemBook = {};
-        itemBook.stock_id = itemStepTime && itemStepTime.stock;
-        itemBook.service_id = item.ServiceID;
-        itemBook.desc = serviceNote ? serviceNote : "Không có ghi chú .";
-        itemBook.date = date;
-        itemBooksList.push(itemBook);
-      });
-    }
-
-    const data = {
-      memberid: infoUser.ID,
-      books: itemBooksList,
+    const dataSubmit = {
+      booking: [
+        {
+          MemberID: infoUser.ID,
+          RootIdS: selectedService.map((item) => item.ID).toString(),
+          BookDate: date,
+          Desc: serviceNote,
+          StockID: DateTimeBook.stock || 0,
+          AtHome: DateTimeBook.AtHome,
+        },
+      ],
     };
+
+    if (this.$f7route.params.ID && this.state.isParams) {
+      dataSubmit.deletes = [{ ID: this.$f7route.params.ID }];
+    }
 
     this.setState({
       isLoading: true,
     });
 
-    BookDataService.postBook(data)
+    BookDataService.postBooking(dataSubmit)
       .then((response) => {
-        const rt = response.data.data;
-        if (rt.errors) {
-          toast.error(rt.errors[0], {
+        if (response.error) {
+          toast.error(response.error, {
             position: toast.POSITION.TOP_LEFT,
             autoClose: 3000,
           });
@@ -165,10 +188,18 @@ export default class extends React.Component {
             this.setState({
               isLoading: false,
               sheetOpened: false,
-              itemBooks: null,
+              selectedService: [],
+              DateTimeBook: {
+                date: moment(new Date()).format("DD/MM/YYYY"),
+                stock: getStockIDStorage(),
+                nameStock: getStockNameStorage(),
+                AtHome: false,
+              },
+              serviceNote: "",
+              isParams: false,
             });
             this.nextStep();
-          }, 1000);
+          }, 300);
         }
       })
       .catch((e) => {
@@ -182,18 +213,8 @@ export default class extends React.Component {
     });
   };
 
-  closeSerivePosition = () => {
-    this.setState({
-      itemBooks: null,
-      selectedService: {
-        ID: 0,
-        subitemID: 0,
-      },
-    });
-  };
-
   controlsStep = () => {
-    const { itemStepTime, isLoadingStep1, selectedService } = this.state;
+    const { DateTimeBook, isLoadingStep1, selectedService } = this.state;
 
     switch (this.state.tabCurrent) {
       case 0:
@@ -201,13 +222,15 @@ export default class extends React.Component {
           <div className="schedule-toolbar">
             <button
               type="button"
-              className={`btn-submit-order btn-submit-order ${(itemStepTime && !itemStepTime["time"]) ||
-                (itemStepTime && isNaN(itemStepTime["stock"])) ||
-                !itemStepTime
-                ? "btn-no-click"
-                : ""
-                } ${!itemStepTime && "btn-no-click"} ${isLoadingStep1 && "loading"
-                }`}
+              className={`btn-submit-order btn-submit-order ${
+                (DateTimeBook && !DateTimeBook["time"]) ||
+                (DateTimeBook && isNaN(DateTimeBook["stock"])) ||
+                !DateTimeBook
+                  ? "btn-no-click"
+                  : ""
+              } ${!DateTimeBook && "btn-no-click"} ${
+                isLoadingStep1 && "loading"
+              }`}
               onClick={() => this.nextService()}
             >
               <span>Chọn dịch vụ</span>
@@ -227,7 +250,10 @@ export default class extends React.Component {
             <button
               type="button"
               className={`btn-submit-order btn-submit-order 
-              ${!selectedService || selectedService.length === 0 && "btn-no-click"}`}
+              ${
+                !selectedService ||
+                (selectedService.length === 0 && "btn-no-click")
+              }`}
               onClick={() => this.nextSuccessService()}
             >
               <span>Đặt lịch ngay</span>
@@ -256,40 +282,43 @@ export default class extends React.Component {
 
   handleService = (item) => {
     const { selectedService } = this.state;
-    const index = this.state.selectedService.findIndex(service => service.ID === item.ID);
+    const index = this.state.selectedService.findIndex(
+      (service) => service.ID === item.ID
+    );
     if (index > -1) {
       this.setState({
-        selectedService: selectedService.filter(service => service.ID !== item.ID)
-      })
-    }
-    else {
+        selectedService: selectedService.filter(
+          (service) => service.ID !== item.ID
+        ),
+      });
+    } else {
       this.setState({
-        selectedService: [...selectedService, item]
-      })
+        selectedService: [...selectedService, item],
+      });
     }
-  }
+  };
 
   loadRefresh(done) {
     const _this = this;
-    setTimeout(function () {
-      _this.setState({ showPreloader: false });
-      done();
-    }, 1000);
+    _this.setState((prevState) => ({
+      onRefresh: {
+        fn: done(),
+        isRefresh: !prevState.onRefresh.onRefresh,
+      },
+    }));
   }
 
   render() {
     const {
       isLoading,
       sheetOpened,
-      itemStepTime,
-      itemBooks,
-      sheetServiceOpened,
-      itemAdvisory,
-      lstAdvisory,
+      DateTimeBook,
       selectedService,
       //new
       tabCurrent,
-      height
+      height,
+      serviceNote,
+      onRefresh,
     } = this.state;
     return (
       <Page
@@ -314,13 +343,20 @@ export default class extends React.Component {
             </div>
           </div>
           <Subnavbar className="subnavbar-booking">
-            <div className="page-schedule__step" ref={(divBtn) => { this.divBtn = divBtn }}>
+            <div
+              className="page-schedule__step"
+              ref={(divBtn) => {
+                this.divBtn = divBtn;
+              }}
+            >
               <Link
                 className={`page-schedule__step-item`}
                 noLinkClass
                 tabLink={`#book-${0}`}
                 tabLinkActive={tabCurrent === 0}
-                onClick={() => this.state.tabCurrent > 0 && this.setState({ tabCurrent: 0 })}
+                onClick={() =>
+                  this.state.tabCurrent > 0 && this.setState({ tabCurrent: 0 })
+                }
               >
                 <div className="number">1</div>
                 <div className="text">
@@ -332,7 +368,9 @@ export default class extends React.Component {
                 noLinkClass
                 tabLink={`#book-${1}`}
                 tabLinkActive={tabCurrent === 1}
-                onClick={() => this.state.tabCurrent > 1 && this.setState({ tabCurrent: 1 })}
+                onClick={() =>
+                  this.state.tabCurrent > 1 && this.setState({ tabCurrent: 1 })
+                }
               >
                 <div className="number">2</div>
                 <div className="text">
@@ -353,26 +391,58 @@ export default class extends React.Component {
             </div>
           </Subnavbar>
         </Navbar>
-        <div className={`page-schedule h-100`} ref={(divElement) => { this.divElement = divElement }}>
+        <div
+          className={`page-schedule h-100`}
+          ref={(divElement) => {
+            this.divElement = divElement;
+          }}
+        >
           <Tabs>
             <Tab id={`#book-${0}`} tabActive={tabCurrent === 0}>
-              <Animated animationIn="bounceInLeft" animationOut="bounceInLeft" animationInDuration={700} isVisible={true}>
-                <ScheduleSpa handleTime={(item) => this.handleTime(item)} />
+              <Animated
+                animationIn="bounceInLeft"
+                animationOut="bounceInLeft"
+                animationInDuration={700}
+                isVisible={true}
+              >
+                <ScheduleSpa
+                  handleTime={(item) => this.handleTime(item)}
+                  DateTimeBook={DateTimeBook}
+                />
               </Animated>
             </Tab>
-            <Tab className="h-100" id={`#book-${1}`} tabActive={tabCurrent === 1}>
-              {tabCurrent === 1 && <Animated animationIn="bounceInRight" animationOut="bounceInLeft" isVisible={true}>
-                <ScheduleService
-                  height={height}
-                  selectedService={selectedService}
-                  handleService={(ID) => this.handleService(ID)}
-                />
-              </Animated>}
+            <Tab
+              className="h-100"
+              id={`#book-${1}`}
+              tabActive={tabCurrent === 1}
+            >
+              {tabCurrent === 1 && (
+                <Animated
+                  animationIn="bounceInRight"
+                  animationOut="bounceInLeft"
+                  animationInDuration={700}
+                  isVisible={true}
+                >
+                  <ScheduleService
+                    height={height}
+                    selectedService={selectedService}
+                    handleService={(ID) => this.handleService(ID)}
+                    onRefresh={onRefresh}
+                  />
+                </Animated>
+              )}
             </Tab>
             <Tab id={`#book-${2}`} tabActive={tabCurrent === 2}>
-              {tabCurrent === 2 && <Animated animationIn="bounceInLeft" animationOut="bounceInLeft" animationInDuration={700} isVisible={true}>
-                <ScheduleSuccess onResetStep={() => this.onResetStep()} />
-              </Animated>}
+              {tabCurrent === 2 && (
+                <Animated
+                  animationIn="bounceInLeft"
+                  animationOut="bounceInLeft"
+                  animationInDuration={700}
+                  isVisible={true}
+                >
+                  <ScheduleSuccess onResetStep={() => this.onResetStep()} />
+                </Animated>
+              )}
             </Tab>
           </Tabs>
         </div>
@@ -389,14 +459,14 @@ export default class extends React.Component {
             <div className="sheet-modal-swipe__close"></div>
             <div className="sheet-swipe-product__content sheet-swipe-service__content">
               <div className="sheet-pay-head sheet-service-header">
-                Xác nhận thông tin
+                Xác nhận đặt lịch
               </div>
               <div className="sheet-pay-body sheet-service-body">
                 <div className="sheet-service-body__content">
                   <div className="location">
                     <div className="icon">
                       <TiLocation /> Cơ sở
-                      <span>{itemStepTime && itemStepTime.nameStock}</span>
+                      <span>{DateTimeBook && DateTimeBook.nameStock}</span>
                     </div>
                   </div>
                   <div className="time">
@@ -408,7 +478,7 @@ export default class extends React.Component {
                             Ngày
                           </div>
                           <div className="text">
-                            {itemStepTime && itemStepTime.date}
+                            {DateTimeBook && DateTimeBook.date}
                           </div>
                         </div>
                       </Col>
@@ -419,7 +489,7 @@ export default class extends React.Component {
                             Giờ
                           </div>
                           <div className="text">
-                            {itemStepTime && itemStepTime.time}
+                            {DateTimeBook && DateTimeBook.time}
                           </div>
                         </div>
                       </Col>
@@ -433,16 +503,39 @@ export default class extends React.Component {
                     {selectedService &&
                       selectedService.map((item, index) => (
                         <div className="text" key={index}>
-                          {item.Title}
+                          {index + 1}. {item.Title}
                           <BiCheckDouble />
                         </div>
                       ))}
                   </div>
                 </div>
+                <div className="sheet-service-body__athome">
+                  <div>
+                    <i className="las la-home"></i> Sử dụng dịch vụ tại nhà
+                  </div>
+                  <label>
+                    <input
+                      type="checkbox"
+                      onChange={(evt) => {
+                        const isChecked = evt.target.checked;
+                        this.setState((prevState) => ({
+                          ...prevState,
+                          DateTimeBook: {
+                            ...prevState.DateTimeBook,
+                            AtHome: isChecked,
+                          },
+                        }));
+                      }}
+                      checked={DateTimeBook.AtHome}
+                    />
+                    <span />
+                  </label>
+                </div>
                 <div className="sheet-service-body__note">
                   <textarea
                     onChange={this.handleNote}
                     placeholder="Cho chúng tôi biết lưu ý thêm của bạn"
+                    value={serviceNote}
                   ></textarea>
                 </div>
                 <div className="sheet-pay-body__btn">
@@ -467,57 +560,10 @@ export default class extends React.Component {
           </div>
         </Sheet>
 
-        <div
-          className={`page-schedule--order ${itemBooks && itemBooks[0].ServiceNew > 0 ? "show" : ""
-            }`}
-        >
-          <div className="item">
-            <div className="image">
-              <img
-                src={`
-                  ${SERVER_APP}/Upload/image/${itemBooks && itemBooks[0].Thumbnail
-                  }
-                `}
-                alt={itemBooks && itemBooks[0].Title}
-              />
-            </div>
-            <div className="text">
-              <div className="text-title">
-                {itemBooks && itemBooks[0].Title}
-              </div>
-              <div
-                className={
-                  "text-price " +
-                  (checkSale(
-                    itemBooks && itemBooks[0].SaleBegin,
-                    itemBooks && itemBooks[0].SaleEnd
-                  ) === true
-                    ? "sale"
-                    : "")
-                }
-              >
-                <span className="price-to">
-                  {formatPriceVietnamese(
-                    itemBooks && itemBooks[0].PriceProduct
-                  )}
-                  <b>đ</b>
-                </span>
-                <span className="price-sale">
-                  {formatPriceVietnamese(itemBooks && itemBooks[0].PriceSale)}
-                  <b>đ</b>
-                </span>
-              </div>
-            </div>
-            <div className="close" onClick={() => this.closeSerivePosition()}>
-              <IoCloseOutline />
-            </div>
-          </div>
-        </div>
-
         <Toolbar tabbar position="bottom">
           {this.controlsStep()}
         </Toolbar>
-      </Page >
+      </Page>
     );
   }
 }

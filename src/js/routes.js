@@ -249,6 +249,13 @@ var routes = [{
         }
     },
     {
+        path: '/schedule/:ID', // Thẻ dịch vụ
+        asyncComponent: () => SchedulePage,
+        options: {
+            transition: 'f7-cover',
+        }
+    },
+    {
         path: '/manage-schedules/', // Quản lý Thẻ dịch vụ
         asyncComponent: () => ScheduleManagePage,
         options: {

@@ -19,7 +19,7 @@ export default class ScheduleSuccess extends React.Component {
         <Link
           noLinkClass
           className="btn-submit-order"
-          href="/manage-schedules/?tab=booksupport"
+          href="/manage-schedules/"
         >
           Quản lý đặt lịch
         </Link>

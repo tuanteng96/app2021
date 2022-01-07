@@ -12,40 +12,76 @@ import {
 } from "framework7-react";
 import NotificationIcon from "../../components/NotificationIcon";
 import ToolBarBottom from "../../components/ToolBarBottom";
+import BookDataService from "../../service/book.service";
 
 import CardSchedulingComponent from "./SchedulesManage/CardSchedulingComponent";
-import AdvisorySchedulesComponent from "./SchedulesManage/AdvisorySchedulesComponent";
+import { getUser } from "../../constants/user";
+import { groupbyDDHHMM2 } from "../../constants/format";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default class extends React.Component {
   constructor() {
     super();
     this.state = {
       isRefresh: false,
-      tabCurrent: "bookcard"
+      tabCurrent: "bookcard",
+      listBooking: [],
+      loading: false,
     };
   }
 
+  getListBooks = () => {
+    const userInfo = getUser();
+    if (!userInfo) return false;
+    this.setState({
+      loading: true,
+    });
+    BookDataService.getListBook(userInfo.ID)
+      .then(({ data }) => {
+        this.setState({
+          listBooking: groupbyDDHHMM2(data.data),
+          loading: false,
+        });
+      })
+      .catch((er) => console.log(er));
+  };
+
   componentDidMount() {
-    if(this.$f7route.query.tab) {
-      this.setState({tabCurrent: this.$f7route.query.tab})
-    }
+    this.getListBooks();
   }
 
-  handleLoadRefresh = () => {
-
-  }
+  onDelete = (item) => {
+    const dataSubmit = {
+      deletes: [
+        {
+          ID: item.ID,
+        },
+      ],
+    };
+    const _this = this;
+    _this.$f7.dialog.confirm("Bạn chắc chắn mình muốn hủy lịch ?", () => {
+      _this.$f7.preloader.show();
+      BookDataService.bookDelete(dataSubmit)
+        .then((response) => {
+          _this.$f7.preloader.hide();
+          toast.success("Hủy lịch thành công !", {
+            position: toast.POSITION.TOP_LEFT,
+            autoClose: 3000,
+          });
+          this.getListBooks();
+        })
+        .catch((er) => console.log(er));
+    });
+  };
 
   async loadRefresh(done) {
-    const { isRefresh } = this.state;
-    this.setState({
-      isRefresh: !isRefresh,
-    });
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await this.getListBooks();
     done();
   }
 
   render() {
-    const { isRefresh, tabCurrent } = this.state;
+    const { loading, listBooking } = this.state;
     return (
       <Page
         name="schedule-manage"
@@ -67,27 +103,15 @@ export default class extends React.Component {
               <NotificationIcon />
             </div>
           </div>
-          <Subnavbar className="cardservice-tab-head">
-            <div className="cardservice-title card-book">
-              <Link noLinkClass tabLink="#bookcard" tabLinkActive={tabCurrent === "bookcard"}>
-                Đặt lịch tư vấn
-              </Link>
-              <Link noLinkClass tabLink="#booksupport" tabLinkActive={tabCurrent === "booksupport"}>
-                Đặt lịch thẻ
-              </Link>
-            </div>
-          </Subnavbar>
         </Navbar>
         <div className="page-wrapper">
           <div className="chedule-manage">
-            <Tabs>
-              <Tab id="bookcard" tabActive={tabCurrent === "bookcard"}>
-                <CardSchedulingComponent isRefresh={isRefresh} />
-              </Tab>
-              <Tab id="booksupport" tabActive={tabCurrent === "booksupport"}>
-                <AdvisorySchedulesComponent isRefresh={isRefresh} />
-              </Tab>
-            </Tabs>
+            <CardSchedulingComponent
+              listBooking={listBooking}
+              loading={loading}
+              onDelete={this.onDelete}
+              f7={this.$f7router}
+            />
           </div>
         </div>
         <Toolbar tabbar position="bottom">

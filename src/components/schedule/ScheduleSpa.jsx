@@ -1,11 +1,11 @@
 import React from "react";
 import { Link, Tabs, Tab, Row, Col } from "framework7-react";
 import UserService from "../../service/user.service";
-import { getStockIDStorage, getStockNameStorage } from "../../constants/user";
 import IconLocation from "../../assets/images/location1.svg";
 import SkeletonStock from "./SkeletonStock";
 import Carousel from "nuka-carousel";
 import DatePicker from "react-mobile-datepicker";
+import _ from "lodash";
 import moment from "moment";
 import "moment/locale/vi";
 moment.locale("vi");
@@ -16,7 +16,6 @@ export default class ScheduleSpa extends React.Component {
     this.state = {
       arrListDate: [], // Hiển thị 3 ngày từ ngày today next
       arrStock: [], // List Stock
-      bookDate: "", // Ngày đặt lịch
       timeSelected: "",
       itemBook: {},
       isLoadingStock: true,
@@ -29,16 +28,8 @@ export default class ScheduleSpa extends React.Component {
   componentDidMount() {
     this.listDate();
     this.getStock();
-    const gettoday = moment();
-    const bookDateDefault = moment(gettoday).format("DD/MM/YYYY");
-
-    const CurrentStockID = getStockIDStorage();
-    const CurrentStockName = getStockNameStorage();
     this.setState({
-      CurrentStockID: CurrentStockID,
-      CurrentStockName: CurrentStockName,
       width: window.innerWidth,
-      bookDate: bookDateDefault,
     });
   }
 
@@ -156,6 +147,7 @@ export default class ScheduleSpa extends React.Component {
   formatTime = (time) => {
     return time.replace(":", "h");
   };
+
   checkTime = (date, time) => {
     const dateOne = date.split("/");
     const timeOne = time.split(":");
@@ -189,6 +181,7 @@ export default class ScheduleSpa extends React.Component {
       return "";
     }
   };
+
   handStyle = () => {
     const _width = this.state.width / 4 - 12;
     return Object.assign({
@@ -198,131 +191,72 @@ export default class ScheduleSpa extends React.Component {
 
   onDateChanged = (event) => {
     const target = event.target;
-    const value = target.value;
-    const { itemBook, CurrentStockName } = this.state;
-    const itemBookNew = itemBook;
-    itemBookNew.nameStock = CurrentStockName;
-    itemBookNew.time && delete itemBookNew.time;
-    this.setState({
-      dateSelected: value,
-      timeSelected: "",
-      itemBook: itemBookNew,
-      otherBook: null,
+    const date = target.value;
+    this.props.handleTime({
+      ...this.props.DateTimeBook,
+      date,
+      time: "",
+      isOther: false,
     });
-    this.props.handleTime(itemBookNew);
   };
 
   handleStock = (item) => {
-    const { bookDate, dateSelected, timeSelected } = this.state;
-    const itemBookNew = {};
-    itemBookNew.stock = item.ID;
-    itemBookNew.nameStock = item.Title;
-    timeSelected ? (itemBookNew.time = timeSelected) : "";
-    itemBookNew.date = dateSelected ? dateSelected : bookDate;
-    this.setState({
-      StockSelected: item.ID,
-      CurrentStockName: item.Title,
-      itemBook: itemBookNew,
+    this.props.handleTime({
+      ...this.props.DateTimeBook,
+      stock: item.ID,
+      nameStock: item.Title,
     });
-    this.props.handleTime(itemBookNew);
   };
 
   handleTime = (time) => {
-    const {
-      CurrentStockID,
-      CurrentStockName,
-      StockSelected,
-      bookDate,
-      dateSelected,
-      timeSelected,
-    } = this.state;
-    const itemBookNew = {};
-    itemBookNew.time = time;
-    itemBookNew.stock = StockSelected
-      ? StockSelected
-      : parseInt(CurrentStockID);
-    itemBookNew.date = dateSelected ? dateSelected : bookDate;
-    itemBookNew.nameStock = CurrentStockName;
-    if (timeSelected === time) {
-      this.setState({
-        timeSelected: "",
-        itemBook: null,
-        //otherBook: null,
-      });
-      this.props.handleTime({});
-    } else {
-      this.setState({
-        timeSelected: time,
-        itemBook: itemBookNew,
-        //otherBook: null,
-      });
-      this.props.handleTime(itemBookNew);
-    }
-  };
-
-  handleTab = (index) => {
-    this.setState({
-      isActive: index,
+    this.props.handleTime({
+      ...this.props.DateTimeBook,
+      isOther: false,
+      time: time,
     });
   };
 
   handleShowDate = () => {
     this.setState({
       isOpen: true,
-      isActive: "other",
-      timeSelected: "",
+    });
+    this.props.handleTime({
+      ...this.props.DateTimeBook,
+      isOther: true,
+      date: this.props.DateTimeBook.isOther ? this.props.DateTimeBook.date : "",
+      time: this.props.DateTimeBook.isOther ? this.props.DateTimeBook.time : "",
     });
   };
 
-  handleSelectDate = async (date) => {
-    const { CurrentStockID, CurrentStockName, StockSelected } = this.state;
-    const itemBookNew = {};
-    //itemBookNew.time = moment(date).format("LT");
-    itemBookNew.stock = StockSelected
-      ? StockSelected
-      : parseInt(CurrentStockID);
-    itemBookNew.date = moment(date).format("L");
-    itemBookNew.nameStock = CurrentStockName;
-
-    this.setState(
-      {
-        otherBook: date,
-        isActive: "other",
-      },
-      () => {
-        this.props.handleTime(itemBookNew);
-        this.handleCancelDate();
-      }
-    );
+  handleSelectDate = (datetime) => {
+    const time = moment(datetime).format("HH:mm");
+    const date = moment(datetime).format("DD/MM/YYYY");
+    this.props.handleTime({
+      ...this.props.DateTimeBook,
+      time,
+      date,
+    });
+    this.setState({
+      isOpen: false,
+    });
   };
 
   handleCancelDate = () => {
-    const { otherBook } = this.state;
-    if (otherBook) {
-      this.setState({
-        isOpen: false,
-        isActive: "other",
-      });
-    } else {
-      this.setState({
-        isOpen: false,
-        isActive: 0,
-      });
-    }
+    this.setState({
+      isOpen: false,
+    });
   };
 
   render() {
     const {
       arrListDate,
       arrStock,
-      timeSelected,
       isLoadingStock,
-      CurrentStockID,
-      isActive,
       isOpen,
       otherBook,
       indexCurrent,
     } = this.state;
+    const { DateTimeBook } = this.props;
     const settingsIndex = {
       //wrapAround: true,
       speed: 500,
@@ -399,8 +333,9 @@ export default class ScheduleSpa extends React.Component {
                           name="checklocation"
                           value={item.ID}
                           defaultChecked={
-                            parseInt(CurrentStockID && CurrentStockID) ===
-                            item.ID
+                            parseInt(
+                              DateTimeBook.stock && DateTimeBook.stock
+                            ) === item.ID
                           }
                         />
                         <label htmlFor={"location-" + item.ID}>
@@ -427,20 +362,24 @@ export default class ScheduleSpa extends React.Component {
                       <Link
                         noLinkClass
                         tabLink={"#tab-" + item.name}
-                        tabLinkActive={isActive === index ? true : false}
-                        onClick={() => this.handleTab(index)}
+                        tabLinkActive={
+                          !DateTimeBook.isOther &&
+                          DateTimeBook.date === item.date
+                        }
                       >
                         <input
                           type="radio"
                           onChange={this.onDateChanged}
                           name="checkdate"
                           value={item.date}
-                          is-index={isActive}
                         />
                         <span
-                          className={isActive === index ? "active" : ""}
-                          is-active={isActive}
-                          is-index={index}
+                          className={
+                            !DateTimeBook.isOther &&
+                            DateTimeBook.date === item.date
+                              ? "active"
+                              : ""
+                          }
                         >
                           {item.dateFormat}
                         </span>
@@ -451,15 +390,13 @@ export default class ScheduleSpa extends React.Component {
               <Col width="33">
                 <Link
                   noLinkClass
-                  tabLinkActive={isActive === "other" ? true : false}
+                  tabLinkActive={DateTimeBook.isOther}
                   onClick={() => this.handleShowDate()}
                 >
-                  <span
-                    className={isActive === "other" ? "active" : ""}
-                    // is-active={isActive}
-                    // is-index={index}
-                  >
-                    {otherBook ? moment(otherBook).format("L") : "Ngày khác"}
+                  <span className={DateTimeBook.isOther ? "active" : ""}>
+                    {DateTimeBook.isOther && DateTimeBook.date
+                      ? DateTimeBook.date
+                      : "Ngày khác"}
                   </span>
                 </Link>
               </Col>
@@ -492,14 +429,16 @@ export default class ScheduleSpa extends React.Component {
               <span>Đang chọn</span>
             </div>
           </div>
-          <Tabs animated>
+          <Tabs>
             {arrListDate &&
               arrListDate.map((item, index) => (
                 <Tab
                   key={index}
                   id={"tab-" + item.name}
                   className="page-tab-location"
-                  tabActive={isActive === index ? true : false}
+                  tabActive={
+                    !DateTimeBook.isOther && DateTimeBook.date === item.date
+                  }
                 >
                   <div className="page-schedule__time-list">
                     <Carousel
@@ -523,7 +462,7 @@ export default class ScheduleSpa extends React.Component {
                             >
                               <label
                                 className={
-                                  timeSelected === sub.time ? "active" : ""
+                                  DateTimeBook.time === sub.time ? "active" : ""
                                 }
                               >
                                 {this.formatTime(sub.time)}

@@ -156,8 +156,8 @@ export const groupbyDDHHMM2 = (arr) => {
     const newArr = [];
     if (!arr) return false;
     arr.map(item => {
-        const dayFull = item.createDate;
-        const d = dayFull.split(' ')[0];
+        const dayFull = item.createDate || item.CreateDate;
+        const d = moment(dayFull).format("YYYY-DD-MM");
         var g = null;
         newArr.every((_g) => {
             if (_g.day == d) g = _g;

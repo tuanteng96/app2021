@@ -109,33 +109,34 @@ function ScheduleService({
             hasMore={hasMore}
             loader={listService.length < Total && <div>Đang tải ...</div>}
             height={height}
-            // endMessage={
-            //   <p style={{ textAlign: "center" }}>
-            //     <b>Tổng có {filters.Total} nhân viên</b>
-            //   </p>
-            // }
+          // endMessage={
+          //   <p style={{ textAlign: "center" }}>
+          //     <b>Tổng có {filters.Total} nhân viên</b>
+          //   </p>
+          // }
           >
             <div className="service-me__list">
               {loading && <SkeletonScheduleSpa />}
               {!loading && listService.length > 0 ? (
                 listService.map((item, index) => (
                   <div
-                    className={`item ${
-                      selectedService.some(
-                        (service) => service.ID === item.ID
-                      ) && "active"
-                    } ${item.Status.search("2") > -1 && "deal-hot"}`}
+                    className={`item ${selectedService.some(
+                      (service) => service.ID === item.ID
+                    ) && "active"
+                      } ${item.Status.search("2") > -1 && "deal-hot"}`}
                     key={index}
                     onClick={() => handleService(item)}
                   >
                     <div className="item-title">
-                      {item.Title} <img src={IMAGEHOT} alt="" />
+                      {item.Title} <label className="hot">HOT</label>
                     </div>
-                    {item.SaleDecs && (
-                      <div className="item-desc">
-                        {ReactHtmlParser(item.SaleDecs)}
-                      </div>
-                    )}
+                    {selectedService.some(
+                      (service) => service.ID === item.ID
+                    ) && item.SaleDecs && (
+                        <div className="item-desc">
+                          {ReactHtmlParser(item.SaleDecs)}
+                        </div>
+                      )}
                     <i className="las la-check-circle"></i>
                   </div>
                 ))

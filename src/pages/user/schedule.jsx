@@ -59,6 +59,16 @@ export default class extends React.Component {
       isParams: true,
     };
   }
+
+  isOther(dateCurrent) {
+    const gettoday = moment();
+    var today = moment(gettoday).add(0, "days").format("DD/MM/YYYY");
+    var tomorrow = moment(gettoday).add(1, "days").format("DD/MM/YYYY");
+    var dateBook = moment(dateCurrent).format("DD/MM/YYYY");
+
+    return today !== dateBook && tomorrow !== dateBook;
+  }
+
   componentDidMount() {
     const height = this.divElement.clientHeight - this.divBtn.clientHeight - 67;
     this.setState({ height });
@@ -69,6 +79,7 @@ export default class extends React.Component {
       BookDataService.getBookId(ID)
         .then(({ data }) => {
           const currentBook = data.data;
+
           this.setState({
             DateTimeBook: {
               date: moment(currentBook.BookDate).format("DD/MM/YYYY"),
@@ -76,7 +87,7 @@ export default class extends React.Component {
               stock: currentBook.Stock.ID,
               nameStock: currentBook.StockID,
               AtHome: currentBook.AtHome,
-              isOther: false,
+              isOther: this.isOther(currentBook.BookDate),
             },
             serviceNote: currentBook.Desc,
             selectedService: currentBook.Roots,
@@ -222,15 +233,13 @@ export default class extends React.Component {
           <div className="schedule-toolbar">
             <button
               type="button"
-              className={`btn-submit-order btn-submit-order ${
-                (DateTimeBook && !DateTimeBook["time"]) ||
-                (DateTimeBook && isNaN(DateTimeBook["stock"])) ||
-                !DateTimeBook
+              className={`btn-submit-order btn-submit-order ${(DateTimeBook && !DateTimeBook["time"]) ||
+                  (DateTimeBook && isNaN(DateTimeBook["stock"])) ||
+                  !DateTimeBook
                   ? "btn-no-click"
                   : ""
-              } ${!DateTimeBook && "btn-no-click"} ${
-                isLoadingStep1 && "loading"
-              }`}
+                } ${!DateTimeBook && "btn-no-click"} ${isLoadingStep1 && "loading"
+                }`}
               onClick={() => this.nextService()}
             >
               <span>Chọn dịch vụ</span>
@@ -250,10 +259,9 @@ export default class extends React.Component {
             <button
               type="button"
               className={`btn-submit-order btn-submit-order 
-              ${
-                !selectedService ||
+              ${!selectedService ||
                 (selectedService.length === 0 && "btn-no-click")
-              }`}
+                }`}
               onClick={() => this.nextSuccessService()}
             >
               <span>Đặt lịch ngay</span>

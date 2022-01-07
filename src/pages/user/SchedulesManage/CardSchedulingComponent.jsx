@@ -58,16 +58,13 @@ export default class CardSchedulingComponent extends React.Component {
                             </Col>
                             <Col width="33">
                               <div className="service-time__item">
-                                <div>Cơ sở SPA</div>
-                                <div>{subitem.Stock.Title}</div>
+                                <div>Thực hiện tại</div>
+                                <div>{subitem.AtHome ? "Nhà" : subitem.Stock.Title}</div>
                               </div>
                             </Col>
                           </Row>
                         </div>
                         <div className="stock">
-                          {subitem.AtHome
-                            ? "Thực hiện tại nhà"
-                            : "Thực hiện tại SPA"}
                           <div>
                             <button
                               onClick={() =>

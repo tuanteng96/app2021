@@ -93,7 +93,7 @@ export default class ScheduleSpa extends React.Component {
       }
     });
 
-    for (let day = 0; day <= 1; day++) {
+    for (let day = 0; day <= 2; day++) {
       switch (day) {
         case 0:
           var todayFormat = moment(gettoday).add(day, "days").format("DD/MM");
@@ -115,6 +115,15 @@ export default class ScheduleSpa extends React.Component {
             dateFormat: "Ngày mai " + tomorrowFormat,
             date: tomorrow,
             name: "tomorrow",
+            arrtime: arrListTime,
+          };
+          arrListDate.push(item);
+          break;
+        case 2:
+          var item = {
+            dateFormat: "Ngày khác",
+            date: null,
+            name: "other",
             arrtime: arrListTime,
           };
           arrListDate.push(item);
@@ -149,6 +158,7 @@ export default class ScheduleSpa extends React.Component {
   };
 
   checkTime = (date, time) => {
+    if (!date) return false;
     const dateOne = date.split("/");
     const timeOne = time.split(":");
     //dateOne[0] Date
@@ -189,14 +199,16 @@ export default class ScheduleSpa extends React.Component {
     });
   };
 
-  onDateChanged = (event) => {
-    const target = event.target;
-    const date = target.value;
+  onDateChanged = (date) => {
     this.props.handleTime({
       ...this.props.DateTimeBook,
       date,
       time: "",
-      isOther: false,
+      isOther: !date ? true : false,
+    });
+
+    this.setState({
+      isOpen: !date ? true : false,
     });
   };
 
@@ -211,7 +223,6 @@ export default class ScheduleSpa extends React.Component {
   handleTime = (time) => {
     this.props.handleTime({
       ...this.props.DateTimeBook,
-      isOther: false,
       time: time,
     });
   };
@@ -223,17 +234,15 @@ export default class ScheduleSpa extends React.Component {
     this.props.handleTime({
       ...this.props.DateTimeBook,
       isOther: true,
-      date: this.props.DateTimeBook.isOther ? this.props.DateTimeBook.date : "",
-      time: this.props.DateTimeBook.isOther ? this.props.DateTimeBook.time : "",
+      date: "",
+      time: "",
     });
   };
 
   handleSelectDate = (datetime) => {
-    const time = moment(datetime).format("HH:mm");
     const date = moment(datetime).format("DD/MM/YYYY");
     this.props.handleTime({
       ...this.props.DateTimeBook,
-      time,
       date,
     });
     this.setState({
@@ -267,8 +276,8 @@ export default class ScheduleSpa extends React.Component {
       renderBottomCenterControls: () => false,
       renderCenterLeftControls: null,
       renderCenterRightControls: null,
-      afterChange: (current) => {},
-      beforeChange: (current, next) => {},
+      afterChange: (current) => { },
+      beforeChange: (current, next) => { },
     };
     const settings = {
       //wrapAround: true,
@@ -279,8 +288,8 @@ export default class ScheduleSpa extends React.Component {
       renderBottomCenterControls: () => false,
       renderCenterLeftControls: null,
       renderCenterRightControls: null,
-      afterChange: (current) => {},
-      beforeChange: (current, next) => {},
+      afterChange: (current) => { },
+      beforeChange: (current, next) => { },
     };
 
     const dateConfig = {
@@ -359,38 +368,27 @@ export default class ScheduleSpa extends React.Component {
                 arrListDate.map((item, index) => {
                   return (
                     <Col width="33" key={index}>
-                      <Link
-                        noLinkClass
-                        tabLink={"#tab-" + item.name}
-                        tabLinkActive={
-                          !DateTimeBook.isOther &&
-                          DateTimeBook.date === item.date
-                        }
+                      <div
+                        onClick={() => this.onDateChanged(item.date)}
+                        className="date-day"
                       >
-                        <input
-                          type="radio"
-                          onChange={this.onDateChanged}
-                          name="checkdate"
-                          value={item.date}
-                        />
                         <span
                           className={
-                            !DateTimeBook.isOther &&
-                            DateTimeBook.date === item.date
-                              ? "active"
-                              : ""
+                            !DateTimeBook.isOther ?
+                              (DateTimeBook.date === item.date
+                                ? "active"
+                                : "") : (item.name === "other" ? "active" : "")
                           }
                         >
-                          {item.dateFormat}
+                          {item.name !== "other" ? item.dateFormat : (DateTimeBook.date && DateTimeBook.isOther ? DateTimeBook.date : item.dateFormat)}
                         </span>
-                      </Link>
+                      </div>
                     </Col>
                   );
                 })}
-              <Col width="33">
-                <Link
-                  noLinkClass
-                  tabLinkActive={DateTimeBook.isOther}
+              {/* <Col width="33">
+                <div
+                  className="date-day"
                   onClick={() => this.handleShowDate()}
                 >
                   <span className={DateTimeBook.isOther ? "active" : ""}>
@@ -398,8 +396,8 @@ export default class ScheduleSpa extends React.Component {
                       ? DateTimeBook.date
                       : "Ngày khác"}
                   </span>
-                </Link>
-              </Col>
+                </div>
+              </Col> */}
               <DatePicker
                 theme="ios"
                 cancelText="Đóng"
@@ -437,7 +435,7 @@ export default class ScheduleSpa extends React.Component {
                   id={"tab-" + item.name}
                   className="page-tab-location"
                   tabActive={
-                    !DateTimeBook.isOther && DateTimeBook.date === item.date
+                    !DateTimeBook.isOther ? DateTimeBook.date === item.date : item.name === "other"
                   }
                 >
                   <div className="page-schedule__time-list">
@@ -454,7 +452,7 @@ export default class ScheduleSpa extends React.Component {
                           {children.map((sub, i) => (
                             <div
                               className={
-                                "group-time__item" +
+                                "group-time__item " +
                                 this.checkTime(item.date, sub.fullTime)
                               }
                               key={i}

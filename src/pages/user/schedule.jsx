@@ -52,10 +52,6 @@ export default class extends React.Component {
         nameStock: getStockNameStorage(),
         AtHome: false,
       },
-      onRefresh: {
-        fn: null,
-        isRefresh: false,
-      },
       isParams: true,
     };
   }
@@ -233,13 +229,15 @@ export default class extends React.Component {
           <div className="schedule-toolbar">
             <button
               type="button"
-              className={`btn-submit-order btn-submit-order ${(DateTimeBook && !DateTimeBook["time"]) ||
-                  (DateTimeBook && isNaN(DateTimeBook["stock"])) ||
-                  !DateTimeBook
+              className={`btn-submit-order btn-submit-order ${
+                (DateTimeBook && !DateTimeBook["time"]) ||
+                (DateTimeBook && isNaN(DateTimeBook["stock"])) ||
+                !DateTimeBook || !DateTimeBook.date
                   ? "btn-no-click"
                   : ""
-                } ${!DateTimeBook && "btn-no-click"} ${isLoadingStep1 && "loading"
-                }`}
+              } ${!DateTimeBook && "btn-no-click"} ${
+                isLoadingStep1 && "loading"
+              }`}
               onClick={() => this.nextService()}
             >
               <span>Chọn dịch vụ</span>
@@ -306,15 +304,15 @@ export default class extends React.Component {
     }
   };
 
-  loadRefresh(done) {
-    const _this = this;
-    _this.setState((prevState) => ({
-      onRefresh: {
-        fn: done(),
-        isRefresh: !prevState.onRefresh.onRefresh,
-      },
-    }));
-  }
+  // loadRefresh(done) {
+  //   const _this = this;
+  //   _this.setState((prevState) => ({
+  //     onRefresh: {
+  //       fn: done(),
+  //       isRefresh: !prevState.onRefresh.onRefresh,
+  //     },
+  //   }));
+  // }
 
   render() {
     const {
@@ -326,15 +324,14 @@ export default class extends React.Component {
       tabCurrent,
       height,
       serviceNote,
-      onRefresh,
     } = this.state;
     return (
       <Page
         name="schedule"
-        ptr
-        infiniteDistance={50}
+        // ptr
+        // infiniteDistance={50}
         //infinitePreloader={showPreloader}
-        onPtrRefresh={this.loadRefresh.bind(this)}
+        //onPtrRefresh={this.loadRefresh.bind(this)}
       >
         <Navbar>
           <div className="page-navbar">
@@ -435,7 +432,6 @@ export default class extends React.Component {
                     height={height}
                     selectedService={selectedService}
                     handleService={(ID) => this.handleService(ID)}
-                    onRefresh={onRefresh}
                   />
                 </Animated>
               )}

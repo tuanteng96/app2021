@@ -7,6 +7,7 @@ import SkeletonScheduleSpa from "./SkeletonScheduleSpa";
 import PageNoData from "../PageNoData";
 import ReactHtmlParser from "react-html-parser";
 import IMAGEHOT from "../../assets/images/hot-deal.png";
+import LoadingDot from "../Loading/LoadingDot";
 
 function ScheduleService({
   height,
@@ -21,6 +22,7 @@ function ScheduleService({
     Key: "",
     Total: 0,
   });
+  const [notLoading, setNotLoading] = useState(false);
   const [Total, setTotal] = useState(0);
   const [listService, setListService] = useState([]);
   const [hasMore, setHasMore] = useState(true);
@@ -28,7 +30,7 @@ function ScheduleService({
   const typingTimeoutRef = useRef(null);
 
   async function getServices() {
-    !loading && setLoading(true);
+    !loading && !notLoading && setLoading(true);
     const StockID = getStockIDStorage() || 0;
     const { ID } = getUser();
     const objFilter = {
@@ -43,23 +45,19 @@ function ScheduleService({
     setLoading(false);
     setTotal(data.total);
     setListService(lst);
+    setNotLoading(false);
   }
 
   useEffect(() => {
     getServices();
   }, [filters]);
 
-  useEffect(() => {
-    if (onRefresh.fn) {
-      setFilters({ ...filters, Pi: 1 });
-    }
-  }, [onRefresh]);
-
   const fetchMoreData = () => {
     if (listService.length >= Total) {
       setHasMore(false);
       return;
     }
+    setNotLoading(true);
     setFilters({
       ...filters,
       Pi: filters.Pi + 1,
@@ -86,6 +84,20 @@ function ScheduleService({
     getServices();
   };
 
+  const treatmentCard = (item) => {
+    return (
+      item.OsBook > 0 || item.OsDoing > 0 || item.OsNew > 0 || item.OsBH > 0
+    );
+  };
+
+  const isSvHot = (item) => {
+    return item.Status.search("2") > -1;
+  };
+
+  const isActive = (selectedService, item) => {
+    return selectedService.some((service) => service.ID === item.ID);
+  };
+
   return (
     <div className="page-schedule__box h-100">
       <div className="service-me h-100">
@@ -107,36 +119,41 @@ function ScheduleService({
             dataLength={listService.length}
             next={fetchMoreData}
             hasMore={hasMore}
-            loader={listService.length < Total && <div>Đang tải ...</div>}
+            loader={listService.length < Total && <LoadingDot />}
             height={height}
-          // endMessage={
-          //   <p style={{ textAlign: "center" }}>
-          //     <b>Tổng có {filters.Total} nhân viên</b>
-          //   </p>
-          // }
+            // endMessage={
+            //   <p style={{ textAlign: "center" }}>
+            //     <b>Tổng có {filters.Total} nhân viên</b>
+            //   </p>
+            // }
           >
             <div className="service-me__list">
               {loading && <SkeletonScheduleSpa />}
               {!loading && listService.length > 0 ? (
                 listService.map((item, index) => (
                   <div
-                    className={`item ${selectedService.some(
-                      (service) => service.ID === item.ID
-                    ) && "active"
-                      } ${item.Status.search("2") > -1 && "deal-hot"}`}
+                    className={`item ${
+                      isActive(selectedService, item) && "active"
+                    } ${isSvHot(item) && !treatmentCard(item) && "deal-hot"}`}
                     key={index}
                     onClick={() => handleService(item)}
                   >
                     <div className="item-title">
                       {item.Title} <label className="hot">HOT</label>
                     </div>
-                    {selectedService.some(
-                      (service) => service.ID === item.ID
-                    ) && item.SaleDecs && (
-                        <div className="item-desc">
-                          {ReactHtmlParser(item.SaleDecs)}
-                        </div>
-                      )}
+                    {treatmentCard(item) && (
+                      <div className="item-desc item-treat">
+                        <i className="las la-tag"></i>{" "}
+                        {item.OsBH > 0
+                          ? "Đang có thẻ bảo hành"
+                          : "Đang có thẻ liệu trình"}
+                      </div>
+                    )}
+                    {isSvHot(item) && item.SaleDecs && (
+                      <div className="item-desc">
+                        {ReactHtmlParser(item.SaleDecs)}
+                      </div>
+                    )}
                     <i className="las la-check-circle"></i>
                   </div>
                 ))

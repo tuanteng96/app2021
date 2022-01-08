@@ -374,13 +374,20 @@ export default class ScheduleSpa extends React.Component {
                       >
                         <span
                           className={
-                            !DateTimeBook.isOther ?
-                              (DateTimeBook.date === item.date
+                            !DateTimeBook.isOther
+                              ? DateTimeBook.date === item.date
                                 ? "active"
-                                : "") : (item.name === "other" ? "active" : "")
+                                : ""
+                              : item.name === "other"
+                              ? "active"
+                              : ""
                           }
                         >
-                          {item.name !== "other" ? item.dateFormat : (DateTimeBook.date && DateTimeBook.isOther ? DateTimeBook.date : item.dateFormat)}
+                          {item.name !== "other"
+                            ? item.dateFormat
+                            : DateTimeBook.date && DateTimeBook.isOther
+                            ? DateTimeBook.date
+                            : item.dateFormat}
                         </span>
                       </div>
                     </Col>
@@ -405,7 +412,9 @@ export default class ScheduleSpa extends React.Component {
                 headerFormat="Ngày DD/MM/YYYY"
                 showCaption={true}
                 dateConfig={dateConfig}
-                value={otherBook ? new Date(otherBook) : new Date()}
+                value={
+                  DateTimeBook.date ? new Date(DateTimeBook.date) : new Date()
+                }
                 isOpen={isOpen}
                 onSelect={this.handleSelectDate}
                 onCancel={this.handleCancelDate}
@@ -435,7 +444,9 @@ export default class ScheduleSpa extends React.Component {
                   id={"tab-" + item.name}
                   className="page-tab-location"
                   tabActive={
-                    !DateTimeBook.isOther ? DateTimeBook.date === item.date : item.name === "other"
+                    !DateTimeBook.isOther
+                      ? DateTimeBook.date === item.date
+                      : item.name === "other"
                   }
                 >
                   <div className="page-schedule__time-list">

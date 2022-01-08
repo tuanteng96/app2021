@@ -9,6 +9,7 @@
 ///
 @import './base/input';
 @import './../css/components/toastify';
+@import '../css/components/loading';
 ////////// layout
 @import './../css/layout/iconanimation';
 @import './../css/layout/button';
@@ -17,7 +18,6 @@
 @import './../css/layout/toolbarCustom';
 @import './../css/layout/toolbarBottom';
 @import './../css/layout/modal.scss';
-
 @import './plugins/animate.min.css';
 ////////// pages
 //home

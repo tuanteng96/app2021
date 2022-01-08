@@ -45,9 +45,9 @@ export default class extends React.Component {
     this.setState({
       isLoading: true,
     });
-    ShopDataService.getServiceParent(CateID, stockid)
+    ShopDataService.getServiceParent(CateID, stockid, 1, 2)
       .then((response) => {
-        const arrServiceParent = response.data.data;
+        const arrServiceParent = response.data.lst;
         this.setState({
           arrService: arrServiceParent,
           isLoading: false,

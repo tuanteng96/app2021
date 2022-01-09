@@ -432,6 +432,7 @@ export default class extends React.Component {
                     height={height}
                     selectedService={selectedService}
                     handleService={(ID) => this.handleService(ID)}
+                    DateTimeBook={DateTimeBook}
                   />
                 </Animated>
               )}

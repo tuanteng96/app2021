@@ -14,6 +14,7 @@ function ScheduleService({
   selectedService,
   handleService,
   onRefresh,
+  DateTimeBook
 }) {
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
@@ -31,7 +32,7 @@ function ScheduleService({
 
   async function getServices() {
     !loading && !notLoading && setLoading(true);
-    const StockID = getStockIDStorage() || 0;
+    const StockID = DateTimeBook.stock ? DateTimeBook.stock : getStockIDStorage() || 0;
     const { ID } = getUser();
     const objFilter = {
       MemberID: ID,
@@ -121,20 +122,19 @@ function ScheduleService({
             hasMore={hasMore}
             loader={listService.length < Total && <LoadingDot />}
             height={height}
-            // endMessage={
-            //   <p style={{ textAlign: "center" }}>
-            //     <b>Tổng có {filters.Total} nhân viên</b>
-            //   </p>
-            // }
+          // endMessage={
+          //   <p style={{ textAlign: "center" }}>
+          //     <b>Tổng có {filters.Total} nhân viên</b>
+          //   </p>
+          // }
           >
             <div className="service-me__list">
               {loading && <SkeletonScheduleSpa />}
               {!loading && listService.length > 0 ? (
                 listService.map((item, index) => (
                   <div
-                    className={`item ${
-                      isActive(selectedService, item) && "active"
-                    } ${isSvHot(item) && !treatmentCard(item) && "deal-hot"}`}
+                    className={`item ${isActive(selectedService, item) && "active"
+                      } ${isSvHot(item) && !treatmentCard(item) && "deal-hot"}`}
                     key={index}
                     onClick={() => handleService(item)}
                   >

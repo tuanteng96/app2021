@@ -47,7 +47,7 @@ export default class ItemCardService extends React.Component {
                   <i className="las la-clock"></i>
                   {sub.Minutes}p
                 </span>
-                {sub.Meta && JSON.parse(sub.Meta)?.gift === 1 && (
+                {sub.Meta && sub.Meta.search("gift") > -1 && (
                   <span className="gift">
                     <i className="las la-gift"></i>
                   </span>

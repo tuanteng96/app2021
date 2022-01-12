@@ -42,10 +42,14 @@ export default class extends React.Component {
     const password = getPassword();
     UserService.getInfo(username, password)
       .then((response) => {
-        const memberInfo = response.data;
-        this.setState({
-          memberInfo: memberInfo,
-        });
+        if (response.error) {
+          this.$f7router.navigate("/login/");
+        } else {
+          const memberInfo = response.data;
+          this.setState({
+            memberInfo: memberInfo,
+          });
+        }
       })
       .catch((err) => console.log(err));
   };

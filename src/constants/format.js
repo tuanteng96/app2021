@@ -156,7 +156,7 @@ export const groupbyDDHHMM2 = (arr) => {
     const newArr = [];
     if (!arr) return false;
     arr.map(item => {
-        const dayFull = item.createDate || item.CreateDate;
+        const dayFull = item.BookDate;
         const d = moment(dayFull).format("YYYY-DD-MM");
         var g = null;
         newArr.every((_g) => {

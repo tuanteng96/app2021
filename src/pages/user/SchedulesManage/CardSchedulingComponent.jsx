@@ -33,7 +33,7 @@ export default class CardSchedulingComponent extends React.Component {
                       <div className="time-wrap">
                         <div className="service-book">
                           <div className="service-book__info">
-                            <div className="title">{subitem.RootTitles}</div>
+                            <div className="title">{subitem.RootTitles || "Chưa có dịch vụ"}</div>
                           </div>
                         </div>
                         <div className="service-time">

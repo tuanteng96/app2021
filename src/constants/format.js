@@ -132,7 +132,7 @@ export const groupbyDDHHMM = (arr) => {
     const newArr = [];
     if (!arr) return false;
     arr.map(item => {
-        const dayFull = item.CreateDate;
+        const dayFull = item.BookDate;
         const d = dayFull.split('T')[0];
         var g = null;
         newArr.every((_g) => {
@@ -152,11 +152,11 @@ export const groupbyDDHHMM = (arr) => {
     return newArr;
 }
 
-export const groupbyDDHHMM2 = (arr) => {
+export const groupbyDDHHMM2 = (arr, key) => {
     const newArr = [];
     if (!arr) return false;
     arr.map(item => {
-        const dayFull = item.createDate || item.CreateDate;
+        const dayFull = item.BookDate;
         const d = moment(dayFull).format("YYYY-DD-MM");
         var g = null;
         newArr.every((_g) => {

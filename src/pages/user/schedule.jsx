@@ -149,9 +149,8 @@ export default class extends React.Component {
     if (!infoUser) {
       return false;
     }
-    const date =
-      moment(DateTimeBook.date).format("YYYY/DD/MM") + " " + DateTimeBook.time;
-
+    const dateSplit = DateTimeBook.date ? DateTimeBook.date.split("/") : "";
+    const date = Array.isArray(dateSplit) && dateSplit.length > 0 ? dateSplit[2] + "-" + dateSplit[1] + "-" + dateSplit[0] + " " + DateTimeBook.time: "";
     const dataSubmit = {
       booking: [
         {

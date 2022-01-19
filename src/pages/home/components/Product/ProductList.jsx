@@ -14,7 +14,7 @@ export default class ProductList extends React.Component {
   }
 
   componentDidMount() {
-    this.getDataList(794, "1", 4, "", "");
+    this.getDataList("794,10106", "1", 4, "", "");
   }
 
   getDataList = (ID, pi, ps, tag, keys) => {

@@ -135,24 +135,16 @@ var routes = [{
         path: '/shop/:cateId',
         async(routeTo, routeFrom, resolve, reject) {
             const cateID = routeTo.params.cateId;
-            if (cateID === "hot" || Number(cateID) === 794) {
-                resolve({
-                    component: ShopListProductPage,
-                });
-            } else {
+            if(Number(cateID) === 795) {
                 resolve({
                     component: ShopListServicePage,
                 });
             }
-            // if (cateID === "hot") {
-            //     resolve({
-            //         component: ShopListProductPage,
-            //     });
-            // } else {
-            //     resolve({
-            //         component: ShopCatePage,
-            //     });
-            // }
+            else {
+                resolve({
+                    component: ShopListProductPage,
+                });
+            }
         }
     },
     {

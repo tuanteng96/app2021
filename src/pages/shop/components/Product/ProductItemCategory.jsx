@@ -14,7 +14,7 @@ export default class ProductItemCategory extends React.Component {
         const { item } = this.props;
         return (
           <li key={item.ID}>
-            <Link href={"/shop/" + item.Link}>
+            <Link href={item.Link}>
               <div className="image">
                 <img
                   src={SERVER_APP + "/Upload/image/" + item.FileName}

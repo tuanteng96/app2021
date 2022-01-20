@@ -631,7 +631,7 @@ export default class extends React.Component {
                     </li>
                   )}
 
-                  {arrProduct.Desc !== "" && arrProduct.Detail !== "" ? (
+                  {arrProduct.Desc !== "" || arrProduct.Detail !== "" ? (
                     <li className="content">
                       <div className="content-title">Chi tiết sản phẩm</div>
                       {statusLoading ? (

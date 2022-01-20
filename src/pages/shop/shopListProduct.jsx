@@ -281,7 +281,7 @@ export default class extends React.Component {
             onClickClear={() => this.hideSearch()}
             onClickDisable={() => this.hideSearch()}
           ></Searchbar>
-          {(this.$f7route.query?.subnav === "1" || this.$f7route.params.cateId !== "hot") && (
+          {(this.$f7route.query?.subnav === "1" || this.$f7route.params.cateId === "hot") ? "" : (
             <Subnavbar className="subnavbar-prod">
               <CategoriesList
                 id={CateID}

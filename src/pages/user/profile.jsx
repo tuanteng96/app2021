@@ -168,7 +168,7 @@ export default class extends React.Component {
                 <div className="image">
                   <img src={imgWallet} />
                 </div>
-                <span>Ví điện tử</span>
+                <span>Ví & Thẻ tiền</span>
               </Link>
             </Col>
             <Col width="33">

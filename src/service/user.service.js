@@ -55,6 +55,12 @@ class UserService {
     getWallet(data) {
         return http.post(`/services/preview.aspx?cmd=list_money`, data);
     }
+    getCardWallet(id) {
+        return http.get(`/api/v3/moneycard?cmd=get&memberid=${id}`);
+    }
+    getCardDetailWallet(id) {
+        return http.get(`/api/v3/moneycard?cmd=detail&id_the_tien=${id}`);
+    }
     getDiary(username, password) {
         return http.post(`/app/index.aspx?cmd=noti&token=${getToken()}`);
     }

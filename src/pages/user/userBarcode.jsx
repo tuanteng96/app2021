@@ -78,7 +78,6 @@ export default class extends React.Component {
 
     render() {
         const member = this.state.memberInfo && this.state.memberInfo;
-        console.log(member);
         const code = this.state.code;
         return (
             <Page onPageBeforeOut={this.onPageBeforeOut.bind(this)} name="barcode" noNavbar noToolbar>

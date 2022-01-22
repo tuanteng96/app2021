@@ -9,6 +9,8 @@ import {
   Row,
   Col,
   Subnavbar,
+  Button,
+  Sheet,
 } from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import UserService from "../../service/user.service";
@@ -16,6 +18,9 @@ import { getUser } from "../../constants/user";
 import { maxBookDate, formatPriceVietnamese } from "../../constants/format";
 import moment from "moment";
 import "moment/locale/vi";
+import NotificationIcon from "../../components/NotificationIcon";
+import WalletCardModal from "./Wallet/WalletCardModal";
+import Skeleton from "react-loading-skeleton";
 moment.locale("vi");
 
 const MUA_HANG = "MUA_HANG";
@@ -169,10 +174,19 @@ export default class extends React.Component {
       demonsWallet: 0, // Quỷ
       depositWallet: 0, // Đặt cọc
       showPreloader: false,
+      arrCardWallet: [],
+      tabCurrent: "wallet",
+      sheetOpened: {
+        open: false,
+        ID: null,
+        item: null,
+      },
+      loading: false,
     };
   }
   componentDidMount() {
     this.getWallet();
+    this.getCardWallet();
   }
 
   getWallet = () => {
@@ -182,7 +196,7 @@ export default class extends React.Component {
     var bodyFormData = new FormData();
     bodyFormData.append("cmd", "list_money");
     bodyFormData.append("MemberID", memberid);
-
+    this.setState({ loading: true });
     UserService.getWallet(bodyFormData)
       .then((response) => {
         const arrWallet = response.data.data;
@@ -194,10 +208,24 @@ export default class extends React.Component {
           depositWallet: mm.sumAvai(false), // Đặt cọc
           //totalWallet: mm.sumAvai(true), // Ví
           //demonsWallet: mm.sumAvai(true, true), // Quỷ
-          //depositWallet: mm.sumAvai(false), // Đặt cọc
+          //depositWallet: mm.sumAvai(false), // Đặt cọc,
+          loading: false,
         });
       })
       .catch((e) => console.log(e));
+  };
+
+  getCardWallet = () => {
+    const infoUser = getUser();
+    if (!infoUser) return false;
+    const memberid = infoUser.ID;
+    UserService.getCardWallet(memberid)
+      .then(({ data }) => {
+        this.setState({
+          arrCardWallet: data.data,
+        });
+      })
+      .catch((error) => console.log(error));
   };
 
   vietnamesText = (item) => {
@@ -247,23 +275,51 @@ export default class extends React.Component {
     }
   };
 
+  onOpenSheet = (item) => {
+    this.setState({
+      sheetOpened: {
+        open: true,
+        ID: item.id,
+        item,
+      },
+    });
+  };
+
+  hideOpenSheet = () => {
+    this.setState({
+      sheetOpened: {
+        open: false,
+        ID: null,
+        item: null,
+      },
+    });
+  };
+
   loadRefresh(done) {
     setTimeout(() => {
-      this.$f7.views.main.router.navigate(this.$f7.views.main.router.url, {
-        reloadCurrent: true,
-      });
       this.setState({
         showPreloader: true,
       });
+      this.getWallet();
+      this.getCardWallet();
       done();
     }, 600);
   }
 
   render() {
-    const { arrWallet, totalWallet, demonsWallet, depositWallet } = this.state;
+    const {
+      arrWallet,
+      totalWallet,
+      demonsWallet,
+      arrCardWallet,
+      tabCurrent,
+      sheetOpened,
+      loading,
+    } = this.state;
+
     return (
       <Page
-        noNavbar
+        //noNavbar
         name="wallet"
         className="wallet"
         ptr
@@ -271,69 +327,207 @@ export default class extends React.Component {
         infinitePreloader={this.state.showPreloader}
         onPtrRefresh={this.loadRefresh.bind(this)}
       >
-        <div className="profile-bg wallet-bg">
-          <div className="page-login__back">
+        <Navbar>
+          <div className="page-navbar">
+            <div className="page-navbar__back">
+              <Link onClick={() => this.$f7router.back()}>
+                <i className="las la-angle-left"></i>
+              </Link>
+            </div>
+            <div className="page-navbar__title">
+              <span className="title">Ví & Thẻ tiền</span>
+            </div>
+            <div className="page-navbar__noti">
+              <NotificationIcon />
+            </div>
+          </div>
+          <Subnavbar className="wallet-subnavbar">
+            <div className="wallet-subnavbar-list">
+              <Link
+                noLinkClass
+                tabLinkActive={tabCurrent === "wallet"}
+                onClick={() => this.setState({ tabCurrent: "wallet" })}
+              >
+                Ví điện tử
+              </Link>
+              <Link
+                noLinkClass
+                tabLinkActive={tabCurrent === "card"}
+                onClick={() => this.setState({ tabCurrent: "card" })}
+              >
+                Thẻ tiền
+              </Link>
+            </div>
+          </Subnavbar>
+        </Navbar>
+        <Tabs className="h-100">
+          <Tab
+            className="h-100"
+            id="wallet"
+            tabActive={tabCurrent === "wallet"}
+          >
+            <div className="wallet-bg">
+              {/* <div className="page-login__back">
             <Link onClick={() => this.$f7router.back()}>
               <i className="las la-arrow-left"></i>
             </Link>
-          </div>
-          <div className="name">Ví điện tử</div>
-          <div className="wallet-total">
-            <span className="number">
-              {formatPriceVietnamese(totalWallet && totalWallet)}
-            </span>
-            <span className="text">Tổng Ví</span>
-          </div>
-        </div>
-        <div className="wallet-detail">
-          <div className="wallet-detail__wrap">
-            <div className="wallet-detail__box">
-              <Row>
-                <Col width="50">
-                  <div className="wallet-detail__box-item">
-                    <span className="number">
-                      {formatPriceVietnamese(demonsWallet && demonsWallet)}
-                    </span>
-                    <span className="text">Ví khả dụng</span>
-                  </div>
-                </Col>
-                <Col width="50">
-                  <div className="wallet-detail__box-item">
-                    <span className="number">
-                      {formatPriceVietnamese(
-                        (totalWallet && totalWallet) -
-                          (demonsWallet && demonsWallet)
-                      )}
-                    </span>
-                    <span className="text">Chờ xử lý</span>
-                  </div>
-                </Col>
-              </Row>
+          </div> */}
+              {/* <div className="name">Ví điện tử</div> */}
+              <div className="wallet-total">
+                <span className="number">
+                  {formatPriceVietnamese(totalWallet && totalWallet)}
+                </span>
+                <span className="text">Tổng Ví</span>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="wallet-history">
-          <h5>Lịch sử giao dịch</h5>
-          <div className="wallet-history__list">
-            <ul>
-              {arrWallet &&
-                arrWallet.map((item, index) => (
-                  <li className={item.Value > 0 ? "add" : "down"} key={index}>
-                    <div className="price">
-                      <div className="price-number">
-                        {item.Value > 0 ? "+" : ""}
-                        {formatPriceVietnamese(item.Value)}
+            <div className="wallet-detail">
+              <div className="wallet-detail__wrap">
+                <div className="wallet-detail__box">
+                  <Row>
+                    <Col width="50">
+                      <div className="wallet-detail__box-item">
+                        <span className="number">
+                          {formatPriceVietnamese(demonsWallet && demonsWallet)}
+                        </span>
+                        <span className="text">Ví khả dụng</span>
                       </div>
-                      <div className="price-time">
-                        {moment(item.CreateDate).fromNow()}
+                    </Col>
+                    <Col width="50">
+                      <div className="wallet-detail__box-item">
+                        <span className="number">
+                          {formatPriceVietnamese(
+                            (totalWallet && totalWallet) -
+                              (demonsWallet && demonsWallet)
+                          )}
+                        </span>
+                        <span className="text">Chờ xử lý</span>
+                      </div>
+                    </Col>
+                  </Row>
+                </div>
+              </div>
+            </div>
+            <div className="wallet-history">
+              <h5>Lịch sử giao dịch</h5>
+              <div className="wallet-history__list">
+                <ul>
+                  {loading &&
+                    Array(5)
+                      .fill()
+                      .map((item, index) => (
+                        <li
+                          className={index % 2 === 0 ? "add" : "down"}
+                          key={index}
+                        >
+                          <div className="price">
+                            <div className="price-number">
+                              {index % 2 === 0 > 0 ? "+" : ""}
+                              <Skeleton width={50} />
+                            </div>
+                            <div className="price-time">
+                              <Skeleton width={100} />
+                            </div>
+                          </div>
+                          <div className="note">
+                            <Skeleton width={150} />
+                          </div>
+                        </li>
+                      ))}
+                  {!loading &&
+                    arrWallet &&
+                    arrWallet.map((item, index) => (
+                      <li
+                        className={item.Value > 0 ? "add" : "down"}
+                        key={index}
+                      >
+                        <div className="price">
+                          <div className="price-number">
+                            {item.Value > 0 ? "+" : ""}
+                            {formatPriceVietnamese(item.Value)}
+                          </div>
+                          <div className="price-time">
+                            {moment(item.CreateDate).fromNow()}
+                          </div>
+                        </div>
+                        <div className="note">{this.vietnamesText(item)}</div>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            </div>
+          </Tab>
+          <Tab className="h-100" id="card" tabActive={tabCurrent === "card"}>
+            <div className="wallet-card">
+              {arrCardWallet &&
+                arrCardWallet.map((item, index) => (
+                  <div className="wallet-card-item" key={index}>
+                    <div className="total">
+                      <div className="total-left">
+                        <span>
+                          {item.ten}{" "}
+                          {item.trang_thai === "Khóa" ? (
+                            <span className="text-red">
+                              ( {item.trang_thai} )
+                            </span>
+                          ) : (
+                            ""
+                          )}
+                        </span>
+                        <div className="total-num">
+                          {formatPriceVietnamese(item.gia_tri_the)}
+                          <span>₫</span>
+                        </div>
+                      </div>
+                      <div className="total-right">
+                        <Button
+                          className="show-more"
+                          onClick={() => this.onOpenSheet(item)}
+                        >
+                          Chi tiết
+                        </Button>
                       </div>
                     </div>
-                    <div className="note">{this.vietnamesText(item)}</div>
-                  </li>
+                    <div className="info">
+                      <div className="info-item">
+                        <div className="info-item-title">Giới hạn</div>
+                        <div className="info-item-value">
+                          {formatPriceVietnamese(item.gia_tri_chi_tieu)}
+                          <span>₫</span>
+                        </div>
+                      </div>
+                      <div className="info-item">
+                        <div className="info-item-title">Còn lại</div>
+                        <div className="info-item-value">
+                          {formatPriceVietnamese(
+                            item.gia_tri_chi_tieu - item.su_dung
+                          )}
+                          <span>₫</span>
+                        </div>
+                      </div>
+                      <div className="info-item">
+                        <div className="info-item-title">Hạn dùng</div>
+                        <div
+                          className={`info-item-value ${
+                            moment().diff(item.han_dung, "minutes") < 0
+                              ? ""
+                              : "text-red"
+                          }`}
+                        >
+                          {moment().diff(item.han_dung, "minutes") < 0
+                            ? moment(item.han_dung).format("DD/MM/YYYY")
+                            : "Hết hạn"}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 ))}
-            </ul>
-          </div>
-        </div>
+              <WalletCardModal
+                sheetOpened={sheetOpened}
+                hideOpenSheet={this.hideOpenSheet}
+              />
+            </div>
+          </Tab>
+        </Tabs>
         <Toolbar tabbar position="bottom">
           <ToolBarBottom />
         </Toolbar>

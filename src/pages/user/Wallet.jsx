@@ -21,6 +21,7 @@ import "moment/locale/vi";
 import NotificationIcon from "../../components/NotificationIcon";
 import WalletCardModal from "./Wallet/WalletCardModal";
 import Skeleton from "react-loading-skeleton";
+import PageNoData from "../../components/PageNoData";
 moment.locale("vi");
 
 const MUA_HANG = "MUA_HANG";
@@ -397,7 +398,7 @@ export default class extends React.Component {
                         <span className="number">
                           {formatPriceVietnamese(
                             (totalWallet && totalWallet) -
-                              (demonsWallet && demonsWallet)
+                            (demonsWallet && demonsWallet)
                           )}
                         </span>
                         <span className="text">Chờ xử lý</span>
@@ -459,7 +460,7 @@ export default class extends React.Component {
           <Tab className="h-100" id="card" tabActive={tabCurrent === "card"}>
             <div className="wallet-card">
               {arrCardWallet &&
-                arrCardWallet.map((item, index) => (
+                arrCardWallet.length > 0 ? arrCardWallet.map((item, index) => (
                   <div className="wallet-card-item" key={index}>
                     <div className="total">
                       <div className="total-left">
@@ -507,20 +508,22 @@ export default class extends React.Component {
                       <div className="info-item">
                         <div className="info-item-title">Hạn dùng</div>
                         <div
-                          className={`info-item-value ${
-                            moment().diff(item.han_dung, "minutes") < 0
-                              ? ""
-                              : "text-red"
-                          }`}
+                          className={`info-item-value ${moment().diff(item.han_dung, "minutes") < 0
+                            ? ""
+                            : "text-red"
+                            }`}
                         >
-                          {moment().diff(item.han_dung, "minutes") < 0
-                            ? moment(item.han_dung).format("DD/MM/YYYY")
-                            : "Hết hạn"}
+                          {!item.han_dung ? "Không giới hạn" : (<React.Fragment>
+                            {item.han_dung && moment().diff(item.han_dung, "minutes") < 0
+                              ? moment(item.han_dung).format("DD/MM/YYYY")
+                              : "Hết hạn"}
+                          </React.Fragment>)}
+
                         </div>
                       </div>
                     </div>
                   </div>
-                ))}
+                )) : <PageNoData text="Chưa có thẻ tiền" />}
               <WalletCardModal
                 sheetOpened={sheetOpened}
                 hideOpenSheet={this.hideOpenSheet}

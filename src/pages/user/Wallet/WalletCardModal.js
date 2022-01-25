@@ -48,31 +48,34 @@ function WalletCardModal({ sheetOpened, hideOpenSheet }) {
               <h4>{sheetOpened.item.ten}</h4>
             </div>
             <div className="content-list">
-              <div className="item">
-                <div className="title">
-                  Giá trị thẻ tiền
-                  <span className="price">
-                    ( {formatPriceVietnamese(sheetOpened.item.gia_tri_the)} )
-                  </span>
-                </div>
-                {(sheetOpened.item.gioi_han_sp > 0 ||
-                  sheetOpened.item.gioi_han_dv > 0) && (
-                  <div className="value">
-                    <span>
-                      Sản phẩm :
-                      <span className="price">
-                        {formatPriceVietnamese(sheetOpened.item.gioi_han_sp)}
-                      </span>
-                    </span>
-                    <span>
-                      Dịch vụ :
-                      <span className="price">
-                        {formatPriceVietnamese(sheetOpened.item.gioi_han_dv)}
-                      </span>
+              {
+                sheetOpened.item.gia_tri_the !== sheetOpened.item.gia_tri_chi_tieu && <div className="item">
+                  <div className="title">
+                    Giá trị thẻ tiền
+                    <span className="price">
+                      ( {formatPriceVietnamese(sheetOpened.item.gia_tri_the)} )
                     </span>
                   </div>
-                )}
-              </div>
+                  {(sheetOpened.item.gioi_han_sp > 0 ||
+                    sheetOpened.item.gioi_han_dv > 0) && (
+                      <div className="value">
+                        <span>
+                          Sản phẩm :
+                          <span className="price">
+                            {formatPriceVietnamese(sheetOpened.item.gioi_han_sp)}
+                          </span>
+                        </span>
+                        <span>
+                          Dịch vụ :
+                          <span className="price">
+                            {formatPriceVietnamese(sheetOpened.item.gioi_han_dv)}
+                          </span>
+                        </span>
+                      </div>
+                    )}
+                </div>
+              }
+
               <div className="item">
                 <div className="title">
                   Giá trị chi tiêu
@@ -83,25 +86,25 @@ function WalletCardModal({ sheetOpened, hideOpenSheet }) {
                 </div>
                 {(sheetOpened.item.gia_tri_chi_tieu_dv > 0 ||
                   sheetOpened.item.gia_tri_chi_tieu_sp > 0) && (
-                  <div className="value">
-                    <span>
-                      Sản phẩm :
-                      <span className="price">
-                        {formatPriceVietnamese(
-                          sheetOpened.item.gia_tri_chi_tieu_sp
-                        )}
+                    <div className="value">
+                      <span>
+                        Sản phẩm :
+                        <span className="price">
+                          {formatPriceVietnamese(
+                            sheetOpened.item.gia_tri_chi_tieu_sp
+                          )}
+                        </span>
                       </span>
-                    </span>
-                    <span>
-                      Dịch vụ :
-                      <span className="price">
-                        {formatPriceVietnamese(
-                          sheetOpened.item.gia_tri_chi_tieu_dv
-                        )}
+                      <span>
+                        Dịch vụ :
+                        <span className="price">
+                          {formatPriceVietnamese(
+                            sheetOpened.item.gia_tri_chi_tieu_dv
+                          )}
+                        </span>
                       </span>
-                    </span>
-                  </div>
-                )}
+                    </div>
+                  )}
               </div>
               <div className="item">
                 <div className="title">
@@ -112,21 +115,21 @@ function WalletCardModal({ sheetOpened, hideOpenSheet }) {
                 </div>
                 {(sheetOpened.item.su_dung_sp > 0 ||
                   sheetOpened.item.su_dung_dv > 0) && (
-                  <div className="value">
-                    <span>
-                      Sản phẩm :
-                      <span className="price">
-                        {formatPriceVietnamese(sheetOpened.item.su_dung_sp)}
+                    <div className="value">
+                      <span>
+                        Sản phẩm :
+                        <span className="price">
+                          {formatPriceVietnamese(sheetOpened.item.su_dung_sp)}
+                        </span>
                       </span>
-                    </span>
-                    <span>
-                      Dịch vụ :
-                      <span className="price">
-                        {formatPriceVietnamese(sheetOpened.item.su_dung_dv)}
+                      <span>
+                        Dịch vụ :
+                        <span className="price">
+                          {formatPriceVietnamese(sheetOpened.item.su_dung_dv)}
+                        </span>
                       </span>
-                    </span>
-                  </div>
-                )}
+                    </div>
+                  )}
               </div>
               <div className="item">
                 <div className="title">
@@ -135,31 +138,33 @@ function WalletCardModal({ sheetOpened, hideOpenSheet }) {
                     (
                     {formatPriceVietnamese(
                       sheetOpened.item.gia_tri_chi_tieu -
-                        sheetOpened.item.su_dung
+                      sheetOpened.item.su_dung
                     )}
                     )
                   </span>
                 </div>
-                <div className="value">
-                  <span>
-                    Sản phẩm :
-                    <span className="price">
-                      {formatPriceVietnamese(
-                        sheetOpened.item.gia_tri_chi_tieu_sp -
+                {sheetOpened.item.gia_tri_chi_tieu_sp -
+                  sheetOpened.item.su_dung_sp > 0 || sheetOpened.item.gia_tri_chi_tieu_dv - sheetOpened.item
+                    .su_dung_dv ? <div className="value">
+                    <span>
+                      Sản phẩm :
+                      <span className="price">
+                        {formatPriceVietnamese(
+                          sheetOpened.item.gia_tri_chi_tieu_sp -
                           sheetOpened.item.su_dung_sp
-                      )}
+                        )}
+                      </span>
                     </span>
-                  </span>
-                  <span>
-                    Dịch vụ :
-                    <span className="price">
-                      {formatPriceVietnamese(
-                        sheetOpened.item.gia_tri_chi_tieu_dv - sheetOpened.item
-                          .su_dung_dv
-                      )}
+                    <span>
+                      Dịch vụ :
+                      <span className="price">
+                        {formatPriceVietnamese(
+                          sheetOpened.item.gia_tri_chi_tieu_dv - sheetOpened.item
+                            .su_dung_dv
+                        )}
+                      </span>
                     </span>
-                  </span>
-                </div>
+                  </div> : ""}
               </div>
             </div>
             <div className="history-list">
@@ -188,9 +193,10 @@ function WalletCardModal({ sheetOpened, hideOpenSheet }) {
                           </div>
                         </li>
                       ))}
-                  {!loading &&
-                    content &&
-                    content.map((item, index) => (
+                </ul>
+                {!loading && <React.Fragment>
+                  {content &&
+                    content.length > 0 ? (<ul>{content.map((item, index) => (
                       <li className="down" key={index}>
                         <div className="price">
                           <div className="price-number">
@@ -202,8 +208,9 @@ function WalletCardModal({ sheetOpened, hideOpenSheet }) {
                         </div>
                         <div className="note">{item.san_pham}</div>
                       </li>
-                    ))}
-                </ul>
+                    ))}</ul>) : "Chưa có lịch sử"}
+                </React.Fragment>}
+
               </div>
             </div>
           </div>

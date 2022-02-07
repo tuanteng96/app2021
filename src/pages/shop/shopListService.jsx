@@ -44,7 +44,7 @@ export default class extends React.Component {
   getService = (id) => {
     var $$ = this.Dom7;
     var container = $$('.page-content');
-    container.scrollTop(0, 300); 
+    container.scrollTop(0, 300);
     const { Pi } = this.state;
     const CateID = id || this.$f7route.params.cateId;
     let stockid = getStockIDStorage();
@@ -86,7 +86,7 @@ export default class extends React.Component {
         this.$f7route.params.cateId,
       currentId: this.$f7route.params.cateId,
     });
-    
+
     this.timer = setInterval(() => {
       if (this.$f7route.query && this.$f7route.query.ids) {
         this.setState((prevState) => ({ idOpen: this.$f7route.query.ids }));
@@ -166,7 +166,7 @@ export default class extends React.Component {
     if (Pi >= Count) {
       return false;
     }
-    if(showPreloader) return false;
+    if (showPreloader) return false;
     this.setState({ showPreloader: true });
     const CateID = currentId || this.$f7route.params.cateId;
     let stockid = getStockIDStorage();
@@ -336,7 +336,7 @@ export default class extends React.Component {
                                             (subitem.IsDisplayPrice !== 0 &&
                                               checkSale(
                                                 subitem.SaleBegin,
-                                                subitem.SaleEnd
+                                                subitem.SaleEnd, subitem.PriceSale
                                               ) === true
                                               ? "sale"
                                               : "")
@@ -391,7 +391,7 @@ export default class extends React.Component {
                                       (item.source.IsDisplayPrice !== 0 &&
                                         checkSale(
                                           item.source.SaleBegin,
-                                          item.source.SaleEnd
+                                          item.source.SaleEnd, item.source.PriceSale
                                         ) === true
                                         ? "sale"
                                         : "")

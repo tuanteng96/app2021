@@ -1,4 +1,6 @@
-import { SERVER_APP } from "../constants/config";
+import {
+    SERVER_APP
+} from "../constants/config";
 import imgAvatarNull from "./../assets/images/avatar-null.png";
 import imgAvatarNull2 from "./../assets/images/avatar-null2.png";
 import imgNoProduct from "./../assets/images/no-product.png";
@@ -42,7 +44,7 @@ export const formatDateUTC = (date) => {
 }
 
 // Check Sale 
-export const checkSale = (SaleBegin, SaleEnd) => {
+export const checkSale = (SaleBegin, SaleEnd, PriceSale) => {
     if (!SaleBegin || !SaleEnd) return false;
     var SaleBegins = SaleBegin.slice(0, 10);
     var SaleEnds = SaleEnd.slice(0, 10);
@@ -54,7 +56,7 @@ export const checkSale = (SaleBegin, SaleEnd) => {
 
     if (
         Date.parse(todaydate) < Date.parse(SaleEnd) &&
-        Date.parse(SaleBegin) <= Date.parse(todaydate)
+        Date.parse(SaleBegin) <= Date.parse(todaydate) && PriceSale > 0
     ) {
         return true;
     } else {
@@ -70,17 +72,17 @@ export const isFromBiggerThanTo = (dtmfrom, dtmto) => {
 
 //Tính phần trăm sale Product
 export const percentagesSale = (Price, PriceSale) => {
-        return 100 - ((PriceSale / Price) * 100);
-    }
-    //Check avatar Null
+    return 100 - ((PriceSale / Price) * 100);
+}
+//Check avatar Null
 export const checkImageProduct = (src) => {
-        if (src === "null.gif" || src === "") {
-            return imgNoProduct;
-        } else {
-            return SERVER_APP + "/Upload/image/" + src;
-        }
+    if (src === "null.gif" || src === "") {
+        return imgNoProduct;
+    } else {
+        return SERVER_APP + "/Upload/image/" + src;
     }
-    //Check avatar Null
+}
+//Check avatar Null
 export const checkAvt = (src) => {
     if (src === "null.gif" || src === "" || src === undefined) {
         return imgAvatarNull

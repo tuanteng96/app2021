@@ -24,7 +24,7 @@ export default class ListImage extends React.Component {
       .then((response) => {
         const arrPhotoCustomer = response.data.data;
         this.setState({
-          arrPhotoCustomer: arrPhotoCustomer,
+          arrPhotoCustomer: arrPhotoCustomer && arrPhotoCustomer.length > 0 && arrPhotoCustomer.filter(item => item.IsPublic > 0),
           PhotoCustomerActive: arrPhotoCustomer[0],
           isActivePhoto: arrPhotoCustomer[0].ID,
           isLoading: false,
@@ -73,6 +73,7 @@ export default class ListImage extends React.Component {
       centerPadding: "20px",
       variableWidth: true,
     };
+    
     if (arrPhotoCustomer && arrPhotoCustomer.length > 0) {
       return (
         <div className="home-page__client">
@@ -81,12 +82,10 @@ export default class ListImage extends React.Component {
             <React.Fragment>
               <div className="box">
                 <BeforeAfterSlider
-                  before={`${SERVER_APP}/Upload/image/${
-                    PhotoCustomerActive && PhotoCustomerActive.FileName2
-                  }`}
-                  after={`${SERVER_APP}/Upload/image/${
-                    PhotoCustomerActive && PhotoCustomerActive.FileName
-                  }`}
+                  before={`${SERVER_APP}/Upload/image/${PhotoCustomerActive && PhotoCustomerActive.FileName2
+                    }`}
+                  after={`${SERVER_APP}/Upload/image/${PhotoCustomerActive && PhotoCustomerActive.FileName
+                    }`}
                   className="box-beforeafter"
                   width={this.handStyleWidth()}
                   height={230}
@@ -103,9 +102,8 @@ export default class ListImage extends React.Component {
                       if (index > 10) return false;
                       return (
                         <div
-                          className={`list-client__item ${
-                            isActivePhoto === item.ID ? "active" : ""
-                          }`}
+                          className={`list-client__item ${isActivePhoto === item.ID ? "active" : ""
+                            }`}
                           key={item.ID}
                           style={this.handStyleAfter()}
                           onClick={() => this.handlePhotoCustomer(item)}

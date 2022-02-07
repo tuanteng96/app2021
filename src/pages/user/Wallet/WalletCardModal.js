@@ -114,7 +114,7 @@ function WalletCardModal({ sheetOpened, hideOpenSheet }) {
                   </span>
                 </div>
                 {(sheetOpened.item.su_dung_sp > 0 ||
-                  sheetOpened.item.su_dung_dv > 0) && (
+                  sheetOpened.item.su_dung_dv > 0) && (sheetOpened.item.gioi_han_dv !== 0 || sheetOpened.item.gioi_han_sp !== 0 || sheetOpened.item.gia_tri_chi_tieu_dv !== 0 || sheetOpened.item.gia_tri_chi_tieu_sp !== 0) && (
                     <div className="value">
                       <span>
                         Sản phẩm :
@@ -146,25 +146,25 @@ function WalletCardModal({ sheetOpened, hideOpenSheet }) {
                 {sheetOpened.item.gia_tri_chi_tieu_sp -
                   sheetOpened.item.su_dung_sp > 0 || sheetOpened.item.gia_tri_chi_tieu_dv - sheetOpened.item
                     .su_dung_dv ? <div className="value">
-                    <span>
-                      Sản phẩm :
-                      <span className="price">
-                        {formatPriceVietnamese(
-                          sheetOpened.item.gia_tri_chi_tieu_sp -
-                          sheetOpened.item.su_dung_sp
-                        )}
-                      </span>
+                  <span>
+                    Sản phẩm :
+                    <span className="price">
+                      {formatPriceVietnamese(
+                        sheetOpened.item.gia_tri_chi_tieu_sp -
+                        sheetOpened.item.su_dung_sp
+                      )}
                     </span>
-                    <span>
-                      Dịch vụ :
-                      <span className="price">
-                        {formatPriceVietnamese(
-                          sheetOpened.item.gia_tri_chi_tieu_dv - sheetOpened.item
-                            .su_dung_dv
-                        )}
-                      </span>
+                  </span>
+                  <span>
+                    Dịch vụ :
+                    <span className="price">
+                      {formatPriceVietnamese(
+                        sheetOpened.item.gia_tri_chi_tieu_dv - sheetOpened.item
+                          .su_dung_dv
+                      )}
                     </span>
-                  </div> : ""}
+                  </span>
+                </div> : ""}
               </div>
             </div>
             <div className="history-list">

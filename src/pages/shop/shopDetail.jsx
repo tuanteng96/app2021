@@ -414,6 +414,14 @@ export default class extends React.Component {
     }, 600);
   }
 
+  shorten(str) {
+    if (!str) return str;
+    let parts = str.split(" ");
+    parts.shift(); 
+    let last = parts.join(" ");
+    return last;
+  }
+
   render() {
     const {
       arrProductCurrent,
@@ -548,6 +556,25 @@ export default class extends React.Component {
                       <div className="text">
                         {formatPriceVietnamese(arrProduct.PriceSale)}
                         <b>₫</b>
+                      </div>
+                    </li>
+                  )}
+
+                  {arrProductCurrent.SaleDecs !== 0 && (
+                    <li className="product-sale">
+                      <div className="title">
+                        <span>Tặng</span>
+                        {/* <div className="badges badges-danger">
+                          {percentagesSale(
+                            arrProductCurrent.PriceProduct,
+                            arrProductCurrent.PriceSale
+                          )}
+                          %
+                        </div> */}
+                      </div>
+                      <div className="text">
+                        {arrProductCurrent.SaleDecs &&
+                          this.shorten(arrProductCurrent.SaleDecs)}
                       </div>
                     </li>
                   )}

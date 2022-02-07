@@ -135,12 +135,12 @@ var routes = [{
         path: '/shop/:cateId',
         async(routeTo, routeFrom, resolve, reject) {
             const cateID = routeTo.params.cateId;
-            if(Number(cateID) === 795) {
+            const cateidparams = routeTo.query.cateid;
+            if (Number(cateID) === 795 || Number(cateidparams) === 795) {
                 resolve({
                     component: ShopListServicePage,
                 });
-            }
-            else {
+            } else {
                 resolve({
                     component: ShopListProductPage,
                 });

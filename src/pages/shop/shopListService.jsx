@@ -86,7 +86,7 @@ export default class extends React.Component {
         this.$f7route.params.cateId,
       currentId: this.$f7route.params.cateId,
     });
-
+    
     this.timer = setInterval(() => {
       if (this.$f7route.query && this.$f7route.query.ids) {
         this.setState((prevState) => ({ idOpen: this.$f7route.query.ids }));

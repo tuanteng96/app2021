@@ -34,6 +34,7 @@
         "lodash": "^4.17.20",
         "moment": "^2.29.1",
         "nuka-carousel": "^4.7.7",
+        "postcss": "^8.1.0",
         "prop-types": "^15.7.2",
         "querystring": "^0.2.0",
         "react": "^16.13.1",
@@ -50,6 +51,7 @@
         "react-number-format": "^4.8.0",
         "react-slick": "^0.27.11",
         "react-toastify": "^6.0.9",
+        "sass": "^1.49.7",
         "slick-carousel": "^1.8.1",
         "swiper": "^6.3.2",
         "template7": "^1.4.2"

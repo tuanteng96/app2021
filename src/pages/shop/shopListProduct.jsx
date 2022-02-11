@@ -315,10 +315,10 @@ export default class extends React.Component {
                             className={
                               "page-shop__list-price " +
                               (item.source.IsDisplayPrice !== 0 &&
-                              checkSale(
-                                item.source.SaleBegin,
-                                item.source.SaleEnd
-                              ) === true
+                                checkSale(
+                                  item.source.SaleBegin,
+                                  item.source.SaleEnd, item.pricesale
+                                ) === true
                                 ? "sale"
                                 : "")
                             }

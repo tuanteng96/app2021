@@ -417,7 +417,7 @@ export default class extends React.Component {
   shorten(str) {
     if (!str) return str;
     let parts = str.split(" ");
-    parts.shift(); 
+    parts.shift();
     let last = parts.join(" ");
     return last;
   }
@@ -498,10 +498,10 @@ export default class extends React.Component {
                 className={
                   "page-shop__detail-list " +
                   (arrProductCurrent.IsDisplayPrice !== 0 &&
-                  checkSale(
-                    arrProductCurrent.SaleBegin,
-                    arrProductCurrent.SaleEnd
-                  ) === true
+                    checkSale(
+                      arrProductCurrent.SaleBegin,
+                      arrProductCurrent.SaleEnd, arrProductCurrent.PriceSale
+                    ) === true
                     ? "sale"
                     : "")
                 }
@@ -518,10 +518,10 @@ export default class extends React.Component {
                     <div className="title">
                       Giá
                       {arrProductCurrent.IsDisplayPrice !== 0 &&
-                      checkSale(
-                        arrProductCurrent.SaleBegin,
-                        arrProductCurrent.SaleEnd
-                      ) === true
+                        checkSale(
+                          arrProductCurrent.SaleBegin,
+                          arrProductCurrent.SaleEnd, arrProductCurrent.PriceSale
+                        ) === true
                         ? " gốc"
                         : ""}
                     </div>
@@ -530,8 +530,8 @@ export default class extends React.Component {
                         <React.Fragment>
                           {!statusLoading
                             ? formatPriceVietnamese(
-                                arrProductCurrent.PriceProduct
-                              )
+                              arrProductCurrent.PriceProduct
+                            )
                             : "..."}
                           <b>₫</b>
                         </React.Fragment>
@@ -561,7 +561,7 @@ export default class extends React.Component {
                   )}
 
                   {arrProductCurrent.SaleDecs !== 0 && (
-                    <li className="product-sale">
+                    <li>
                       <div className="title">
                         <span>Tặng</span>
                         {/* <div className="badges badges-danger">
@@ -712,7 +712,7 @@ export default class extends React.Component {
                     className={
                       "price " +
                       (arrProduct.IsDisplayPrice === 1 &&
-                      checkSale(arrProduct.SaleBegin, arrProduct.SaleEnd) ===
+                        checkSale(arrProduct.SaleBegin, arrProduct.SaleEnd, arrProduct.PriceSale) ===
                         true
                         ? "hasSale"
                         : "")
@@ -830,9 +830,8 @@ export default class extends React.Component {
           <div className="page-toolbar">
             <div className="page-toolbar__order">
               <button
-                className={`page-btn-order btn-submit-order ${
-                  statusLoading ? "loading" : ""
-                } ${arrProductCurrent.IsDisplayPrice === 0 && "btn-no-click"}`}
+                className={`page-btn-order btn-submit-order ${statusLoading ? "loading" : ""
+                  } ${arrProductCurrent.IsDisplayPrice === 0 && "btn-no-click"}`}
                 onClick={() => this.openSheet()}
               >
                 <span>Đặt hàng</span>

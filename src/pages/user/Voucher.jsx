@@ -273,8 +273,8 @@ export default class extends React.Component {
                                       <h5>Điều kiện áp dụng</h5>
                                       <div className="price cates">
                                         {item.dieu_Kien.ap_dung === "NG"
-                                          ? "Khi mua sản phẩm, dịch vụ nguyên giá."
-                                          : "Khi mua sản phẩm, dịch vụ nguyên giá hoặc giảm giá."}
+                                          ? "Không áp dụng kèm chương trình ưu đãi."
+                                          : "Áp dụng kèm chương trình ưu đãi."}
                                         {item.dieu_Kien.danh_muc &&
                                           item.dieu_Kien.danh_muc.length >
                                             0 && (

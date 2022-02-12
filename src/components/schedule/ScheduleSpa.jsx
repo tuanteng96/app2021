@@ -341,7 +341,7 @@ export default class ScheduleSpa extends React.Component {
                           type="radio"
                           name="checklocation"
                           value={item.ID}
-                          defaultChecked={
+                          checked={
                             parseInt(
                               DateTimeBook.stock && DateTimeBook.stock
                             ) === item.ID

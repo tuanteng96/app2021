@@ -206,8 +206,8 @@ export default class extends React.Component {
               selectedService: [],
               DateTimeBook: {
                 date: moment(new Date()).format("DD/MM/YYYY"),
-                stock: getStockIDStorage(),
-                nameStock: getStockNameStorage(),
+                stock: getStockIDStorage() ? getStockIDStorage() : "",
+                nameStock: getStockNameStorage() ? getStockNameStorage() : "",
                 AtHome: false,
               },
               serviceNote: "",
@@ -230,6 +230,7 @@ export default class extends React.Component {
 
   controlsStep = () => {
     const { DateTimeBook, isLoadingStep1, selectedService } = this.state;
+    
     switch (this.state.tabCurrent) {
       case 0:
         return (

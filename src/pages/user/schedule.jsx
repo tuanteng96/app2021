@@ -150,7 +150,16 @@ export default class extends React.Component {
       return false;
     }
     const dateSplit = DateTimeBook.date ? DateTimeBook.date.split("/") : "";
-    const date = Array.isArray(dateSplit) && dateSplit.length > 0 ? dateSplit[2] + "-" + dateSplit[1] + "-" + dateSplit[0] + " " + DateTimeBook.time: "";
+    const date =
+      Array.isArray(dateSplit) && dateSplit.length > 0
+        ? dateSplit[2] +
+          "-" +
+          dateSplit[1] +
+          "-" +
+          dateSplit[0] +
+          " " +
+          DateTimeBook.time
+        : "";
     const dataSubmit = {
       booking: [
         {
@@ -221,7 +230,6 @@ export default class extends React.Component {
 
   controlsStep = () => {
     const { DateTimeBook, isLoadingStep1, selectedService } = this.state;
-
     switch (this.state.tabCurrent) {
       case 0:
         return (
@@ -230,8 +238,9 @@ export default class extends React.Component {
               type="button"
               className={`btn-submit-order btn-submit-order ${
                 (DateTimeBook && !DateTimeBook["time"]) ||
-                (DateTimeBook && isNaN(DateTimeBook["stock"])) ||
-                !DateTimeBook || !DateTimeBook.date
+                (DateTimeBook && !DateTimeBook.stock) ||
+                !DateTimeBook ||
+                !DateTimeBook.date
                   ? "btn-no-click"
                   : ""
               } ${!DateTimeBook && "btn-no-click"} ${
@@ -256,9 +265,10 @@ export default class extends React.Component {
             <button
               type="button"
               className={`btn-submit-order btn-submit-order 
-              ${!selectedService ||
+              ${
+                !selectedService ||
                 (selectedService.length === 0 && "btn-no-click")
-                }`}
+              }`}
               onClick={() => this.nextSuccessService()}
             >
               <span>Đặt lịch ngay</span>

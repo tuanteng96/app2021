@@ -167,7 +167,7 @@ export default class extends React.Component {
                       onFocus={this.searchPage}
                     ></input>
                   </div>
-                  <SlideList BannerName="App.Banner" />
+                  <SlideList BannerName="App.Banner" autoplaySpeed={3000} />
                   <ListService id="42" />
                   {getUser() && <ListService id="45" />}
                 </div>
@@ -182,7 +182,11 @@ export default class extends React.Component {
               <Suspense fallback={<div>Loading...</div>}>
                 <ListImage />
               </Suspense>
-
+              <SlideList
+                className="banner-main"
+                BannerName="App.Main"
+                autoplaySpeed={4000}
+              />
               <div className="pl-15px pr-15px slider-hot">
                 <Suspense fallback={<div>Loading...</div>}>
                   <SlideList BannerName="App.DVHOT" />

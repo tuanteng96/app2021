@@ -40,10 +40,10 @@ export default class SlideList extends React.Component {
       slidesToShow: 1,
       slidesToScroll: 1,
       autoplay: true,
-      autoplaySpeed: 3000,
+      autoplaySpeed: this.props.autoplaySpeed,
     };
     return (
-      <div className="body-slide">
+      <div className={`body-slide ${this.props.className}`}>
         {isLoading && <Skeleton height={150} />}
 
         <Slider {...settingsBanner}>

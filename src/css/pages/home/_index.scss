@@ -267,6 +267,34 @@
             }
         }
     }
+    .banner-main {
+        position: relative;
+        .slick-dots {
+            right: 15px;
+            bottom: 15px;
+            width: auto;
+            li {
+                width: auto;
+                height: auto;
+                margin: 0 0 0 8px;
+                button {
+                    padding: 0;
+                    background: $white;
+                    border: 1px solid $color-app;
+                    width: 11px;
+                    height: 11px;
+                    &::before {
+                        display: none;
+                    }
+                }
+                &.slick-active {
+                    button {
+                        background: $color-app;
+                    }
+                }
+            }
+        }
+    }
 }
 
 .page[data-name="home"] {

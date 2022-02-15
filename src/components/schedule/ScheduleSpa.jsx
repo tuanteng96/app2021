@@ -330,8 +330,10 @@ export default class ScheduleSpa extends React.Component {
               {!isLoadingStock &&
                 arrStock &&
                 arrStock.map((item, index) => (
-                  <Col width="50" key={index}>
-                    <div className="location">
+                  <Col width={arrStock.length > 1 ? "50" : "100"} key={index}>
+                    <div
+                      className="location"
+                    >
                       <div
                         className="location-item"
                         onClick={() => this.handleStock(item)}

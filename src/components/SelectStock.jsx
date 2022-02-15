@@ -23,6 +23,7 @@ export default class SelectStock extends React.Component {
     super();
     this.state = {
       arrStock: [],
+      isReload: 0,
     };
   }
 
@@ -59,11 +60,18 @@ export default class SelectStock extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const isOpenStock = this.props.isOpenStock;
+    const { isReload, isOpenStock } = this.props;
 
     if (prevProps.isOpenStock !== isOpenStock) {
       this.getStock();
       this.refs.actionStock.open();
+    }
+    if (prevProps.isReload !== isReload) {
+      const StockID = getStockIDStorage();
+      this.setState({
+        StockID: StockID,
+        isReload: this.state.isReload + 1,
+      });
     }
   }
 
@@ -100,7 +108,6 @@ export default class SelectStock extends React.Component {
   render() {
     const arrStock = this.state.arrStock;
     const StockID = this.state.StockID && this.state.StockID;
-
     return (
       <Actions className="action-stock" ref="actionStock">
         <ActionsGroup>

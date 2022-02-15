@@ -40,6 +40,7 @@ export default class extends React.Component {
       isOpenStock: false,
       width: window.innerWidth,
       showPreloader: false,
+      isReload: 0
     };
   }
 
@@ -73,6 +74,10 @@ export default class extends React.Component {
           const TitleStockID = arrStock.slice(-1)[0].Title;
           setStockIDStorage(StockID);
           setStockNameStorage(TitleStockID);
+          this.setState({
+            isReload: this.state.isReload + 1,
+            stockName: TitleStockID,
+          });
         }
         setTimeout(() => {
           if (indexCurrentStock <= 0 && indexStock <= 0 && countStock > 2) {
@@ -116,7 +121,7 @@ export default class extends React.Component {
   }
 
   render() {
-    const { isOpenStock, stockName } = this.state;
+    const { isOpenStock, stockName, isReload } = this.state;
     return (
       <Page
         noNavbar
@@ -231,6 +236,7 @@ export default class extends React.Component {
           <SelectStock
             isOpenStock={isOpenStock}
             nameStock={(name) => this.nameStock(name)}
+            isReload={isReload}
           />
           <ModalReviews />
           <QuickAction />

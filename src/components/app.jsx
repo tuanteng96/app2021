@@ -41,17 +41,13 @@ export default class extends React.Component {
       f7params: {
         name: NAME_APP, // App name
         theme: "auto", // Automatic theme detection
-        id: "vn.hana",
+        id: "vn.cser",
         // App routes
         routes: routes,
         on: {
           init: function () {
             const infoUser = getUser();
             if (infoUser) {
-              // const username = infoUser.MobilePhone
-              //   ? infoUser.MobilePhone
-              //   : infoUser.UserName;
-              // const pwd = getPassword();
               UserService.getInfo().then((response) => {
                 if (response.data.error) {
                   removeUserStorage();

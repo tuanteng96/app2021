@@ -33,6 +33,7 @@ export default class extends React.Component {
       arrNoti: [],
       allChecked: false,
       isCheckAll: false,
+      itemActions: null,
     };
   }
   componentDidMount() {
@@ -42,6 +43,7 @@ export default class extends React.Component {
 
   getNotification = () => {
     const infoUser = getUser();
+
     if (!infoUser) {
       _this.$f7.views.main.router.navigate("/");
       return false;
@@ -166,6 +168,7 @@ export default class extends React.Component {
           });
           this.setState({
             isCheckAll: false,
+            //itemActions: null
           });
           all && iOS() && REMOVE_BADGE();
           this.getNotification();
@@ -193,7 +196,8 @@ export default class extends React.Component {
   }
 
   render() {
-    const { arrNoti, isActive, isCheckAll, isLoading } = this.state;
+    const { arrNoti, isActive, isCheckAll, itemActions, isLoading } =
+      this.state;
     return (
       <Page ptr onPtrRefresh={this.loadRefresh.bind(this)}>
         <Navbar>
@@ -292,32 +296,9 @@ export default class extends React.Component {
                             </div>
                           </div>
                           <Button
-                            //raised={true}
-                            actionsOpen={`#actions-group-${item.ID}`}
+                            onClick={() => this.setState({ itemActions: item })}
                             className="action-open"
                           ></Button>
-                          <Actions
-                            className="actions-custom"
-                            id={`actions-group-${item.ID}`}
-                          >
-                            <ActionsGroup>
-                              <ActionsLabel>{item.Title}</ActionsLabel>
-                              <ActionsButton
-                                onClick={() => this.handleDetail(item)}
-                              >
-                                Xem chi tiết
-                              </ActionsButton>
-                              <ActionsButton
-                                color="red"
-                                onClick={() => this.handleDelete(item.ID)}
-                              >
-                                Xóa thông báo
-                              </ActionsButton>
-                            </ActionsGroup>
-                            {/* <ActionsGroup>
-                              <ActionsButton color="red">Đóng</ActionsButton>
-                            </ActionsGroup> */}
-                          </Actions>
                         </div>
                         <div className="input">
                           <input
@@ -337,6 +318,29 @@ export default class extends React.Component {
             )}
           </div>
         </div>
+
+        <Actions
+          className="actions-custom"
+          opened={itemActions ? true : false}
+          onActionsClosed={() => this.setState({ itemActions: null })}
+        >
+          <ActionsGroup>
+            <ActionsLabel>{itemActions && itemActions.Title}</ActionsLabel>
+            <ActionsButton onClick={() => this.handleDetail(itemActions)}>
+              Xem chi tiết
+            </ActionsButton>
+            <ActionsButton
+              color="red"
+              onClick={() => this.handleDelete(itemActions?.ID)}
+            >
+              Xóa thông báo
+            </ActionsButton>
+          </ActionsGroup>
+          {/* <ActionsGroup>
+              <ActionsButton color="red">Đóng</ActionsButton>
+          </ActionsGroup> */}
+        </Actions>
+
         {isCheckAll === true ? (
           <Fab
             className="btn-notification-deleteall"

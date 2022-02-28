@@ -11,7 +11,8 @@ function PrivateNav({ roles, text, icon, className, href }) {
   const infoUser = getUser();
   const userRoles = infoUser.GroupTitles;
   const hasRole = roles.some((role) => userRoles.includes(role));
-  if (hasRole) {
+  const hasRoleLength = Array.isArray(userRoles) && userRoles.length === 0 && Array.isArray(roles) && roles.length === 0 ;
+  if (hasRole || hasRoleLength) {
     return (
       <Link noLinkClass href={href} className={className}>
         <i className={icon}></i>

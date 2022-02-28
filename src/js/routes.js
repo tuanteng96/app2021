@@ -70,13 +70,13 @@ const checkRouterHome = () => {
 
     if (ACC_TYPE === "U") {
         if (infoUser.ID === 1) {
-            return EmployeeReportPage;
+            return EmployeeStatisticalPage;
         } else {
             const groupRole = infoUser.GroupTitles;
             if (groupRole.includes("service")) {
                 return EmployeeServicePage;
             } else if (groupRole.includes("director")) {
-                return EmployeeReportPage;
+                return EmployeeStatisticalPage;
             } else {
                 return EmployeeStatisticalPage;
             }

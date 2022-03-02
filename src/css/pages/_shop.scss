@@ -44,6 +44,13 @@
                 overflow: hidden;
                 background: $white;
                 margin-bottom: 15px;
+                &.no-before {
+                    a {
+                        &:before {
+                            display: none;
+                        }
+                    }
+                }
                 a {
                     position: relative;
                     display: block;

@@ -15,6 +15,7 @@ export default class extends React.Component {
       isLoading: true,
       isOpenStock: false,
       showPreloader: false,
+      isUI: window.AppMuaHang || 0
     };
   }
 
@@ -55,7 +56,7 @@ export default class extends React.Component {
   }
 
   render() {
-    const { arrCateAdv, isLoading } = this.state;
+    const { arrCateAdv, isLoading, isUI } = this.state;
     return (
       <Page
         name="shop"
@@ -86,7 +87,7 @@ export default class extends React.Component {
                 <ul>
                   {arrCateAdv &&
                     arrCateAdv.map((item, index) => (
-                      <ProductItemCategory key={index} item={item} />
+                      <ProductItemCategory key={index} item={item} isUI={isUI}/>
                     ))}
                 </ul>
               )}

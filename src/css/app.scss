@@ -60,7 +60,9 @@ html {
 .h-100 {
     height: 100%;
 }
-
+.h-auto {
+    height: auto !important;
+}
 //Reset Framework7
 .page-content {
     background: $color-gray-bg;

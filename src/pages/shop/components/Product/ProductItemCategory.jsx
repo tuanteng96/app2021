@@ -7,26 +7,29 @@ export default class ProductItemCategory extends React.Component {
   constructor() {
     super();
     this.state = {
-      
+
     };
-    }
-    render() {
-        const { item } = this.props;
-        return (
-          <li key={item.ID}>
-            <Link href={item.Link}>
-              <div className="image">
-                <img
-                  src={SERVER_APP + "/Upload/image/" + item.FileName}
-                  alt={item.Title}
-                />
-              </div>
-              <div className="text">
-                <h3>{item.Title}</h3>
-                <div className="text-desc">{ReactHtmlParser(item.Desc)}</div>
-              </div>
-            </Link>
-          </li>
-        );
-    }
+  }
+  render() {
+    const { item, isUI } = this.props;
+    return (
+      <li className={`${isUI > 0 ? "no-before" : ""}`} key={item.ID}>
+        <Link href={item.Link}>
+          <div className="image">
+            <img
+              className={`${isUI > 0 ? "h-auto" : ""}`}
+              src={SERVER_APP + "/Upload/image/" + item.FileName}
+              alt={item.Title}
+            />
+          </div>
+          {
+            isUI === 0 && <div className="text">
+              <h3>{item.Title}</h3>
+              <div className="text-desc">{ReactHtmlParser(item.Desc)}</div>
+            </div>
+          }
+        </Link>
+      </li>
+    );
+  }
 }

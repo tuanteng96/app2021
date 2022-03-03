@@ -30,7 +30,7 @@ export default class extends React.Component {
     UserService.getDiary(member, password).then((response) => {
       const arrDiary = response.data;
       this.setState({
-        arrDiary: groupbyDDHHMM(arrDiary),
+        arrDiary: groupbyDDHHMM(arrDiary,"CreateDate"),
       });
     });
   };

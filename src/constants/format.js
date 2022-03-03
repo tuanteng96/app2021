@@ -130,12 +130,12 @@ export const checkDateDiff = (dateEnd) => {
 }
 
 //Group item theo ngày
-export const groupbyDDHHMM = (arr) => {
+export const groupbyDDHHMM = (arr, name = "BookDate") => {
     const newArr = [];
     if (!arr) return false;
     arr.map(item => {
-        const dayFull = item.BookDate;
-        const d = dayFull.split('T')[0];
+        const dayFull = item[name];
+        const d = dayFull.split("T")[0];
         var g = null;
         newArr.every((_g) => {
             if (_g.day == d) g = _g;

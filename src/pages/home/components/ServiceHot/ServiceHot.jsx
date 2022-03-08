@@ -94,35 +94,55 @@ export default class ServiceHot extends React.Component {
     };
 
     return (
-      <div className="page-news__list-ul">
+      <React.Fragment>
         {!isLoading && (
-          <Slider {...settingsNews}>
-            {arrService &&
-              arrService.map((item, index) => {
-                if (index > 6) return null;
-                return (
-                  <Link
-                    className="page-news__list-item box-shadow-none"
-                    key={item.root.ID}
-                    style={this.handStyle()}
-                    onClick={() => this.handleUrl(item)}
-                  >
-                    <div className="images bd-rd3">
-                      <img
-                        src={SERVER_APP + item.root.Thumbnail_web}
-                        alt={item.root.Title}
-                      />
-                    </div>
-                    <div className="text">
-                      <h6 className="text-cut-1">{item.root.Title}</h6>
-                    </div>
-                  </Link>
-                );
-              })}
-          </Slider>
+          <React.Fragment>
+            {arrService && arrService.length > 0 && (
+              <div className="home-page__news mb-8">
+                <div className="page-news__list">
+                  <div className="page-news__list-ul">
+                    <Slider {...settingsNews}>
+                      {arrService &&
+                        arrService.map((item, index) => {
+                          if (index > 6) return null;
+                          return (
+                            <Link
+                              className="page-news__list-item box-shadow-none"
+                              key={item.root.ID}
+                              style={this.handStyle()}
+                              onClick={() => this.handleUrl(item)}
+                            >
+                              <div className="images bd-rd3">
+                                <img
+                                  src={SERVER_APP + item.root.Thumbnail_web}
+                                  alt={item.root.Title}
+                                />
+                              </div>
+                              <div className="text">
+                                <h6 className="text-cut-1">
+                                  {item.root.Title}
+                                </h6>
+                              </div>
+                            </Link>
+                          );
+                        })}
+                    </Slider>
+                  </div>
+                </div>
+              </div>
+            )}
+          </React.Fragment>
         )}
-        {isLoading && <SkeletonServiceHot />}
-      </div>
+        {isLoading && (
+          <div className="home-page__news mb-8">
+            <div className="page-news__list">
+              <div className="page-news__list-ul">
+                <SkeletonServiceHot />
+              </div>
+            </div>
+          </div>
+        )}
+      </React.Fragment>
     );
   }
 }

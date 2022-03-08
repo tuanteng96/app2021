@@ -43,32 +43,48 @@ export default class SlideList extends React.Component {
       autoplaySpeed: this.props.autoplaySpeed,
     };
     return (
-      <div className={`body-slide ${this.props.className}`}>
-        {isLoading && <Skeleton height={150} />}
-
-        <Slider {...settingsBanner}>
-          {!isLoading && arrBanner &&
-            arrBanner.map((item, index) => {
-              if (index >= 5) return null;
-              return (
-                <Link
-                  noLinkClass
-                  href={item.Link ? item.Link : `/adv/${item.ID}`}
-                  className={`body-slide__item rounded overflow-hidden ${
-                    validURL(item.Link) ? "external" : ""
-                  }`}
-                  key={item.ID}
-                >
-                  
-                  <img
-                    src={SERVER_APP + "/Upload/image/" + item.FileName}
-                    alt={item.Title}
-                  />
-                </Link>
-              );
-            })}
-        </Slider>
-      </div>
+      <React.Fragment>
+        {!isLoading && (
+          <React.Fragment>
+            {arrBanner && arrBanner.length > 0 && (
+              <div className={this.props.containerClass}>
+                <div className={`body-slide ${this.props.className}`}>
+                  <Slider {...settingsBanner}>
+                    {arrBanner &&
+                      arrBanner.map((item, index) => {
+                        if (index >= 5) return null;
+                        return (
+                          <Link
+                            noLinkClass
+                            href={item.Link ? item.Link : `/adv/${item.ID}`}
+                            className={`body-slide__item rounded overflow-hidden ${
+                              validURL(item.Link) ? "external" : ""
+                            }`}
+                            key={item.ID}
+                          >
+                            <img
+                              src={
+                                SERVER_APP + "/Upload/image/" + item.FileName
+                              }
+                              alt={item.Title}
+                            />
+                          </Link>
+                        );
+                      })}
+                  </Slider>
+                </div>
+              </div>
+            )}
+          </React.Fragment>
+        )}
+        {isLoading && (
+          <div className={this.props.containerClass}>
+            <div className={`body-slide ${this.props.className}`}>
+              {isLoading && <Skeleton height={150} />}
+            </div>
+          </div>
+        )}
+      </React.Fragment>
     );
   }
 }

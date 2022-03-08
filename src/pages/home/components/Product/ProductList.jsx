@@ -1,6 +1,6 @@
 import React from "react";
 import ShopDataService from "../../../../service/shop.service";
-import { Col, Row } from "framework7-react";
+import { Col, Link, Row } from "framework7-react";
 import { getStockIDStorage } from "../../../../constants/user";
 import ProductItem from "../Product/ProductItem";
 import SkeletonProduct from "../../components/Product/SkeletonProduct";
@@ -44,18 +44,49 @@ export default class ProductList extends React.Component {
   render() {
     const { arrCateList, isLoading } = this.state;
     return (
-      <div className="body">
-        <Row>
-          {!isLoading &&
-            arrCateList &&
-            arrCateList.map((item, index) => (
-              <Col width="50" key={index}>
-                <ProductItem item={item} source={item.source} />
-              </Col>
-            ))}
-        </Row>
-        {isLoading && <SkeletonProduct />}
-      </div>
+      <React.Fragment>
+        {!isLoading && (
+          <React.Fragment>
+            {arrCateList && arrCateList.length > 0 && (
+              <div className="home-page__product">
+                <div className="head">
+                  <h5>Sản phẩm mới</h5>
+                  <div className="all">
+                    <Link href="/shop/794/">
+                      Xem tất cả <i className="las la-angle-right"></i>
+                    </Link>
+                  </div>
+                </div>
+                <div className="body">
+                  <Row>
+                    {arrCateList &&
+                      arrCateList.map((item, index) => (
+                        <Col width="50" key={index}>
+                          <ProductItem item={item} source={item.source} />
+                        </Col>
+                      ))}
+                  </Row>
+                </div>
+              </div>
+            )}
+          </React.Fragment>
+        )}
+        {isLoading && (
+          <div className="home-page__product">
+            <div className="head">
+              <h5>Sản phẩm mới</h5>
+              <div className="all">
+                <Link href="/shop/794/">
+                  Xem tất cả <i className="las la-angle-right"></i>
+                </Link>
+              </div>
+            </div>
+            <div className="body">
+              <SkeletonProduct />
+            </div>
+          </div>
+        )}
+      </React.Fragment>
     );
   }
 }

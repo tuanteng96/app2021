@@ -40,7 +40,7 @@ export default class extends React.Component {
       isOpenStock: false,
       width: window.innerWidth,
       showPreloader: false,
-      isReload: 0
+      isReload: 0,
     };
   }
 
@@ -177,13 +177,9 @@ export default class extends React.Component {
                   {getUser() && <ListService id="45" />}
                 </div>
               </div>
-              <div className="home-page__news mb-8">
-                <div className="page-news__list">
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <ServiceHot f7={this.$f7router} />
-                  </Suspense>
-                </div>
-              </div>
+              <Suspense fallback={<div>Loading...</div>}>
+                <ServiceHot f7={this.$f7router} />
+              </Suspense>
               <Suspense fallback={<div>Loading...</div>}>
                 <ListImage />
               </Suspense>
@@ -192,24 +188,15 @@ export default class extends React.Component {
                 BannerName="App.Main"
                 autoplaySpeed={4000}
               />
-              <div className="pl-15px pr-15px slider-hot">
-                <Suspense fallback={<div>Loading...</div>}>
-                  <SlideList BannerName="App.DVHOT" />
-                </Suspense>
-              </div>
-              <div className="home-page__product">
-                <div className="head">
-                  <h5>Sản phẩm mới</h5>
-                  <div className="all">
-                    <Link href="/shop/794/">
-                      Xem tất cả <i className="las la-angle-right"></i>
-                    </Link>
-                  </div>
-                </div>
-                <Suspense fallback={<div>Loading...</div>}>
-                  <ProductList />
-                </Suspense>
-              </div>
+              <Suspense fallback={<div>Loading...</div>}>
+                <SlideList
+                  containerClass="pl-15px pr-15px slider-hot"
+                  BannerName="App.DVHOT"
+                />
+              </Suspense>
+              <Suspense fallback={<div>Loading...</div>}>
+                <ProductList />
+              </Suspense>
               <div className="home-page__news">
                 <div className="page-news__list">
                   <div className="page-news__list-head">

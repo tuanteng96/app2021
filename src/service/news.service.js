@@ -4,6 +4,9 @@ class NewsDataService {
     getAll() {
         return http.get("/app/index.aspx?cmd=home2");
     }
+    getInfoCate(cateid) {
+        return http.get(`/api/v3/content?cmd=id&id=${cateid}&tb=categories`);
+    }
     getBannerName(name) {
         return http.get(`/app/index.aspx?cmd=adv&pos=${name}`);
     }

@@ -197,21 +197,10 @@ export default class extends React.Component {
               <Suspense fallback={<div>Loading...</div>}>
                 <ProductList />
               </Suspense>
-              <div className="home-page__news">
-                <div className="page-news__list">
-                  <div className="page-news__list-head">
-                    <h5>Blog làm đẹp</h5>
-                    <div className="all">
-                      <Link href="/news-list/">
-                        Xem tất cả <i className="las la-angle-right"></i>
-                      </Link>
-                    </div>
-                  </div>
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <NewsList />
-                  </Suspense>
-                </div>
-              </div>
+
+              <Suspense fallback={<div>Loading...</div>}>
+                <NewsList />
+              </Suspense>
             </div>
           </div>
         </div>

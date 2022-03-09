@@ -29,7 +29,18 @@ export default class extends React.Component {
       .catch((e) => {
         console.log(e);
       });
+    this.getInfoCate();
   }
+
+  getInfoCate = () => {
+    NewsDataService.getInfoCate("835")
+      .then(({ data }) => {
+        this.setState({ NewTitle: data.data });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   loadRefresh(done) {
     NewsDataService.getNewsIdCate("835")
@@ -49,8 +60,8 @@ export default class extends React.Component {
   }
 
   render() {
-    const arrNews = this.state.arrNews;
-    const { isLoading } = this.state;
+    const { isLoading, NewTitle, arrNews } = this.state;
+    console.log(NewTitle);
     return (
       <Page
         name="news-list"
@@ -67,7 +78,7 @@ export default class extends React.Component {
               </Link>
             </div>
             <div className="page-navbar__title">
-              <span className="title">Blog làm đẹp</span>
+              <span className="title">{NewTitle && NewTitle[0].Title}</span>
             </div>
             <div className="page-navbar__noti">
               <NotificationIcon />

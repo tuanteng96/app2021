@@ -12,10 +12,12 @@ export default class NewsList extends React.Component {
     this.state = {
       width: window.innerWidth,
       isLoading: true,
+      NewTitle: null,
     };
   }
   componentDidMount() {
     this.getNewsAll();
+    this.getInfoCate();
   }
   handStyle = () => {
     const _width = this.state.width - 120;
@@ -38,8 +40,18 @@ export default class NewsList extends React.Component {
       });
   };
 
+  getInfoCate = () => {
+    NewsDataService.getInfoCate("835")
+      .then(({ data }) => {
+        this.setState({ NewTitle: data.data });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
   render() {
-    const { arrNews, isLoading } = this.state;
+    const { arrNews, isLoading, NewTitle } = this.state;
     const settingsNews = {
       className: "slider variable-width",
       dots: false,
@@ -49,36 +61,51 @@ export default class NewsList extends React.Component {
       centerPadding: "20px",
       variableWidth: true,
     };
+    
     return (
-      <div className="page-news__list-ul">
-        {!isLoading && (
-          <Slider {...settingsNews}>
-            {arrNews &&
-              arrNews.map((item, index) => {
-                if (index > 6) return null;
-                return (
-                  <Link
-                    href={"/news/detail/" + item.id + "/"}
-                    className="page-news__list-item"
-                    key={item.id}
-                    style={this.handStyle()}
-                  >
-                    <div className="images">
-                      <img
-                        src={SERVER_APP + item.source.Thumbnail_web}
-                        alt={item.source.Title}
-                      />
-                    </div>
-                    <div className="text">
-                      <h6>{item.source.Title}</h6>
-                      <div className="desc">{ReactHtmlParser(item.source.Desc)}</div>
-                    </div>
-                  </Link>
-                );
-              })}
-          </Slider>
-        )}
-        {isLoading && <SkeletonNews />}
+      <div className="home-page__news">
+        <div className="page-news__list">
+          <div className="page-news__list-head">
+            <h5>{NewTitle && NewTitle[0].Title}</h5>
+            <div className="all">
+              <Link href="/news-list/">
+                Xem tất cả <i className="las la-angle-right"></i>
+              </Link>
+            </div>
+          </div>
+          <div className="page-news__list-ul">
+            {!isLoading && (
+              <Slider {...settingsNews}>
+                {arrNews &&
+                  arrNews.map((item, index) => {
+                    if (index > 6) return null;
+                    return (
+                      <Link
+                        href={"/news/detail/" + item.id + "/"}
+                        className="page-news__list-item"
+                        key={item.id}
+                        style={this.handStyle()}
+                      >
+                        <div className="images">
+                          <img
+                            src={SERVER_APP + item.source.Thumbnail_web}
+                            alt={item.source.Title}
+                          />
+                        </div>
+                        <div className="text">
+                          <h6>{item.source.Title}</h6>
+                          <div className="desc">
+                            {ReactHtmlParser(item.source.Desc)}
+                          </div>
+                        </div>
+                      </Link>
+                    );
+                  })}
+              </Slider>
+            )}
+            {isLoading && <SkeletonNews />}
+          </div>
+        </div>
       </div>
     );
   }

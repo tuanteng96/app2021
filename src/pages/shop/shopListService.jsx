@@ -19,6 +19,7 @@ import ToolBarBottom from "../../components/ToolBarBottom";
 import _ from "lodash";
 import SkeletonListService from "./components/Skeleton/SkeletonListService";
 import CategoriesList from "./components/CategoriesList/CategoriesList/CategoriesList";
+import ShopListServiceItem from "./shopListServiceItem";
 
 export default class extends React.Component {
   constructor(props) {
@@ -322,52 +323,7 @@ export default class extends React.Component {
                               ) : (
                                 ""
                               )}
-                              <div className="service-about__list">
-                                <ul>
-                                  {item.items.map((subitem) => (
-                                    <li key={subitem.ID}>
-                                      <Link href={"/shop/detail/" + subitem.ID}>
-                                        <div className="title">
-                                          {subitem.Title}
-                                        </div>
-                                        <div
-                                          className={
-                                            "price " +
-                                            (subitem.IsDisplayPrice !== 0 &&
-                                              checkSale(
-                                                subitem.SaleBegin,
-                                                subitem.SaleEnd, subitem.PriceSale
-                                              ) === true
-                                              ? "sale"
-                                              : "")
-                                          }
-                                        >
-                                          {subitem.IsDisplayPrice === 0 ? (
-                                            <span className="price-to">
-                                              Liên hệ
-                                            </span>
-                                          ) : (
-                                            <React.Fragment>
-                                              <span className="price-to">
-                                                {formatPriceVietnamese(
-                                                  subitem.PriceProduct
-                                                )}
-                                                <b>đ</b>
-                                              </span>
-                                              <span className="price-sale">
-                                                {formatPriceVietnamese(
-                                                  subitem.PriceSale
-                                                )}
-                                                <b>đ</b>
-                                              </span>
-                                            </React.Fragment>
-                                          )}
-                                        </div>
-                                      </Link>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
+                              <ShopListServiceItem item={item}/>
                             </div>
                           </div>
                         ))}

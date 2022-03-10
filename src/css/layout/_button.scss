@@ -210,6 +210,17 @@
     color: $color-app;
 }
 
+.btn-more-service {
+    background: transparent;
+    border: 0;
+    height: 40px;
+    font-weight: 500;
+    font-size: 14px;
+    color: #0d5cb6;
+    text-transform: capitalize;
+    outline: none;
+}
+
 @keyframes bounceBtn {
     to {
         width: 12px;

@@ -19,15 +19,12 @@ import {
 } from "../../constants/user";
 import ListService from "./components/Service/ListService";
 import SlideList from "../home/components/BannerSlide/SlideList";
-
+import ServiceHot from "./components/ServiceHot/ServiceHot";
 const ListImage = React.lazy(() =>
   import("../home/components/Customer/ListImage")
 );
 const NewsList = React.lazy(() => import("../home/components/news/NewsList"));
 const QuickAction = React.lazy(() => import("../../components/quickAction"));
-const ServiceHot = React.lazy(() =>
-  import("./components/ServiceHot/ServiceHot")
-);
 const ProductList = React.lazy(() =>
   import("../home/components/Product/ProductList")
 );
@@ -177,9 +174,7 @@ export default class extends React.Component {
                   {getUser() && <ListService id="45" />}
                 </div>
               </div>
-              <Suspense fallback={<div>Loading...</div>}>
-                <ServiceHot f7={this.$f7router} />
-              </Suspense>
+              <ServiceHot f7={this.$f7router} />
               <Suspense fallback={<div>Loading...</div>}>
                 <ListImage />
               </Suspense>

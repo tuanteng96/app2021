@@ -192,7 +192,6 @@ export default class extends React.Component {
               <Suspense fallback={<div>Loading...</div>}>
                 <ProductList />
               </Suspense>
-
               <Suspense fallback={<div>Loading...</div>}>
                 <NewsList />
               </Suspense>

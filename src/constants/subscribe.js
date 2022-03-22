@@ -1,6 +1,6 @@
 import { getToken, subscribe } from "../constants/user";
 import UserService from "../service/user.service";
-export const setSubscribe = (userData, PWD) => {
+export const setSubscribe = (userData, callback) => {
     if (!userData) return false;
 
     const USN = userData.MobilePhone ?
@@ -14,6 +14,7 @@ export const setSubscribe = (userData, PWD) => {
         .then(response => {
             const data = response.data;
             subscribe(data);
+            callback && callback()
         })
         .catch(er => console.log(er));
 }

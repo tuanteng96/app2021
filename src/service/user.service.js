@@ -97,6 +97,12 @@ class UserService {
     authForgetReset(data) {
         return http.post(`/api/v3/authen?cmd=reset`, data);
     }
+    authSendTokenFirebase({ Token, Type, ID }) {
+        return http.get(`/api/v3/apptoken?cmd=call&token=${Token}&accid=${ID}&acctype=${Type}`);
+    }
+    authRemoveFirebase(Token) {
+        return http.get(`/api/v3/apptoken?cmd=call&token=${Token}&logout=1`);
+    }
 }
 
 export default new UserService();

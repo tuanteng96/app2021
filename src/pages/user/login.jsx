@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { setSubscribe } from "../../constants/subscribe";
 import { iOS } from "../../constants/helpers";
-import { OPEN_QRCODE } from "../../constants/prom21";
+import { OPEN_QRCODE, SEND_TOKEN_FIREBASE } from "../../constants/prom21";
 import { ref, set } from "firebase/database";
 import { database } from "../../firebase/firebase";
 
@@ -52,14 +52,32 @@ export default class extends React.Component {
           const userData = response.data;
           const token = userData.token;
           setUserStorage(token, userData);
-          setSubscribe(userData);
-          setTimeout(() => {
-            self.$f7.preloader.hide();
-            this.$f7router.navigate("/", {
-              animate: true,
-              transition: "f7-flip",
-            });
-          }, 300);
+          SEND_TOKEN_FIREBASE().then(async (response) => {
+            if (!response.error && response.Token) {
+              await UserService.authSendTokenFirebase({
+                Token: response.Token,
+                ID: userData.ID,
+                Type: userData.acc_type,
+              });
+              setTimeout(() => {
+                self.$f7.preloader.hide();
+                this.$f7router.navigate("/", {
+                  animate: true,
+                  transition: "f7-flip",
+                });
+              }, 300);
+            } else {
+              setSubscribe(userData, () => {
+                setTimeout(() => {
+                  self.$f7.preloader.hide();
+                  this.$f7router.navigate("/", {
+                    animate: true,
+                    transition: "f7-flip",
+                  });
+                }, 300);
+              });
+            }
+          });
         }
       })
       .catch((e) => console.log(e));
@@ -87,9 +105,7 @@ export default class extends React.Component {
         const qrcode = iOS() ? response.data?.split('"')[1] : response.data;
         const qrcodeLogin = qrcode.split("&")[0];
         const qrcodeStock = qrcode.split("&")[1];
-        self.$f7.dialog.preloader(
-          `Đang xử lý ...`
-        );
+        self.$f7.dialog.preloader(`Đang xử lý ...`);
         UserService.QRCodeLogin(qrcodeLogin)
           .then(({ data }) => {
             if (data.error) {
@@ -100,16 +116,37 @@ export default class extends React.Component {
               self.$f7.dialog.close();
             } else {
               setUserStorage(data.token, data);
-              setSubscribe(data);
-              set(
-                ref(database, `/qrcode/${qrcodeStock}/${qrcodeLogin}`),
-                null
-              ).then(() => {
-                self.$f7.dialog.close();
-                this.$f7router.navigate("/", {
-                  animate: true,
-                  transition: "f7-flip",
-                });
+              SEND_TOKEN_FIREBASE().then(async (response) => {
+                if (!response.error && response.Token) {
+                  await UserService.authSendTokenFirebase({
+                    Token: response.Token,
+                    ID: data.ID,
+                    Type: data.acc_type,
+                  });
+                  set(
+                    ref(database, `/qrcode/${qrcodeStock}/${qrcodeLogin}`),
+                    null
+                  ).then(() => {
+                    self.$f7.dialog.close();
+                    this.$f7router.navigate("/", {
+                      animate: true,
+                      transition: "f7-flip",
+                    });
+                  });
+                } else {
+                  setSubscribe(data, () => {
+                    set(
+                      ref(database, `/qrcode/${qrcodeStock}/${qrcodeLogin}`),
+                      null
+                    ).then(() => {
+                      self.$f7.dialog.close();
+                      this.$f7router.navigate("/", {
+                        animate: true,
+                        transition: "f7-flip",
+                      });
+                    });
+                  });
+                }
               });
             }
           })
@@ -182,15 +219,12 @@ export default class extends React.Component {
                   >
                     <span>Đăng nhập</span>
                   </button>
-                  {/* <button
-                    type="button"
-                    onClick={() => this.openQRCode()}
-                    className={"btn-login btn-me mt-12px"}
-                  >
-                    <span>Quét QR Code</span>
-                  </button> */}
                   <div className="or">
-                    <button className="btn-qr" type="button" onClick={() => this.openQRCode()}>
+                    <button
+                      className="btn-qr"
+                      type="button"
+                      onClick={() => this.openQRCode()}
+                    >
                       <i className="las la-qrcode"></i>
                     </button>
                   </div>

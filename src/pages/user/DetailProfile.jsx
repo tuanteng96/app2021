@@ -17,6 +17,8 @@ import DatePicker from "react-mobile-datepicker";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { NAME_APP, VERSION_APP } from "../../constants/config";
+import { SEND_TOKEN_FIREBASE } from "../../constants/prom21";
+
 export default class extends React.Component {
   constructor() {
     super();
@@ -60,12 +62,18 @@ export default class extends React.Component {
       async () => {
         try {
           f7.dialog.preloader(`Đăng xuất ...`);
-          app_request("unsubscribe", "");
-          await localStorage.clear();
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          f7.dialog.close();
-          $$this.$f7router.navigate("/", {
-            reloadCurrent: true,
+          SEND_TOKEN_FIREBASE().then(async (response) => {
+            if (!response.error && response.Token) {
+              await UserService.authRemoveFirebase(response.Token);
+            } else {
+              app_request("unsubscribe", "");
+            }
+            await localStorage.clear();
+            await new Promise((resolve) => setTimeout(resolve, 800));
+            f7.dialog.close();
+            $$this.$f7router.navigate("/", {
+              reloadCurrent: true,
+            });
           });
         } catch (error) {
           console.log(error);

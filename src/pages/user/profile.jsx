@@ -12,6 +12,7 @@ import { Page, Link, Toolbar, Row, Col, f7 } from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import UserService from "../../service/user.service";
 import Skeleton from "react-loading-skeleton";
+import { SEND_TOKEN_FIREBASE } from "../../constants/prom21";
 
 export default class extends React.Component {
   constructor() {
@@ -31,8 +32,7 @@ export default class extends React.Component {
       .then(({ data }) => {
         if (data.error) {
           this.$f7router.navigate("/login/");
-        }
-        else {
+        } else {
           this.setState({
             memberInfo: data,
             isLoading: false,
@@ -47,12 +47,18 @@ export default class extends React.Component {
       "Bạn muống đăng xuất khỏi tài khoản ?",
       async () => {
         f7.dialog.preloader(`Đăng xuất ...`);
-        app_request("unsubscribe", "");
-        await localStorage.clear();
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        f7.dialog.close();
-        $$this.$f7router.navigate("/", {
-          reloadCurrent: true,
+        SEND_TOKEN_FIREBASE().then(async (response) => {
+          if (!response.error && response.Token) {
+            await UserService.authRemoveFirebase(response.Token);
+          } else {
+            app_request("unsubscribe", "");
+          }
+          await localStorage.clear();
+          await new Promise((resolve) => setTimeout(resolve, 800));
+          f7.dialog.close();
+          $$this.$f7router.navigate("/", {
+            reloadCurrent: true,
+          });
         });
       }
     );

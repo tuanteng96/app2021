@@ -49,7 +49,7 @@ function ShopListServiceItem({ item }) {
           className="btn-more-service"
           onClick={() => setItemShow(itemShow + 5)}
         >
-          Xem thêm <i class="las la-angle-down"></i>
+          Xem thêm <i className="las la-angle-down"></i>
         </button>
       )}
     </div>

@@ -264,7 +264,12 @@ export default class extends React.Component {
                             key={item.root.ID}
                           >
                             <div className="page-shop__service-item service-about">
-                              <div className="service-about__img">
+                              <div
+                                className="service-about__img"
+                                onClick={() =>
+                                  this.setState({ idOpen: item.root.ID })
+                                }
+                              >
                                 <img
                                   src={
                                     SERVER_APP +
@@ -274,7 +279,15 @@ export default class extends React.Component {
                                   alt={item.root.Title}
                                 />
                               </div>
-                              {item.root.Desc !== "" ? (
+                              <div
+                                className="service-about__title"
+                                onClick={() =>
+                                  this.setState({ idOpen: item.root.ID })
+                                }
+                              >
+                                {item.root.Title}
+                              </div>
+                              {item.root.Desc !== "" || item.root.Detail ? (
                                 <div className="service-about__content">
                                   <div className="service-about__content-text">
                                     {ReactHtmlParser(item.root.Desc)}
@@ -295,6 +308,9 @@ export default class extends React.Component {
                                       "--f7-sheet-bg-color": "#fff",
                                     }}
                                     //swipeToClose
+                                    onSheetClosed={() => {
+                                      this.setState({ idOpen: "" });
+                                    }}
                                     backdrop
                                   >
                                     <Button
@@ -323,7 +339,7 @@ export default class extends React.Component {
                               ) : (
                                 ""
                               )}
-                              <ShopListServiceItem item={item}/>
+                              <ShopListServiceItem item={item} />
                             </div>
                           </div>
                         ))}
@@ -345,10 +361,11 @@ export default class extends React.Component {
                                     className={
                                       "price " +
                                       (item.source.IsDisplayPrice !== 0 &&
-                                        checkSale(
-                                          item.source.SaleBegin,
-                                          item.source.SaleEnd, item.source.PriceSale
-                                        ) === true
+                                      checkSale(
+                                        item.source.SaleBegin,
+                                        item.source.SaleEnd,
+                                        item.source.PriceSale
+                                      ) === true
                                         ? "sale"
                                         : "")
                                     }

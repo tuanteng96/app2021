@@ -44,7 +44,7 @@ export default class extends React.Component {
   }
   getService = (id) => {
     var $$ = this.Dom7;
-    var container = $$('.page-content');
+    var container = $$(".page-content");
     container.scrollTop(0, 300);
     const { Pi } = this.state;
     const CateID = id || this.$f7route.params.cateId;
@@ -53,14 +53,14 @@ export default class extends React.Component {
     this.setState({
       isLoading: true,
     });
-    ShopDataService.getServiceParent(CateID, stockid, Pi, 2)
+    ShopDataService.getServiceParent(CateID, stockid, Pi, 2, 1)
       .then(({ data }) => {
         const { lst, pcount, pi } = data;
         this.setState({
           arrService: lst,
           isLoading: false,
           Count: pcount,
-          Pi: pi
+          Pi: pi,
         });
       })
       .catch((e) => console.log(e));
@@ -148,7 +148,13 @@ export default class extends React.Component {
   }
 
   changeCate = (cate) => {
-    this.setState({ loading: true, currentId: cate.ID, idOpen: "", Pi: 1, Count: 0 });
+    this.setState({
+      loading: true,
+      currentId: cate.ID,
+      idOpen: "",
+      Pi: 1,
+      Count: 0,
+    });
     this.getService(cate.ID);
     this.getTitleCate(cate.ID);
     // this.$f7router.navigate(this.$f7router.currentRoute.url, {
@@ -173,7 +179,7 @@ export default class extends React.Component {
     let stockid = getStockIDStorage();
     stockid ? stockid : 0;
 
-    ShopDataService.getServiceParent(CateID, stockid, Pi + 1, 2)
+    ShopDataService.getServiceParent(CateID, stockid, Pi + 1, 2, 1)
       .then(({ data }) => {
         const { lst, pcount, pi } = data;
         const arrServiceNew = [...arrService, ...lst];
@@ -182,12 +188,11 @@ export default class extends React.Component {
           isLoading: false,
           Count: pcount,
           showPreloader: false,
-          Pi: pi
+          Pi: pi,
         });
       })
       .catch((e) => console.log(e));
-
-  }
+  };
 
   render() {
     const {
@@ -198,7 +203,7 @@ export default class extends React.Component {
       CateID,
       currentId,
       idOpen,
-      showPreloader
+      showPreloader,
     } = this.state;
 
     return (
@@ -339,7 +344,9 @@ export default class extends React.Component {
                               ) : (
                                 ""
                               )}
-                              <ShopListServiceItem item={item} />
+                              <ShopListServiceItem
+                                item={item}
+                              />
                             </div>
                           </div>
                         ))}

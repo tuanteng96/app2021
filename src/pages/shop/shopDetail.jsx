@@ -37,6 +37,7 @@ export default class extends React.Component {
       arrCombos: [],
       aff: {},
       photos: [],
+      OriginalCurrent: null,
       sheetOpened: false,
       activeID: null,
       quantity: 1,
@@ -49,52 +50,76 @@ export default class extends React.Component {
     };
   }
 
-  getDetialProduct = () => {
+  getDetialProduct = async () => {
     const infoUser = getUser();
     const userId = infoUser ? infoUser.ID : "";
     const cateID = this.$f7route.params.cateId;
 
     ShopDataService.getDetailFull(cateID, userId)
-      .then((response) => {
-        const resultRes = response.data.data;
-        const arrImages = resultRes.images;
-
-        let ptotosNew = [];
-        for (let photo in arrImages) {
-          var itemPhoho = {};
-          itemPhoho.url =
-            SERVER_APP + "/Upload/image/" + arrImages[photo].Value;
-          itemPhoho.caption = arrImages[photo].Title;
-          ptotosNew.push(itemPhoho);
-        }
-
-        ptotosNew.filter(
-          (item) =>
-            item.Role === "other" ||
-            item.Role === "thumb" ||
-            item.Role === "opt_thumb"
-        );
-
-        this.setState({
-          arrProductCurrent: resultRes.product,
-          arrProduct: resultRes.product,
-          arrRelProds: resultRes.product.RelProds,
-          photos: ptotosNew,
-          arrOptions: resultRes.options,
-          arrCombos: resultRes.combos,
-          statusLoading: false,
-          aff: {
-            aff: resultRes.aff,
-            aff_link: resultRes.aff_link,
-            aff_value: resultRes.aff_value,
-          },
-        });
-
-        setViewed(resultRes.product);
-      })
+      .then((response) => {})
       .catch((e) => {
         console.log(e);
       });
+
+    try {
+      const { original, CateId } = this.$f7route.query;
+      var OriginalLst = null;
+      if (original && CateId) {
+        let stockid = getStockIDStorage();
+        stockid ? stockid : 0;
+        const { data : OriginalResult} = await ShopDataService.getServiceParent(
+          CateId,
+          stockid,
+          1,
+          1,
+          1,
+          original
+        );
+        if (OriginalResult?.lst) {
+          OriginalLst = OriginalResult?.lst[0].root;
+        }
+      }
+      const { data: result } = await ShopDataService.getDetailFull(
+        cateID,
+        userId
+      );
+      const resultRes = result.data;
+      const arrImages = resultRes.images;
+
+      let ptotosNew = [];
+      for (let photo in arrImages) {
+        var itemPhoho = {};
+        itemPhoho.url = SERVER_APP + "/Upload/image/" + arrImages[photo].Value;
+        itemPhoho.caption = arrImages[photo].Title;
+        ptotosNew.push(itemPhoho);
+      }
+
+      ptotosNew.filter(
+        (item) =>
+          item.Role === "other" ||
+          item.Role === "thumb" ||
+          item.Role === "opt_thumb"
+      );
+
+      this.setState({
+        arrProductCurrent: resultRes.product,
+        arrProduct: resultRes.product,
+        arrRelProds: resultRes.product.RelProds,
+        photos: ptotosNew,
+        arrOptions: resultRes.options,
+        arrCombos: resultRes.combos,
+        statusLoading: false,
+        aff: {
+          aff: resultRes.aff,
+          aff_link: resultRes.aff_link,
+          aff_value: resultRes.aff_value,
+        },
+        OriginalCurrent: OriginalLst,
+      });
+      setViewed(resultRes.product);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   componentDidMount() {
@@ -438,7 +463,9 @@ export default class extends React.Component {
       arrCombos,
       aff,
       copied,
+      OriginalCurrent,
     } = this.state;
+
     return (
       <Page
         onPageBeforeOut={this.onPageBeforeOut}
@@ -498,10 +525,11 @@ export default class extends React.Component {
                 className={
                   "page-shop__detail-list " +
                   (arrProductCurrent.IsDisplayPrice !== 0 &&
-                    checkSale(
-                      arrProductCurrent.SaleBegin,
-                      arrProductCurrent.SaleEnd, arrProductCurrent.PriceSale
-                    ) === true
+                  checkSale(
+                    arrProductCurrent.SaleBegin,
+                    arrProductCurrent.SaleEnd,
+                    arrProductCurrent.PriceSale
+                  ) === true
                     ? "sale"
                     : "")
                 }
@@ -518,10 +546,11 @@ export default class extends React.Component {
                     <div className="title">
                       Giá
                       {arrProductCurrent.IsDisplayPrice !== 0 &&
-                        checkSale(
-                          arrProductCurrent.SaleBegin,
-                          arrProductCurrent.SaleEnd, arrProductCurrent.PriceSale
-                        ) === true
+                      checkSale(
+                        arrProductCurrent.SaleBegin,
+                        arrProductCurrent.SaleEnd,
+                        arrProductCurrent.PriceSale
+                      ) === true
                         ? " gốc"
                         : ""}
                     </div>
@@ -530,8 +559,8 @@ export default class extends React.Component {
                         <React.Fragment>
                           {!statusLoading
                             ? formatPriceVietnamese(
-                              arrProductCurrent.PriceProduct
-                            )
+                                arrProductCurrent.PriceProduct
+                              )
                             : "..."}
                           <b>₫</b>
                         </React.Fragment>
@@ -658,7 +687,10 @@ export default class extends React.Component {
                     </li>
                   )}
 
-                  {arrProduct.Desc !== "" || arrProduct.Detail !== "" ? (
+                  {arrProduct.Desc ||
+                  arrProduct.Detail ||
+                  OriginalCurrent?.Desc ||
+                  OriginalCurrent?.Detail ? (
                     <li className="content">
                       <div className="content-title">Chi tiết sản phẩm</div>
                       {statusLoading ? (
@@ -670,9 +702,13 @@ export default class extends React.Component {
                       ) : (
                         <>
                           <div className="content-post">
-                            {ReactHtmlParser(arrProduct.Desc)}
                             {ReactHtmlParser(
-                              this.fixedContentDomain(arrProduct.Detail)
+                              arrProduct.Desc || OriginalCurrent?.Desc
+                            )}
+                            {ReactHtmlParser(
+                              this.fixedContentDomain(
+                                arrProduct.Detail || OriginalCurrent?.Detail
+                              )
                             )}
                           </div>
                         </>
@@ -712,8 +748,11 @@ export default class extends React.Component {
                     className={
                       "price " +
                       (arrProduct.IsDisplayPrice === 1 &&
-                        checkSale(arrProduct.SaleBegin, arrProduct.SaleEnd, arrProduct.PriceSale) ===
-                        true
+                      checkSale(
+                        arrProduct.SaleBegin,
+                        arrProduct.SaleEnd,
+                        arrProduct.PriceSale
+                      ) === true
                         ? "hasSale"
                         : "")
                     }
@@ -830,8 +869,9 @@ export default class extends React.Component {
           <div className="page-toolbar">
             <div className="page-toolbar__order">
               <button
-                className={`page-btn-order btn-submit-order ${statusLoading ? "loading" : ""
-                  } ${arrProductCurrent.IsDisplayPrice === 0 && "btn-no-click"}`}
+                className={`page-btn-order btn-submit-order ${
+                  statusLoading ? "loading" : ""
+                } ${arrProductCurrent.IsDisplayPrice === 0 && "btn-no-click"}`}
                 onClick={() => this.openSheet()}
               >
                 <span>Đặt hàng</span>

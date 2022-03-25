@@ -55,42 +55,20 @@ export default class extends React.Component {
     const userId = infoUser ? infoUser.ID : "";
     const cateID = this.$f7route.params.cateId;
 
-    ShopDataService.getDetailFull(cateID, userId)
-      .then((response) => {})
-      .catch((e) => {
-        console.log(e);
-      });
-
     try {
-      const { original, CateId } = this.$f7route.query;
-      var OriginalLst = null;
-      if (original && CateId) {
-        let stockid = getStockIDStorage();
-        stockid ? stockid : 0;
-        const { data : OriginalResult} = await ShopDataService.getServiceParent(
-          CateId,
-          stockid,
-          1,
-          1,
-          1,
-          original
-        );
-        if (OriginalResult?.lst) {
-          OriginalLst = OriginalResult?.lst[0].root;
-        }
-      }
       const { data: result } = await ShopDataService.getDetailFull(
         cateID,
         userId
       );
+
       const resultRes = result.data;
-      const arrImages = resultRes.images;
+      const { images, combos } = resultRes;
 
       let ptotosNew = [];
-      for (let photo in arrImages) {
+      for (let photo in images) {
         var itemPhoho = {};
-        itemPhoho.url = SERVER_APP + "/Upload/image/" + arrImages[photo].Value;
-        itemPhoho.caption = arrImages[photo].Title;
+        itemPhoho.url = SERVER_APP + "/Upload/image/" + images[photo].Value;
+        itemPhoho.caption = images[photo].Title;
         ptotosNew.push(itemPhoho);
       }
 
@@ -114,7 +92,7 @@ export default class extends React.Component {
           aff_link: resultRes.aff_link,
           aff_value: resultRes.aff_value,
         },
-        OriginalCurrent: OriginalLst,
+        OriginalCurrent: combos && combos.length > 0 ? combos[0].Product : null,
       });
       setViewed(resultRes.product);
     } catch (error) {
@@ -589,7 +567,7 @@ export default class extends React.Component {
                     </li>
                   )}
 
-                  {arrProductCurrent.SaleDecs !== 0 && (
+                  {arrProductCurrent.SaleDecs && (
                     <li>
                       <div className="title">
                         <span>Tặng</span>

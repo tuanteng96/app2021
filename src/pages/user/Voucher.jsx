@@ -156,8 +156,7 @@ export default class extends React.Component {
                                 "Không giới hạn"
                               ) : (
                                 <React.Fragment>
-                                  Còn <b>{checkDateDiff(item.ngay.To)}</b>{" "}
-                                  ngày
+                                  Còn <b>{checkDateDiff(item.ngay.To)}</b> ngày
                                 </React.Fragment>
                               )}
                             </li>
@@ -296,8 +295,8 @@ export default class extends React.Component {
                                             <div>
                                               Sản phẩm lẻ :{" "}
                                               <span>
-                                                {item.dieu_Kien.san_pham
-                                                  .length > 0
+                                                {item.dieu_Kien.san_pham && item
+                                                  .dieu_Kien.san_pham.length > 0
                                                   ? item.dieu_Kien.san_pham
                                                       .map((item) => item.Title)
                                                       .join(", ")

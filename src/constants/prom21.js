@@ -78,16 +78,22 @@ export const SEND_TOKEN_FIREBASE = () => {
     var t = window.app21 || {};
     if (typeof t.prom !== 'undefined' && window.VERSION && window.VERSION > 1) {
         return new Promise((resolve, reject) => {
-            t.prom('KEY', JSON.stringify({ key: 'FirebaseNotiToken' })).then(({data}) => {
+            t.prom('KEY', JSON.stringify({ key: 'FirebaseNotiToken' })).then(({ data }) => {
                 resolve({ Token: data });
-            }).catch(({error}) => {
+            }).catch(({ error }) => {
                 resolve({ error: error })
             })
         });
-    }
-    else {
+    } else {
         return new Promise((resolve, reject) => {
             resolve({ error: "Yêu cầu nâng cấp lên phiên bản mới nhất." });
         });
+    }
+}
+
+export const CLOSE_APP = () => {
+    var t = window.app21 || {};
+    if (typeof t.prom !== 'undefined') {
+        return t.prom('FINISH_ACTIVITY');
     }
 }

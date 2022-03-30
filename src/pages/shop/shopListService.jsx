@@ -88,7 +88,7 @@ export default class extends React.Component {
       currentId: this.$f7route.params.cateId,
     });
 
-    this.timer = setInterval(() => {
+    this.timer = setTimeout(() => {
       if (this.$f7route.query && this.$f7route.query.ids) {
         this.setState((prevState) => ({ idOpen: this.$f7route.query.ids }));
       }
@@ -101,7 +101,7 @@ export default class extends React.Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.timer);
+    clearTimeout(this.timer);
   }
 
   inputCallback = (value) => {
@@ -205,7 +205,7 @@ export default class extends React.Component {
       idOpen,
       showPreloader,
     } = this.state;
-
+    
     return (
       <Page
         name="shop-List"

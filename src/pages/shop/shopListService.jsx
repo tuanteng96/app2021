@@ -107,13 +107,17 @@ export default class extends React.Component {
   inputCallback = (value) => {
     const { CateID, currentId } = this.state;
     const key = value;
-    ShopDataService.getSearchService(key, currentId || CateID)
+    let stockid = getStockIDStorage();
+    if (!stockid) {
+      stockid = 0;
+    }
+    ShopDataService.getSearchService(key, currentId || CateID, stockid)
       .then((response) => {
         const arrSearch = response.data.data.lst;
         this.setState({
           arrSearch: arrSearch,
           isSearch: true,
-          keySearch: key,
+          keySearch: key, 
         });
       })
       .catch((e) => console.log(e));

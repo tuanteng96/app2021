@@ -32,8 +32,8 @@ class ShopDataService {
     getServiceProdID(id, stockid) {
         return http.get(`/app/index.aspx?cmd=service_prodsid&token=${getToken()}&id=${id}&stockid=${stockid}`);
     }
-    getSearchService(keys, cateId) {
-        return http.get(`/app/index.aspx?cmd=search_prods&token=${getToken()}&key=${keys}&cates=${cateId}&pi=1&ps=1000`);
+    getSearchService(keys, cateId, stockid) {
+        return http.get(`/app/index.aspx?cmd=search_prods&token=${getToken()}&key=${keys}&cates=${cateId}&pi=1&ps=1000&stockid=${stockid}`);
     }
     getProd() {
         return http.get(`/app/index.aspx?cmd=ProdService&token=${getToken()}`);

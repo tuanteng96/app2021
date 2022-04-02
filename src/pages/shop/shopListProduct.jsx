@@ -17,16 +17,16 @@ import ShopDataService from "./../../service/shop.service";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import CategoriesList from "./components/CategoriesList/CategoriesList/CategoriesList";
 import Skeleton from "react-loading-skeleton";
+import PageNoData from "../../components/PageNoData";
 
 export default class extends React.Component {
   constructor() {
     super();
     this.state = {
-      dataNull: false,
       itemView: 8, // Số item hiển thị trên 1 Page
       arrCateList: [],
-      countCateList: "",
-      totalCateList: "",
+      Pi: 1,
+      Count: 0,
       titlePage: "",
       showPreloader: false,
       allowInfinite: true,
@@ -42,6 +42,9 @@ export default class extends React.Component {
   }
 
   getDataList = (ID, pi, ps, tag, keys) => {
+    var $$ = this.Dom7;
+    var container = $$(".page-content");
+    container.scrollTop(0, 300);
     //ID Cate
     //Trang hiện tại
     //Số sản phẩm trên trang
@@ -63,24 +66,13 @@ export default class extends React.Component {
         : "3"
     )
       .then((response) => {
-        const arrCateList = response.data.data.lst;
-        const countCateList = response.data.data.pcount;
-        const totalCateList = response.data.data.total;
-        const piCateList = response.data.data.pi;
-
+        const { lst, pcount, pi } = response.data.data;
         this.setState({
-          arrCateList: arrCateList,
-          countCateList: countCateList,
-          totalCateList: totalCateList,
-          piCateList: piCateList,
+          arrCateList: lst,
+          Pi: pi,
+          Count: pcount,
           loading: false,
         });
-        if (arrCateList.length === 0) {
-          this.setState({
-            showPreloader: false,
-            dataNull: true,
-          });
-        }
       })
       .catch((e) => {
         console.log(e);
@@ -126,59 +118,51 @@ export default class extends React.Component {
     });
   }
   loadMore = () => {
-    const self = this;
-    const isState = self.state;
-    const CateID = isState.keySearch
-      ? isState.CateIDall
-      : this.$f7route.params.cateId;
-    const itemView = isState.itemView; // Tổng số item trên 1 page
-
-    const tag = isState.isTag && !isState.keySearch ? isState.isTag : "";
-    const keys = isState.keySearch ? isState.keySearch : "";
-
-    let stockid = getStockIDStorage();
-    if (!stockid) {
-      stockid = 0;
+    const {
+      arrCateList,
+      Count,
+      Pi,
+      currentId,
+      showPreloader,
+      itemView,
+      isTag,
+      keySearch,
+    } = this.state;
+    if (Pi >= Count) {
+      return false;
     }
+    if (showPreloader) return false;
+    this.setState({ showPreloader: true });
+    const CateID = currentId || this.$f7route.params.cateId;
+    let stockid = getStockIDStorage();
+    stockid ? stockid : 0;
 
-    if (!self.state.allowInfinite) return;
-    self.setState({
-      allowInfinite: false,
-      showPreloader: true,
-    });
-    setTimeout(() => {
-      if (isState.totalCateList <= isState.arrCateList.length) {
-        self.setState({ showPreloader: false });
-        return;
-      }
+    const tag = isTag && !keySearch ? isTag : "";
+    const keys = keySearch ? keySearch : "";
 
-      ShopDataService.getList(
-        CateID,
-        isState.piCateList + 1,
-        itemView,
-        tag,
-        keys,
-        stockid,
-        this.$f7route.params.cateId === "hot" ? "3" : ""
-      )
-        .then((response) => {
-          const arrCateList = response.data.data.lst;
-
-          var arrCateListNew = isState.arrCateList;
-          for (let item in arrCateList) {
-            arrCateListNew.push(arrCateList[item]);
-          }
-
-          self.setState({
-            arrCateList: arrCateListNew,
-            piCateList: isState.piCateList + 1,
-            allowInfinite: true,
-          });
-        })
-        .catch((e) => {
-          console.log(e);
+    ShopDataService.getList(
+      CateID,
+      Pi + 1,
+      itemView,
+      tag,
+      keys,
+      stockid,
+      this.$f7route.params.cateId === "hot" ? "3" : ""
+    )
+      .then(({ data }) => {
+        const { lst, pcount, pi } = data.data;
+        const arrCateListNew = [...arrCateList, ...lst];
+        this.setState({
+          arrCateList: arrCateListNew,
+          isLoading: false,
+          Count: pcount,
+          showPreloader: false,
+          Pi: pi,
         });
-    }, 1000);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   loadRefresh(done) {
@@ -229,7 +213,6 @@ export default class extends React.Component {
     }
     this.setState({
       showPreloader: false,
-      dataNull: false,
       keySearch: "",
     });
   };
@@ -281,7 +264,10 @@ export default class extends React.Component {
             onClickClear={() => this.hideSearch()}
             onClickDisable={() => this.hideSearch()}
           ></Searchbar>
-          {(this.$f7route.query?.subnav === "1" || this.$f7route.params.cateId === "hot") ? "" : (
+          {this.$f7route.query?.subnav === "1" ||
+          this.$f7route.params.cateId === "hot" ? (
+            ""
+          ) : (
             <Subnavbar className="subnavbar-prod">
               <CategoriesList
                 id={CateID}
@@ -295,53 +281,60 @@ export default class extends React.Component {
           <div className="page-shop no-bg p-15">
             <div className="page-shop__list">
               <Row>
-                {!loading &&
-                  arrCateList &&
-                  arrCateList.map((item, index) => (
-                    <Col width="50" key={index}>
-                      <a
-                        href={"/shop/detail/" + item.id}
-                        className="page-shop__list-item"
-                      >
-                        <div className="page-shop__list-img">
-                          <img
-                            src={SERVER_APP + "/Upload/image/" + item.photo}
-                            alt={item.title}
-                          />
-                        </div>
-                        <div className="page-shop__list-text">
-                          <h3>{item.title}</h3>
-                          <div
-                            className={
-                              "page-shop__list-price " +
-                              (item.source.IsDisplayPrice !== 0 &&
-                                checkSale(
-                                  item.source.SaleBegin,
-                                  item.source.SaleEnd, item.pricesale
-                                ) === true
-                                ? "sale"
-                                : "")
-                            }
+                {!loading && (
+                  <React.Fragment>
+                    {arrCateList && arrCateList.length > 0 ? (
+                      arrCateList.map((item, index) => (
+                        <Col width="50" key={index}>
+                          <a
+                            href={"/shop/detail/" + item.id}
+                            className="page-shop__list-item"
                           >
-                            {item.source.IsDisplayPrice === 0 ? (
-                              <span className="price">Liên hệ</span>
-                            ) : (
-                              <React.Fragment>
-                                <span className="price">
-                                  <b>₫</b>
-                                  {formatPriceVietnamese(item.price)}
-                                </span>
-                                <span className="price-sale">
-                                  <b>₫</b>
-                                  {formatPriceVietnamese(item.pricesale)}
-                                </span>
-                              </React.Fragment>
-                            )}
-                          </div>
-                        </div>
-                      </a>
-                    </Col>
-                  ))}
+                            <div className="page-shop__list-img">
+                              <img
+                                src={SERVER_APP + "/Upload/image/" + item.photo}
+                                alt={item.title}
+                              />
+                            </div>
+                            <div className="page-shop__list-text">
+                              <h3>{item.title}</h3>
+                              <div
+                                className={
+                                  "page-shop__list-price " +
+                                  (item.source.IsDisplayPrice !== 0 &&
+                                  checkSale(
+                                    item.source.SaleBegin,
+                                    item.source.SaleEnd,
+                                    item.pricesale
+                                  ) === true
+                                    ? "sale"
+                                    : "")
+                                }
+                              >
+                                {item.source.IsDisplayPrice === 0 ? (
+                                  <span className="price">Liên hệ</span>
+                                ) : (
+                                  <React.Fragment>
+                                    <span className="price">
+                                      <b>₫</b>
+                                      {formatPriceVietnamese(item.price)}
+                                    </span>
+                                    <span className="price-sale">
+                                      <b>₫</b>
+                                      {formatPriceVietnamese(item.pricesale)}
+                                    </span>
+                                  </React.Fragment>
+                                )}
+                              </div>
+                            </div>
+                          </a>
+                        </Col>
+                      ))
+                    ) : (
+                      <PageNoData text={"Không có dữ liêu"} />
+                    )}
+                  </React.Fragment>
+                )}
                 {loading &&
                   Array(6)
                     .fill()

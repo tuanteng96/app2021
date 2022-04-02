@@ -131,13 +131,8 @@ export default class employeeStatistical extends React.Component {
   }
 
   render() {
-    const {
-      dataSalary,
-      isLoading,
-      isOpenDate,
-      isDateCurrent,
-      monthCurrent,
-    } = this.state;
+    const { dataSalary, isLoading, isOpenDate, isDateCurrent, monthCurrent } =
+      this.state;
     const dateConfig = {
       month: {
         caption: "Tháng",
@@ -566,10 +561,12 @@ export default class employeeStatistical extends React.Component {
                     <div className="td">
                       {dataSalary &&
                         formatPriceVietnamese(
-                          Math.ceil(
-                            (this.basicSalary(dataSalary) / 100) *
-                              dataSalary.TY_LE_GIU_LUONG
-                          )
+                          dataSalary.TY_LE_GIU_LUONG > 100
+                            ? dataSalary.TY_LE_GIU_LUONG
+                            : Math.ceil(
+                                (this.basicSalary(dataSalary) / 100) *
+                                  dataSalary.TY_LE_GIU_LUONG
+                              )
                         )}
                     </div>
                   </div>
@@ -589,10 +586,12 @@ export default class employeeStatistical extends React.Component {
                       {dataSalary &&
                         formatPriceVietnamese(
                           this.basicSalary(dataSalary) -
-                            Math.ceil(
-                              (this.basicSalary(dataSalary) / 100) *
-                                dataSalary.TY_LE_GIU_LUONG
-                            ) -
+                            (dataSalary.TY_LE_GIU_LUONG > 100
+                              ? dataSalary.TY_LE_GIU_LUONG
+                              : Math.ceil(
+                                  (this.basicSalary(dataSalary) / 100) *
+                                    dataSalary.TY_LE_GIU_LUONG
+                                )) -
                             (Math.abs(this.numTotal(dataSalary.TAM_UNG)) -
                               Math.abs(this.numTotal(dataSalary.THU_HOAN_UNG)))
                         )}

@@ -219,7 +219,7 @@ export default class extends React.Component {
 
   changeCate = (cate) => {
     const itemView = this.state.itemView;
-    this.setState({ currentId: cate.ID, loading: true, Pi: 1, Count: 0 });
+    this.setState({ currentId: cate.ID, loading: true, Pi: 1, Count: 0, showPreloader: false });
     this.getDataList(cate.ID, "1", itemView, "", "");
     this.getTitleCate(cate.ID);
   };

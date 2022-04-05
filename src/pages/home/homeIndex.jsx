@@ -20,6 +20,7 @@ import {
 import ListService from "./components/Service/ListService";
 import SlideList from "../home/components/BannerSlide/SlideList";
 import ServiceHot from "./components/ServiceHot/ServiceHot";
+import { HIDE_STATUSBAR } from "../../constants/prom21";
 const ListImage = React.lazy(() =>
   import("../home/components/Customer/ListImage")
 );
@@ -195,6 +196,7 @@ export default class extends React.Component {
               <Suspense fallback={<div>Loading...</div>}>
                 <NewsList />
               </Suspense>
+              <button onClick={HIDE_STATUSBAR}>Hide</button>
             </div>
           </div>
         </div>

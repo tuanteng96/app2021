@@ -58,7 +58,7 @@ export default class extends React.Component {
   signOut = () => {
     const $$this = this;
     $$this.$f7.dialog.confirm(
-      "Bạn muống đăng xuất khỏi tài khoản ?",
+      "Bạn muốn đăng xuất khỏi tài khoản ?",
       async () => {
         try {
           f7.dialog.preloader(`Đăng xuất ...`);

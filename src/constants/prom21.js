@@ -97,3 +97,9 @@ export const CLOSE_APP = () => {
         return t.prom('FINISH_ACTIVITY');
     }
 }
+export const HIDE_STATUSBAR = () => {
+    var t = window.app21 || {};
+    if (typeof t.prom !== 'undefined') {
+        return t.prom('HIDE_STATUSBAR');
+    }
+}

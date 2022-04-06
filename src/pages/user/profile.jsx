@@ -44,12 +44,17 @@ export default class extends React.Component {
   signOut = () => {
     const $$this = this;
     $$this.$f7.dialog.confirm(
-      "Bạn muống đăng xuất khỏi tài khoản ?",
+      "Bạn muốn đăng xuất khỏi tài khoản ?",
       async () => {
         f7.dialog.preloader(`Đăng xuất ...`);
         SEND_TOKEN_FIREBASE().then(async (response) => {
           if (!response.error && response.Token) {
-            await UserService.authRemoveFirebase(response.Token);
+            const { ID, acc_type } = getUser();
+            await UserService.authRemoveFirebase({
+              Token: response.Token,
+              ID: ID,
+              Type: acc_type,
+            });
           } else {
             app_request("unsubscribe", "");
           }

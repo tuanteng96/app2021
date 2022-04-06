@@ -103,7 +103,6 @@ export default class extends React.Component {
 
   ToBackBrowser = () => {
     const { history } = this.$f7.views.main.router;
-    console.log(this.$f7.views.main);
     if (history.length === 1 && history[0] === "/") {
       CLOSE_APP();
     } else {

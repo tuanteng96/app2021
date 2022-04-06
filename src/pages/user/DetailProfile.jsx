@@ -55,6 +55,7 @@ export default class extends React.Component {
       })
       .catch((err) => console.log(err));
   };
+  
   signOut = () => {
     const $$this = this;
     $$this.$f7.dialog.confirm(
@@ -64,7 +65,12 @@ export default class extends React.Component {
           f7.dialog.preloader(`Đăng xuất ...`);
           SEND_TOKEN_FIREBASE().then(async (response) => {
             if (!response.error && response.Token) {
-              await UserService.authRemoveFirebase(response.Token);
+              const { ID, acc_type } = getUser();
+              await UserService.authRemoveFirebase({
+                Token: response.Token,
+                ID: ID,
+                Type: acc_type,
+              });
             } else {
               app_request("unsubscribe", "");
             }
@@ -168,6 +174,7 @@ export default class extends React.Component {
   }
 
   render() {
+    
     const { memberInfo } = this.state;
     const IDStockName = this.state.IDStockName;
     const dateConfig = {

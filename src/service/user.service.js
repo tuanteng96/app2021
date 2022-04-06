@@ -100,8 +100,8 @@ class UserService {
     authSendTokenFirebase({ Token, Type, ID }) {
         return http.get(`/api/v3/apptoken?cmd=call&token=${Token}&accid=${ID}&acctype=${Type}`);
     }
-    authRemoveFirebase(Token) {
-        return http.get(`/api/v3/apptoken?cmd=call&token=${Token}&logout=1`);
+    authRemoveFirebase({ Token, Type, ID }) {
+        return http.get(`/api/v3/apptoken?cmd=call&token=${Token}&accid=${ID}&acctype=${Type}&logout=1`);
     }
 }
 

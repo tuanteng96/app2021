@@ -196,7 +196,6 @@ export default class extends React.Component {
               <Suspense fallback={<div>Loading...</div>}>
                 <NewsList />
               </Suspense>
-              <button onClick={HIDE_STATUSBAR}>Hide</button>
             </div>
           </div>
         </div>

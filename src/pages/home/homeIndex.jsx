@@ -20,7 +20,6 @@ import {
 import ListService from "./components/Service/ListService";
 import SlideList from "../home/components/BannerSlide/SlideList";
 import ServiceHot from "./components/ServiceHot/ServiceHot";
-import { HIDE_STATUSBAR } from "../../constants/prom21";
 const ListImage = React.lazy(() =>
   import("../home/components/Customer/ListImage")
 );

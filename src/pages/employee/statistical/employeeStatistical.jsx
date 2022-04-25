@@ -60,6 +60,7 @@ export default class employeeStatistical extends React.Component {
     value -= this.numTotal(dataSalary.NGAY_NGHI);
     value -= this.numTotal(dataSalary.PHAT);
     value += dataSalary.PHU_CAP;
+    value += dataSalary?.THUONG_HOA_HONG_DOANH_SO?.Value || 0;
     return value;
   };
 
@@ -123,9 +124,8 @@ export default class employeeStatistical extends React.Component {
   };
 
   async loadRefresh(done) {
-    const { isDateCurrent } = this.state;
-    const month = moment(new Date(isDateCurrent)).format("DD/YYYY");
-    await this.getSalary(month);
+    const { monthCurrent } = this.state;
+    await this.getSalary(monthCurrent);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     done();
   }
@@ -173,18 +173,34 @@ export default class employeeStatistical extends React.Component {
         {!isLoading && (
           <div className="page-render p-0">
             <div className="employee-statistical">
-              <div className="employee-statistical__item">
-                <div className="title">Chưa trả lương</div>
-                <div className="tfooter">
-                  <div className="tr">
-                    <div className="td">Dự kiến</div>
-                    <div className="td">
-                      {dataSalary &&
-                        formatPriceVietnamese(this.basicSalary(dataSalary))}
+              {dataSalary && dataSalary?.CHI_LUONG.length > 0 ? (
+                <div className="employee-statistical__item">
+                  <div className="title">Đã trả lương</div>
+                  <div className="tfooter">
+                    <div className="tr">
+                      <div className="td">Đã trả</div>
+                      <div className="td">
+                        {dataSalary &&
+                          formatPriceVietnamese(dataSalary?.CHI_LUONG[0].Value)}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="employee-statistical__item">
+                  <div className="title">Chưa trả lương</div>
+                  <div className="tfooter">
+                    <div className="tr">
+                      <div className="td">Dự kiến</div>
+                      <div className="td">
+                        {dataSalary &&
+                          formatPriceVietnamese(this.basicSalary(dataSalary))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className="employee-statistical__item">
                 <div className="title">Lương cơ bản</div>
                 <div className="head">
@@ -430,6 +446,22 @@ export default class employeeStatistical extends React.Component {
                         )}
                       </div>
                     </div>
+                    {dataSalary.CHI_LUONG && dataSalary.CHI_LUONG.length === 0 && (
+                      <div className="tr">
+                        <div className="td">Dự kiến thưởng KPI</div>
+                        <div className="td">
+                          {dataSalary?.THUONG_HOA_HONG_DOANH_SO?.Bonus > 0 && (
+                            <span style={{ paddingRight: "8px" }}>
+                              ({dataSalary?.THUONG_HOA_HONG_DOANH_SO?.Bonus}%)
+                            </span>
+                          )}
+                          {dataSalary &&
+                            formatPriceVietnamese(
+                              dataSalary?.THUONG_HOA_HONG_DOANH_SO?.Value || 0
+                            )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -546,59 +578,63 @@ export default class employeeStatistical extends React.Component {
                   </div>
                 </div>
               </div>
-              <div className="employee-statistical__item">
-                <div className="title">Lương của bạn</div>
-                <div className="tfooter">
-                  <div className="tr">
-                    <div className="td">Dự kiến</div>
-                    <div className="td">
-                      {dataSalary &&
-                        formatPriceVietnamese(this.basicSalary(dataSalary))}
+              {dataSalary && dataSalary?.CHI_LUONG.length === 0 && (
+                <div className="employee-statistical__item">
+                  <div className="title">Lương của bạn</div>
+                  <div className="tfooter">
+                    <div className="tr">
+                      <div className="td">Dự kiến</div>
+                      <div className="td">
+                        {dataSalary &&
+                          formatPriceVietnamese(this.basicSalary(dataSalary))}
+                      </div>
                     </div>
-                  </div>
-                  <div className="tr">
-                    <div className="td">Giữ lương</div>
-                    <div className="td">
-                      {dataSalary &&
-                        formatPriceVietnamese(
-                          dataSalary.TY_LE_GIU_LUONG > 100
-                            ? dataSalary.TY_LE_GIU_LUONG
-                            : Math.ceil(
-                                (this.basicSalary(dataSalary) / 100) *
-                                  dataSalary.TY_LE_GIU_LUONG
-                              )
-                        )}
-                    </div>
-                  </div>
-                  <div className="tr">
-                    <div className="td">Tạm ứng còn lại</div>
-                    <div className="td">
-                      {dataSalary &&
-                        formatPriceVietnamese(
-                          Math.abs(this.numTotal(dataSalary.TAM_UNG)) -
-                            Math.abs(this.numTotal(dataSalary.THU_HOAN_UNG))
-                        )}
-                    </div>
-                  </div>
-                  <div className="tr">
-                    <div className="td">Lương thực nhận</div>
-                    <div className="td">
-                      {dataSalary &&
-                        formatPriceVietnamese(
-                          this.basicSalary(dataSalary) -
-                            (dataSalary.TY_LE_GIU_LUONG > 100
+                    <div className="tr">
+                      <div className="td">Giữ lương</div>
+                      <div className="td">
+                        {dataSalary &&
+                          formatPriceVietnamese(
+                            dataSalary.TY_LE_GIU_LUONG > 100
                               ? dataSalary.TY_LE_GIU_LUONG
                               : Math.ceil(
                                   (this.basicSalary(dataSalary) / 100) *
                                     dataSalary.TY_LE_GIU_LUONG
-                                )) -
-                            (Math.abs(this.numTotal(dataSalary.TAM_UNG)) -
-                              Math.abs(this.numTotal(dataSalary.THU_HOAN_UNG)))
-                        )}
+                                )
+                          )}
+                      </div>
+                    </div>
+                    <div className="tr">
+                      <div className="td">Tạm ứng còn lại</div>
+                      <div className="td">
+                        {dataSalary &&
+                          formatPriceVietnamese(
+                            Math.abs(this.numTotal(dataSalary.TAM_UNG)) -
+                              Math.abs(this.numTotal(dataSalary.THU_HOAN_UNG))
+                          )}
+                      </div>
+                    </div>
+                    <div className="tr">
+                      <div className="td">Lương thực nhận</div>
+                      <div className="td">
+                        {dataSalary &&
+                          formatPriceVietnamese(
+                            this.basicSalary(dataSalary) -
+                              (dataSalary.TY_LE_GIU_LUONG > 100
+                                ? dataSalary.TY_LE_GIU_LUONG
+                                : Math.ceil(
+                                    (this.basicSalary(dataSalary) / 100) *
+                                      dataSalary.TY_LE_GIU_LUONG
+                                  )) -
+                              (Math.abs(this.numTotal(dataSalary.TAM_UNG)) -
+                                Math.abs(
+                                  this.numTotal(dataSalary.THU_HOAN_UNG)
+                                ))
+                          )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         )}

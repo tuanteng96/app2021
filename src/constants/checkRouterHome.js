@@ -23,3 +23,11 @@ export const checkRouterHome = () => {
     }
     return HomeIndex;
 }
+
+export const CheckPrivateNav = (roles) => {
+    const infoUser = getUser();
+    const userRoles = infoUser.GroupTitles;
+    const hasRole = roles.some((role) => userRoles.includes(role));
+    const hasRoleLength = Array.isArray(userRoles) && userRoles.length === 0 && Array.isArray(roles) && roles.length === 0;
+    return hasRole || hasRoleLength;
+}

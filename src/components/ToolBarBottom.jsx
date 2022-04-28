@@ -4,7 +4,7 @@ import { getUser } from "../constants/user";
 import iconBook from "../assets/images/bookicon.png";
 import { checkRole } from "../constants/checkRole";
 import PrivateNav from "../auth/PrivateNav";
-
+import { CheckPrivateNav } from "../constants/checkRouterHome";
 
 export default class ToolBarCustom extends React.Component {
   constructor() {
@@ -16,14 +16,10 @@ export default class ToolBarCustom extends React.Component {
   }
   componentDidMount() {
     var $$ = this.Dom7;
-    const itemLink = $$(".page-toolbar-bottom__link").length;
-    this.setState({
-      itemLink: itemLink,
-    });
+    $$(".js-link-home").addClass("js-active");
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const {itemLink} = this.state;
     var href = this.$f7.views.main.router.url;
     var $$ = this.Dom7;
     $$(".js-toolbar-link").removeClass("js-active");
@@ -39,14 +35,43 @@ export default class ToolBarCustom extends React.Component {
         }
       });
     }
-    if (prevState.itemLink !== itemLink) {
-      const itemLink = $$(".page-current").find(".page-toolbar-bottom__link")
-        .length;
-      this.setState({
-        itemLink: itemLink,
-      });
-    }
   }
+
+  checkTotal = () => {
+    const TYPE = checkRole();
+    const infoUser = getUser();
+    const userRoles = infoUser?.GroupTitles;
+
+    if (TYPE === "ADMIN") {
+      return 2;
+    }
+    if (TYPE === "STAFF") {
+      const arrType = [
+        CheckPrivateNav(["service"]),
+        CheckPrivateNav([
+          "order",
+          "sale",
+          "service",
+          "manager",
+          "director",
+          "store",
+          "accountant",
+        ]),
+        CheckPrivateNav(["director"]),
+        CheckPrivateNav([
+          "order",
+          "sale",
+          "service",
+          "manager",
+          "director",
+          "store",
+          "accountant",
+        ]),
+      ];
+      return arrType.filter((item) => item).length;
+    }
+    return 5;
+  };
 
   menuToolbar = () => {
     const TYPE = checkRole();
@@ -59,7 +84,7 @@ export default class ToolBarCustom extends React.Component {
               icon="las la-hand-holding-heart"
               text="Dịch vụ"
               roles={["service"]}
-              href="/employee/service/"
+              href="/"
             />
             <PrivateNav
               className="page-toolbar-bottom__link js-toolbar-link"
@@ -76,13 +101,13 @@ export default class ToolBarCustom extends React.Component {
               ]}
               href="/employee/statistical/"
             />
-            {/* <PrivateNav
+            <PrivateNav
               className="page-toolbar-bottom__link js-toolbar-link"
               icon="las la-chart-bar"
               text="Báo cáo"
               roles={["director"]}
               href="/employee/report/"
-            /> */}
+            />
             <PrivateNav
               className="page-toolbar-bottom__link js-toolbar-link"
               icon="las la-user-circle"
@@ -103,10 +128,17 @@ export default class ToolBarCustom extends React.Component {
       case "ADMIN":
         return (
           <React.Fragment>
-            <PrivateNav
+            {/* <PrivateNav
               className="page-toolbar-bottom__link js-toolbar-link"
               icon="las la-piggy-bank"
               text="Thống kê"
+              roles={[]}
+              href="/"
+            /> */}
+            <PrivateNav
+              className="page-toolbar-bottom__link js-toolbar-link js-link-home"
+              icon="las la-chart-bar"
+              text="Báo cáo"
               roles={[]}
               href="/"
             />
@@ -213,11 +245,10 @@ export default class ToolBarCustom extends React.Component {
   };
 
   render() {
-    const { itemLink } = this.state;
     return (
       <div className="page-toolbar">
         <div
-          className={`page-toolbar-bottom js-toolbar-bottom total-${itemLink}`}
+          className={`page-toolbar-bottom js-toolbar-bottom total-${this.checkTotal()}`}
           id="js-toolbar-bottom"
         >
           {this.menuToolbar()}

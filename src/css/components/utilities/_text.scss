@@ -1,0 +1,7 @@
+@each $name,
+$size in $config-font-size {
+    // Base color
+    .font-#{$name} {
+        font-size: $size !important;
+    }
+}

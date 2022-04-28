@@ -22,8 +22,8 @@ export default class employeeReport extends React.Component {
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
-              <Link onClick={() => this.openStock()}>
-                <i className="las la-map-marked-alt"></i>
+              <Link onClick={() => this.$f7.panel.toggle()}>
+                <i className="las la-bars font-size-xl"></i>
               </Link>
             </div>
             <div className="page-navbar__title">

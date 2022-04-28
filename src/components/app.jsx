@@ -72,6 +72,11 @@ export default class extends React.Component {
   render() {
     return (
       <App params={this.state.f7params}>
+        <Panel left reveal resizable closeByBackdropClick backdrop>
+          <View>
+            <Page>a</Page>
+          </View>
+        </Panel>
         {/* Your main view, should have "view-main" class */}
         <View main className="safe-areas" url="/" />
       </App>

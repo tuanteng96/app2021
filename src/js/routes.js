@@ -70,7 +70,7 @@ const checkRouterHome = () => {
 
     if (ACC_TYPE === "U") {
         if (infoUser.ID === 1) {
-            return EmployeeStatisticalPage;
+            return EmployeeReportPage;
         } else {
             const groupRole = infoUser.GroupTitles;
             if (groupRole.includes("service")) {
@@ -165,7 +165,6 @@ var routes = [{
     },
     {
         path: '/shop/detail/:cateId',
-        async(routeTo, routeFrom, resolve, reject) {},
         asyncComponent: () => ShopDetailPage,
     },
     {

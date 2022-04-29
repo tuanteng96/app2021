@@ -1,4 +1,76 @@
 html.with-panel-left-reveal .panel-backdrop-in {
     background: #000;
-    opacity: .4;
+    opacity: .2;
+}
+
+.panel-report {
+    .page-content {
+        background: #fff;
+        overflow: hidden;
+        .panel-header {
+            height: calc(var(--f7-navbar-height) + var(--f7-safe-area-top));
+            line-height: calc(var(--f7-navbar-height) + var(--f7-safe-area-top));
+            background: $color-app;
+            border-bottom: solid 2px rgba(255, 255, 255, 0.3);
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: 500;
+            color: $white;
+        }
+        .panel-body {
+            height: calc(100% - calc(var(--f7-navbar-height) + var(--f7-safe-area-top)) - 48px);
+            overflow: auto;
+        }
+        .panel-nav {
+            //padding: 8px 0;
+            a {
+                padding: 10px 15px;
+                display: block;
+                color: #3F4254;
+                position: relative;
+                &:not(:last-child) {
+                    border-bottom: 1px solid #F3F6F9;
+                }
+                &.active {
+                    background: #F3F6F9;
+                    color: $black;
+                }
+                .title {
+                    font-weight: 600;
+                }
+                .desc {
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    font-size: 12px;
+                }
+            }
+        }
+        .panel-footer {
+            height: 48px;
+            box-shadow: 0 0 40px 0 rgb(82 63 105 / 10%);
+            position: relative;
+            .stock-name {
+                height: 100%;
+                line-height: 48px;
+                padding: 0 15px;
+                text-transform: uppercase;
+                font-weight: 500;
+                font-size: 14px;
+                color: $color-app;
+                svg {
+                    width: 10px;
+                    height: 10px;
+                    padding-left: 6px;
+                }
+            }
+            >i {
+                position: absolute;
+                right: 15px;
+                top: 14px;
+                font-size: 18px;
+                color: #B5B5C3;
+            }
+        }
+    }
 }

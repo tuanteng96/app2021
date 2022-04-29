@@ -2,19 +2,17 @@ import React from "react";
 import { Link, Navbar, Page, Toolbar } from "framework7-react";
 import NotificationIcon from "../../../components/NotificationIcon";
 import ToolBarBottom from "../../../components/ToolBarBottom";
-import SelectStock from "../../../components/SelectStock";
 import PageNoData from "../../../components/PageNoData";
+import { getStockNameStorage } from "../../../constants/user";
+import PanelLeft from "../../../components/PanelLeft/PanelLeft";
 export default class employeeReport extends React.Component {
   constructor() {
     super();
     this.state = {};
   }
 
-  openStock = () => {
-    this.setState({
-      isOpenStock: !this.state.isOpenStock,
-    });
-  };
+  componentDidMount() {
+  }
 
   render() {
     return (
@@ -34,13 +32,13 @@ export default class employeeReport extends React.Component {
             </div>
           </div>
         </Navbar>
+        <PanelLeft f7={this} />
         <div className="page-render">
           <PageNoData text="Đang cập nhập ..." />
         </div>
         <Toolbar tabbar position="bottom">
           <ToolBarBottom />
         </Toolbar>
-        <SelectStock isOpenStock={this.state.isOpenStock} />
       </Page>
     );
   }

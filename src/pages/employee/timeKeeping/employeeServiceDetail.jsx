@@ -254,9 +254,9 @@ export default class employeeServiceDetail extends React.Component {
       Resizer.imageFileResizer(
         file,
         1500,
-        1000,
+        1500,
         "JPEG",
-        90,
+        100,
         0,
         (uri) => {
           resolve(uri);

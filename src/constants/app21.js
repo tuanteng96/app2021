@@ -137,9 +137,9 @@ export const app21 = /** @class */ (function() {
     /*BUILTIN*/
     _21.PHOTO_TO_SERVER = function(_opt) {
         var opt = {
-            maxwidth: 5000,
-            maxheight: 5000,
-            ext: 'png',
+            maxwidth: 1500,
+            maxheight: 1500,
+            ext: 'jpg',
             pref: 'IMG',
             server: '/api/v3/file?cmd=upload&autn=AAAA'
         };
@@ -147,9 +147,9 @@ export const app21 = /** @class */ (function() {
         var t = this;
 
         var cameraOpt = {
-            maxwidth: 5000,
-            maxheight: 5000,
-            ext: 'png',
+            maxwidth: 1500,
+            maxheight: 1500,
+            ext: 'jpg',
             pref: 'IMG',
         }
 
@@ -158,12 +158,13 @@ export const app21 = /** @class */ (function() {
         }
         return new Promise((resolve, reject) => {
             t.prom('CAMERA', cameraOpt).then(s => {
-
+                console.log(s);
                 t.prom('POST_TO_SERVER', JSON.stringify({
                     server: opt.server,
                     path: s.data
                         // token: 'neu_co',
                 })).then(s1 => {
+                    console.log(s1);
                     var rs = JSON.parse(s1.data);
                     //console.log('app_camera->CAMERA->POST_TO_SERVER->OK', rs.data);
                     // vm.$emit('success', rs.data);

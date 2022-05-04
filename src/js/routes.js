@@ -43,7 +43,8 @@ import EmployeeServiceDetailPage from "../pages/employee/timeKeeping/employeeSer
 import EmployeeServiceDiaryPage from "../pages/employee/timeKeeping/employeeServiceDiary";
 import EmployeeServiceSchedulePage from "../pages/employee/timeKeeping/employeeServiceSchedule";
 import EmployeeStatisticalPage from "../pages/employee/statistical/employeeStatistical";
-import EmployeeReportPage from "../pages/employee/report/employeeReport";
+// Thống kê
+import ReportingDate from "../pages/report/ReportingDate";
 
 import SearchPage from "../pages/search/index";
 import NotFoundPage from '../pages/404.jsx';
@@ -70,7 +71,7 @@ const checkRouterHome = () => {
 
     if (ACC_TYPE === "U") {
         if (infoUser.ID === 1) {
-            return EmployeeReportPage;
+            return ReportingDate;
         } else {
             const groupRole = infoUser.GroupTitles;
             if (groupRole.includes("service")) {
@@ -335,8 +336,8 @@ var routes = [{
         }
     },
     {
-        path: '/employee/report/', // Thống kê
-        asyncComponent: () => EmployeeReportPage,
+        path: '/report/date/', // Thống kê
+        asyncComponent: () => ReportingDate,
         options: {
             transition: 'f7-cover',
         }

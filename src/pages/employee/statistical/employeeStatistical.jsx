@@ -34,6 +34,7 @@ export default class employeeStatistical extends React.Component {
 
   numTotal = (arr) => {
     const initialValue = 0;
+    if(!arr) return initialValue;
     let sum = arr.reduce(function (total, currentValue) {
       return total + currentValue.Value;
     }, initialValue);
@@ -83,6 +84,7 @@ export default class employeeStatistical extends React.Component {
     staffService
       .getSalary(userID, date)
       .then((response) => {
+        
         const result = response.data.data;
         setTimeout(() => {
           this.setState({
@@ -145,6 +147,7 @@ export default class employeeStatistical extends React.Component {
         step: 1,
       },
     };
+
     return (
       <Page
         name="employee-statistical"
@@ -173,7 +176,7 @@ export default class employeeStatistical extends React.Component {
         {!isLoading && (
           <div className="page-render p-0">
             <div className="employee-statistical">
-              {dataSalary && dataSalary?.CHI_LUONG.length > 0 ? (
+              {dataSalary && dataSalary.CHI_LUONG.length > 0 ? (
                 <div className="employee-statistical__item">
                   <div className="title">Đã trả lương</div>
                   <div className="tfooter">
@@ -351,6 +354,10 @@ export default class employeeStatistical extends React.Component {
                               </span>
                               {item.ProdTitle} - ({" "}
                               {moment(item.CreateDate).format("llll")} )
+                              <div>
+                                {item?.Member?.FullName} -{" "}
+                                {item?.Member?.MobilePhone}
+                              </div>
                             </div>
                             <div className="td w-3">
                               {formatPriceVietnamese(item.Value)}
@@ -374,7 +381,7 @@ export default class employeeStatistical extends React.Component {
               <div className="employee-statistical__item">
                 <div className="title">
                   Hoa hồng bán hàng (
-                  <span>{dataSalary && dataSalary.BonusSales.length}</span>)
+                  <span>{dataSalary && dataSalary.BonusSales?.length || 0}</span>)
                 </div>
                 <div className="head">
                   <div className="tr">
@@ -385,12 +392,13 @@ export default class employeeStatistical extends React.Component {
                 </div>
                 <div className="tbody">
                   {dataSalary &&
-                    dataSalary.BonusSales.map((item, index) => (
+                    dataSalary.BonusSales?.map((item, index) => (
                       <div className="tr" key={index}>
                         <div className="td w-1">{index + 1}</div>
                         <div className="td w-2">
                           Hoa hồng - ( {moment(item.CreateDate).format("llll")}{" "}
                           )
+                          <div>{item.ProdTitle}</div>
                         </div>
                         <div className="td w-3">
                           {formatPriceVietnamese(item.Value)}
@@ -410,7 +418,7 @@ export default class employeeStatistical extends React.Component {
                   </div>
                 </div>
               </div>
-              {dataSalary && dataSalary.DOANH_SO.length > 0 && (
+              {(dataSalary && dataSalary.DOANH_SO.length  > 0 || dataSalary?.CHI_LUONG && dataSalary.CHI_LUONG.length === 0) && (
                 <div className="employee-statistical__item">
                   <div className="title">
                     Doanh số bán hàng (

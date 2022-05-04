@@ -43,7 +43,7 @@ export default class ToolBarCustom extends React.Component {
     const userRoles = infoUser?.GroupTitles;
 
     if (TYPE === "ADMIN") {
-      return 2;
+      return 3;
     }
     if (TYPE === "STAFF") {
       const arrType = [
@@ -106,7 +106,7 @@ export default class ToolBarCustom extends React.Component {
               icon="las la-chart-bar"
               text="Báo cáo"
               roles={["director"]}
-              href="/employee/report/"
+              href="/report/date/"
             />
             <PrivateNav
               className="page-toolbar-bottom__link js-toolbar-link"
@@ -128,13 +128,13 @@ export default class ToolBarCustom extends React.Component {
       case "ADMIN":
         return (
           <React.Fragment>
-            {/* <PrivateNav
+            <PrivateNav
               className="page-toolbar-bottom__link js-toolbar-link"
               icon="las la-piggy-bank"
               text="Thống kê"
               roles={[]}
-              href="/"
-            /> */}
+              href="/employee/statistical/"
+            />
             <PrivateNav
               className="page-toolbar-bottom__link js-toolbar-link js-link-home"
               icon="las la-chart-bar"

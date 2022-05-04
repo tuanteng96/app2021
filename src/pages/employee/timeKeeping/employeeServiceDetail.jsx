@@ -27,6 +27,8 @@ import { VscChromeClose, VscCloudUpload } from "react-icons/vsc";
 import { TiCameraOutline } from "react-icons/ti";
 import SkeletonDetail from "./skeleton/SkeletonDetail";
 import { CALL_PHONE, PHOTO_TO_SERVER } from "../../../constants/prom21";
+import Resizer from "react-image-file-resizer";
+
 
 toast.configure();
 
@@ -247,16 +249,36 @@ export default class employeeServiceDetail extends React.Component {
       .catch((error) => console.log(error));
   };
 
+  resizeFile = (file) => {
+    return new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        file,
+        1500,
+        1000,
+        "JPEG",
+        90,
+        0,
+        (uri) => {
+          resolve(uri);
+        },
+        "file",
+        300,
+        300
+      );
+    });
+  };
+
   handleUploadFile = async (event) => {
-    const formData = new FormData();
-    formData.append("file", event.target.files[0]);
     f7.dialog.preloader("Đang Upload...");
     try {
+      const image = await this.resizeFile(event.target.files[0]);
+      const formData = new FormData();
+      formData.append("file", image);
       const upload = await staffService.uploadImageStaff(formData);
       const src = upload.data.data;
-      const updateImage = await this.updateImageServer(src);
+      await this.updateImageServer(src);
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      const getImage = await this.getImageStaff();
+      await this.getImageStaff();
       setTimeout(() => {
         f7.dialog.close();
       }, 1000);
@@ -313,7 +335,7 @@ export default class employeeServiceDetail extends React.Component {
     if (phone) {
       CALL_PHONE(phone);
     }
-  }
+  };
 
   render() {
     const {
@@ -399,7 +421,9 @@ export default class employeeServiceDetail extends React.Component {
                   <span>Số điện thoại</span>
                   <span
                     onClick={() =>
-                      this.onCallPhone(itemDetail && itemDetail.member.MobilePhone)
+                      this.onCallPhone(
+                        itemDetail && itemDetail.member.MobilePhone
+                      )
                     }
                     className="text-link"
                   >

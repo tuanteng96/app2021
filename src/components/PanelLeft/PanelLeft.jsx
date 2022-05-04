@@ -4,6 +4,59 @@ import { FaChevronDown } from "react-icons/fa";
 import { getStockNameStorage } from "../../constants/user";
 import SelectStock from "../SelectStock";
 
+const RouterReport = [
+  {
+    Title: "Báo cáo ngày",
+    Desc: "Thống kê tổng hợp theo ngày",
+    Href: ["/", "/report/date/"],
+  },
+  {
+    Title: "Khách hàng",
+    Desc: "Tổng hợp, theo dõi lượng khách hàng",
+    Href: [],
+  },
+  {
+    Title: "Bán hàng",
+    Desc: "Thống kê đơn hàng, thu chi đơn hàng",
+    Href: [],
+  },
+  {
+    Title: "Dịch vụ",
+    Desc: "Thống kê dịch vụ, thẻ dịch vụ",
+    Href: [],
+  },
+  {
+    Title: "Sổ quỷ",
+    Desc: "Tổng hợp, theo dõi sổ quỷ",
+    Href: [],
+  },
+  {
+    Title: "Tồn kho",
+    Desc: "Thống kê, theo dõi lượng tồn kho",
+    Href: [],
+  },
+  {
+    Title: "Nhân viên",
+    Desc: "Thống kê ca nhân viên",
+    Href: [],
+  },
+  {
+    Title: "Chăm sóc khách hàng",
+    Desc: "Thống kê chăm sóc khách hàng",
+    Href: [],
+  },
+  {
+    Title: "Công nợ",
+    Desc: "Ghi nợ, đơn nợ còn và hết",
+    Href: [],
+  },
+  {
+    Title: "Lợi nhuận",
+    Desc: "Tổng hợp chi phí lợi nhận",
+    Href: [],
+  },
+];
+
 function PanelLeft({ f7 }) {
   const [isOpenStock, setIsOpenStock] = useState(false);
   const [isReload, setIsReload] = useState(0);
@@ -23,12 +76,17 @@ function PanelLeft({ f7 }) {
   };
 
   const onChangeHref = (href) => {
-    f7.$f7.panel.close();
-    f7.$f7router.navigate(href);
+    if (href.some((item) => item === f7.$f7.views.main.router.url)) {
+      f7.$f7.panel.close();
+    }
+    else {
+      f7.$f7.panel.close();
+      f7.$f7router.navigate(href[0]);
+    }
   };
 
   const isCheckActive = (href) => {
-    return f7.$f7.views.main.router.url === href;
+    return href.some((item) => item === f7.$f7.views.main.router.url);
   };
 
   return (
@@ -45,50 +103,18 @@ function PanelLeft({ f7 }) {
           <div className="panel-header">Menu Báo cáo</div>
           <div className="panel-body">
             <div className="panel-nav">
-              <Link
-                noLinkClass
-                className={`${isCheckActive("/") ? "active" : ""}`}
-                onClick={() => onChangeHref("/")}
-              >
-                <div className="title">Báo cáo ngày</div>
-                <div className="desc">Thống kê tổng hợp theo ngày</div>
-              </Link>
-              <Link noLinkClass>
-                <div className="title">Khách hàng</div>
-                <div className="desc">Tổng hợp, theo dõi lượng khách hàng</div>
-              </Link>
-              <Link noLinkClass>
-                <div className="title">Bán hàng</div>
-                <div className="desc">Thống kê đơn hàng, thu chi đơn hàng</div>
-              </Link>
-              <Link noLinkClass>
-                <div className="title">Dịch vụ</div>
-                <div className="desc">Thống kê dịch vụ, thẻ dịch vụ</div>
-              </Link>
-              <Link noLinkClass>
-                <div className="title">Sổ quỷ</div>
-                <div className="desc">Tổng hợp, theo dõi sổ quỷ</div>
-              </Link>
-              <Link noLinkClass>
-                <div className="title">Tồn kho</div>
-                <div className="desc">Thống kê, theo dõi lượng tồn kho</div>
-              </Link>
-              <Link noLinkClass>
-                <div className="title">Nhân viên</div>
-                <div className="desc">Thống kê ca nhân viên</div>
-              </Link>
-              <Link noLinkClass>
-                <div className="title">Chăm sóc khách hàng</div>
-                <div className="desc">Thống kê chăm sóc khách hàng</div>
-              </Link>
-              <Link noLinkClass>
-                <div className="title">Công nợ</div>
-                <div className="desc">Ghi nợ, đơn nợ còn và hết</div>
-              </Link>
-              <Link noLinkClass>
-                <div className="title">Lợi nhuận</div>
-                <div className="desc">Tổng hợp chi phí lợi nhận</div>
-              </Link>
+              {RouterReport &&
+                RouterReport.map((item, index) => (
+                  <Link
+                    key={index}
+                    noLinkClass
+                    className={`${isCheckActive(item.Href) ? "active" : ""}`}
+                    onClick={() => onChangeHref(item.Href)}
+                  >
+                    <div className="title">{item.Title}</div>
+                    <div className="desc">{item.Desc}</div>
+                  </Link>
+                ))}
             </div>
           </div>
           <div className="panel-footer" onClick={handleStock}>

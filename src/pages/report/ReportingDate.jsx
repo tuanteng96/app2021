@@ -1,11 +1,11 @@
 import React from "react";
 import { Link, Navbar, Page, Toolbar } from "framework7-react";
-import NotificationIcon from "../../../components/NotificationIcon";
-import ToolBarBottom from "../../../components/ToolBarBottom";
-import PageNoData from "../../../components/PageNoData";
-import { getStockNameStorage } from "../../../constants/user";
-import PanelLeft from "../../../components/PanelLeft/PanelLeft";
-export default class employeeReport extends React.Component {
+import ToolBarBottom from "../../components/ToolBarBottom";
+import NotificationIcon from "../../components/NotificationIcon";
+import PanelLeft from "../../components/PanelLeft/PanelLeft";
+import PageNoData from "../../components/PageNoData";
+
+export default class ReportingDate extends React.Component {
   constructor() {
     super();
     this.state = {};

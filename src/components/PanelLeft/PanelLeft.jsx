@@ -1,3 +1,4 @@
+import Dom7 from "dom7";
 import { Link, Page, Panel, View } from "framework7-react";
 import React, { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
@@ -8,52 +9,52 @@ const RouterReport = [
   {
     Title: "Báo cáo ngày",
     Desc: "Thống kê tổng hợp theo ngày",
-    Href: ["/", "/report/date/"],
+    Href: "/report/date/",
   },
   {
     Title: "Khách hàng",
     Desc: "Tổng hợp, theo dõi lượng khách hàng",
-    Href: [],
+    Href: "/report/customer/",
   },
   {
     Title: "Bán hàng",
     Desc: "Thống kê đơn hàng, thu chi đơn hàng",
-    Href: [],
+    Href: "/report/sell/",
   },
   {
     Title: "Dịch vụ",
     Desc: "Thống kê dịch vụ, thẻ dịch vụ",
-    Href: [],
+    Href: "",
   },
   {
     Title: "Sổ quỷ",
     Desc: "Tổng hợp, theo dõi sổ quỷ",
-    Href: [],
+    Href: "",
   },
   {
     Title: "Tồn kho",
     Desc: "Thống kê, theo dõi lượng tồn kho",
-    Href: [],
+    Href: "",
   },
   {
     Title: "Nhân viên",
     Desc: "Thống kê ca nhân viên",
-    Href: [],
+    Href: "",
   },
   {
     Title: "Chăm sóc khách hàng",
     Desc: "Thống kê chăm sóc khách hàng",
-    Href: [],
+    Href: "",
   },
   {
     Title: "Công nợ",
     Desc: "Ghi nợ, đơn nợ còn và hết",
-    Href: [],
+    Href: "",
   },
   {
     Title: "Lợi nhuận",
     Desc: "Tổng hợp chi phí lợi nhận",
-    Href: [],
+    Href: "",
   },
 ];
 
@@ -67,6 +68,40 @@ function PanelLeft({ f7 }) {
     setNameIsStock(stockName);
   }, []);
 
+  useEffect(() => {
+    var $$ = Dom7;
+    if (f7.$f7.views.main.router.url === "/") {
+      $$(".nav-report .nav-report-item").removeClass("active");
+      $$(".nav-report .nav-report-item:first-child").addClass("active");
+    } else {
+      $$(".nav-report .nav-report-item").each(function () {
+        const _this = $$(this);
+        const hrefLink = _this.attr("data-href");
+        if (hrefLink === f7.$f7.views.main.router.url) {
+          $$(".nav-report .nav-report-item").removeClass("active");
+          _this.addClass("active");
+        }
+      });
+    }
+  }, [f7.$f7.views.main.router.url]);
+
+  f7.$f7.on("panelOpened", function (panel) {
+    var $$ = Dom7;
+    if (f7.$f7.views.main.router.url === "/") {
+      $$(".nav-report .nav-report-item").removeClass("active");
+      $$(".nav-report .nav-report-item:first-child").addClass("active");
+    } else {
+      $$(".nav-report .nav-report-item").each(function () {
+        const _this = $$(this);
+        const hrefLink = _this.attr("data-href");
+        if (hrefLink === f7.$f7.views.main.router.url) {
+          $$(".nav-report .nav-report-item").removeClass("active");
+          _this.addClass("active");
+        }
+      });
+    }
+  });
+
   const nameStock = (name) => {
     setNameIsStock(name);
   };
@@ -76,17 +111,16 @@ function PanelLeft({ f7 }) {
   };
 
   const onChangeHref = (href) => {
-    if (href.some((item) => item === f7.$f7.views.main.router.url)) {
+    if (href === f7.$f7.views.main.router.url) {
       f7.$f7.panel.close();
-    }
-    else {
+    } else {
+      f7.$f7.dialog.preloader("Đang tải ...");
       f7.$f7.panel.close();
-      f7.$f7router.navigate(href[0]);
+      f7.$f7.on("panelClosed", function (panel) {
+         f7.$f7.dialog.close();
+         f7.$f7.views.main.router.navigate(href);
+      });
     }
-  };
-
-  const isCheckActive = (href) => {
-    return href.some((item) => item === f7.$f7.views.main.router.url);
   };
 
   return (
@@ -102,18 +136,23 @@ function PanelLeft({ f7 }) {
         <Page>
           <div className="panel-header">Menu Báo cáo</div>
           <div className="panel-body">
-            <div className="panel-nav">
+            <div className="panel-nav nav-report">
               {RouterReport &&
                 RouterReport.map((item, index) => (
-                  <Link
+                  <div
+                    className="nav-report-item active"
                     key={index}
-                    noLinkClass
-                    className={`${isCheckActive(item.Href) ? "active" : ""}`}
-                    onClick={() => onChangeHref(item.Href)}
+                    data-href={item.Href}
                   >
-                    <div className="title">{item.Title}</div>
-                    <div className="desc">{item.Desc}</div>
-                  </Link>
+                    <Link
+                      noLinkClass
+                      onClick={() => onChangeHref(item.Href)}
+                      className="nav-report-link"
+                    >
+                      <div className="title">{item.Title}</div>
+                      <div className="desc">{item.Desc}</div>
+                    </Link>
+                  </div>
                 ))}
             </div>
           </div>

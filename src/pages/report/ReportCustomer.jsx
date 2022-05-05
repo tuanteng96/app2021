@@ -5,7 +5,7 @@ import NotificationIcon from "../../components/NotificationIcon";
 import PanelLeft from "../../components/PanelLeft/PanelLeft";
 import PageNoData from "../../components/PageNoData";
 
-export default class ReportingDate extends React.Component {
+export default class ReportCustomer extends React.Component {
   constructor() {
     super();
     this.state = {};
@@ -25,7 +25,7 @@ export default class ReportingDate extends React.Component {
               </Link>
             </div>
             <div className="page-navbar__title">
-              <span className="title">Báo cáo ngày</span>
+              <span className="title">Báo cáo khách hàng</span>
             </div>
             <div className="page-navbar__noti">
               <NotificationIcon />

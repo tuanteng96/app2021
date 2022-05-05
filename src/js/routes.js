@@ -44,7 +44,9 @@ import EmployeeServiceDiaryPage from "../pages/employee/timeKeeping/employeeServ
 import EmployeeServiceSchedulePage from "../pages/employee/timeKeeping/employeeServiceSchedule";
 import EmployeeStatisticalPage from "../pages/employee/statistical/employeeStatistical";
 // Thống kê
-import ReportingDate from "../pages/report/ReportingDate";
+import ReportingDatePage from "../pages/report/ReportingDate";
+import ReportCustomerPage from "../pages/report/ReportCustomer";
+import ReportSellPage from "../pages/report/ReportSell";
 
 import SearchPage from "../pages/search/index";
 import NotFoundPage from '../pages/404.jsx';
@@ -71,7 +73,7 @@ const checkRouterHome = () => {
 
     if (ACC_TYPE === "U") {
         if (infoUser.ID === 1) {
-            return ReportingDate;
+            return EmployeeStatisticalPage;
         } else {
             const groupRole = infoUser.GroupTitles;
             if (groupRole.includes("service")) {
@@ -337,7 +339,21 @@ var routes = [{
     },
     {
         path: '/report/date/', // Thống kê
-        asyncComponent: () => ReportingDate,
+        asyncComponent: () => ReportingDatePage,
+        options: {
+            transition: 'f7-cover',
+        }
+    },
+    {
+        path: '/report/customer/', // Thống kê
+        asyncComponent: () => ReportCustomerPage,
+        options: {
+            transition: 'f7-cover',
+        }
+    },
+    {
+        path: '/report/sell/', // Thống kê
+        asyncComponent: () => ReportSellPage,
         options: {
             transition: 'f7-cover',
         }

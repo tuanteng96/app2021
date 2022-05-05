@@ -42,6 +42,9 @@ export default class SlideList extends React.Component {
       autoplay: true,
       autoplaySpeed: this.props.autoplaySpeed,
     };
+    if (arrBanner && arrBanner.length === 0) {
+      return "";
+    }
     return (
       <React.Fragment>
         {!isLoading && (

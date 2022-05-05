@@ -66,7 +66,7 @@ export default class extends React.Component {
             resolve();
           },
         },
-      },
+      }
     };
   }
   render() {
@@ -113,7 +113,6 @@ export default class extends React.Component {
   componentDidMount() {
     window.percent = 99;
     window.APP_READY = true;
-
     document.body.addEventListener("noti_click.go_noti", this.notiDefault);
     document.body.addEventListener("noti_click.prod_id", this.notiProdID);
     document.body.addEventListener("noti_click.art_id", this.notiArtID);

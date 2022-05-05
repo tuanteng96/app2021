@@ -28,13 +28,7 @@ html.with-panel-left-reveal .panel-backdrop-in {
                 display: block;
                 color: #3F4254;
                 position: relative;
-                &:not(:last-child) {
-                    border-bottom: 1px solid #F3F6F9;
-                }
-                &.active {
-                    background: #F3F6F9;
-                    color: $black;
-                }
+                border-bottom: 1px solid #F3F6F9;
                 .title {
                     font-weight: 600;
                 }
@@ -43,6 +37,14 @@ html.with-panel-left-reveal .panel-backdrop-in {
                     white-space: nowrap;
                     text-overflow: ellipsis;
                     font-size: 12px;
+                }
+            }
+            .nav-report-item {
+                &.active {
+                    a {
+                        background: #F3F6F9;
+                        color: $black;
+                    }
                 }
             }
         }

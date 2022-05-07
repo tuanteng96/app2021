@@ -6,15 +6,24 @@
 @import './components/variables';
 @import './../css/abstracts/mixins';
 ////////// base
-@import './base/reset';
+@import './base/reset',
+"./base/mixins";
 //
 @import './components/utilities/sizing',
-'./components/utilities/text';
+'./components/utilities/text',
+"./components/utilities/backgroud",
+"./components/utilities/spacing",
+"./components/utilities/border",
+"./components/utilities/d-flex",
+"./components/utilities/shadows";
 ///
 @import './base/input';
 @import './../css/components/toastify';
 @import '../css/components/loading',
-'./components/panel';
+'./components/panel',
+"./components/button",
+'./components/svg',
+'./components/sheet';
 ////////// layout
 @import './../css/layout/iconanimation';
 @import './../css/layout/button';
@@ -251,6 +260,10 @@ blockquote {
 
 .overflow-hidden {
     overflow: hidden;
+}
+
+.overflow-auto {
+    overflow: auto;
 }
 
 .d-none {

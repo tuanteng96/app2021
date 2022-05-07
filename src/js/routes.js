@@ -47,6 +47,9 @@ import EmployeeStatisticalPage from "../pages/employee/statistical/employeeStati
 import ReportingDatePage from "../pages/report/ReportingDate";
 import ReportCustomerPage from "../pages/report/ReportCustomer";
 import ReportSellPage from "../pages/report/ReportSell";
+import ReportServicesPage from "../pages/report/ReportServices";
+import ReportCashBookPage from "../pages/report/ReportCashBook";
+import ReportMonthlyPage from "../pages/report/ReportMonthly";
 
 import SearchPage from "../pages/search/index";
 import NotFoundPage from '../pages/404.jsx';
@@ -73,7 +76,7 @@ const checkRouterHome = () => {
 
     if (ACC_TYPE === "U") {
         if (infoUser.ID === 1) {
-            return EmployeeStatisticalPage;
+            return ReportingDatePage;
         } else {
             const groupRole = infoUser.GroupTitles;
             if (groupRole.includes("service")) {
@@ -338,28 +341,49 @@ var routes = [{
         }
     },
     {
-        path: '/report/date/', // Thống kê
+        path: '/report/date/', // Báo cáo ngày
         asyncComponent: () => ReportingDatePage,
         options: {
             transition: 'f7-cover',
         }
     },
     {
-        path: '/report/customer/', // Thống kê
+        path: '/report/customer/', // Khách hàng
         asyncComponent: () => ReportCustomerPage,
         options: {
             transition: 'f7-cover',
         }
     },
     {
-        path: '/report/sell/', // Thống kê
+        path: '/report/sell/', // Bán hàng
         asyncComponent: () => ReportSellPage,
         options: {
             transition: 'f7-cover',
         }
     },
     {
-        path: '/search/', // Thống kê
+        path: '/report/services/', // Dịch vụ
+        asyncComponent: () => ReportServicesPage,
+        options: {
+            transition: 'f7-cover',
+        }
+    },
+    {
+        path: '/report/cash-book/', // Sổ quỹ
+        asyncComponent: () => ReportCashBookPage,
+        options: {
+            transition: 'f7-cover',
+        }
+    },
+    {
+        path: '/report/monthly/', // Thu chi
+        asyncComponent: () => ReportMonthlyPage,
+        options: {
+            transition: 'f7-cover',
+        }
+    },
+    {
+        path: '/search/',
         asyncComponent: () => SearchPage,
     },
     {

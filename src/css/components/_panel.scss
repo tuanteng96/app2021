@@ -23,27 +23,49 @@ html.with-panel-left-reveal .panel-backdrop-in {
         }
         .panel-nav {
             //padding: 8px 0;
-            a {
-                padding: 10px 15px;
-                display: block;
-                color: #3F4254;
-                position: relative;
-                border-bottom: 1px solid #F3F6F9;
-                .title {
-                    font-weight: 600;
-                }
-                .desc {
-                    overflow: hidden;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                    font-size: 12px;
-                }
-            }
-            .nav-report-item {
-                &.active {
-                    a {
-                        background: #F3F6F9;
-                        color: $black;
+            .list {
+                margin: 0;
+                ul {
+                    &::after {
+                        display: none;
+                    }
+                    li {
+                        a {
+                            padding: 10px 15px;
+                            display: block;
+                            color: #3F4254;
+                            position: relative;
+                            border-bottom: 1px solid #F3F6F9;
+                            &.active {
+                                background: #F3F6F9;
+                                color: $black;
+                            }
+                            .title {
+                                font-weight: 600;
+                                font-size: 14px;
+                                line-height: 22px;
+                            }
+                            .desc {
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
+                                font-size: 12px;
+                            }
+                            .item-content {
+                                min-height: auto;
+                                padding: 0;
+                                .item-inner {
+                                    padding: 0;
+                                    flex-direction: column;
+                                    align-items: baseline;
+                                    justify-content: center;
+                                    &::after,
+                                    &::before {
+                                        display: none;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -52,6 +74,7 @@ html.with-panel-left-reveal .panel-backdrop-in {
             height: 48px;
             box-shadow: 0 0 40px 0 rgb(82 63 105 / 10%);
             position: relative;
+            z-index: 5;
             .stock-name {
                 height: 100%;
                 line-height: 48px;

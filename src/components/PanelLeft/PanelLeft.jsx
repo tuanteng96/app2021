@@ -1,5 +1,5 @@
 import Dom7 from "dom7";
-import { Link, Page, Panel, View } from "framework7-react";
+import { Link, List, ListItem, Page, Panel, View } from "framework7-react";
 import React, { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { getStockNameStorage } from "../../constants/user";
@@ -24,37 +24,42 @@ const RouterReport = [
   {
     Title: "Dịch vụ",
     Desc: "Thống kê dịch vụ, thẻ dịch vụ",
-    Href: "",
+    Href: "/report/services/",
   },
   {
-    Title: "Sổ quỷ",
-    Desc: "Tổng hợp, theo dõi sổ quỷ",
-    Href: "",
+    Title: "Thu chi",
+    Desc: "Lịch sử giao dịch thu chi",
+    Href: "/report/monthly/",
+  },
+  {
+    Title: "Sổ quỹ",
+    Desc: "Tổng hợp, theo dõi sổ quỹ",
+    Href: "/report/cash-book/",
   },
   {
     Title: "Tồn kho",
     Desc: "Thống kê, theo dõi lượng tồn kho",
-    Href: "",
+    Href: "/",
   },
   {
     Title: "Nhân viên",
     Desc: "Thống kê ca nhân viên",
-    Href: "",
+    Href: "/",
   },
   {
     Title: "Chăm sóc khách hàng",
     Desc: "Thống kê chăm sóc khách hàng",
-    Href: "",
+    Href: "/",
   },
   {
     Title: "Công nợ",
     Desc: "Ghi nợ, đơn nợ còn và hết",
-    Href: "",
+    Href: "/",
   },
   {
     Title: "Lợi nhuận",
     Desc: "Tổng hợp chi phí lợi nhận",
-    Href: "",
+    Href: "/",
   },
 ];
 
@@ -68,59 +73,12 @@ function PanelLeft({ f7 }) {
     setNameIsStock(stockName);
   }, []);
 
-  useEffect(() => {
-    var $$ = Dom7;
-    if (f7.$f7.views.main.router.url === "/") {
-      $$(".nav-report .nav-report-item").removeClass("active");
-      $$(".nav-report .nav-report-item:first-child").addClass("active");
-    } else {
-      $$(".nav-report .nav-report-item").each(function () {
-        const _this = $$(this);
-        const hrefLink = _this.attr("data-href");
-        if (hrefLink === f7.$f7.views.main.router.url) {
-          $$(".nav-report .nav-report-item").removeClass("active");
-          _this.addClass("active");
-        }
-      });
-    }
-  }, [f7.$f7.views.main.router.url]);
-
-  f7.$f7.on("panelOpened", function (panel) {
-    var $$ = Dom7;
-    if (f7.$f7.views.main.router.url === "/") {
-      $$(".nav-report .nav-report-item").removeClass("active");
-      $$(".nav-report .nav-report-item:first-child").addClass("active");
-    } else {
-      $$(".nav-report .nav-report-item").each(function () {
-        const _this = $$(this);
-        const hrefLink = _this.attr("data-href");
-        if (hrefLink === f7.$f7.views.main.router.url) {
-          $$(".nav-report .nav-report-item").removeClass("active");
-          _this.addClass("active");
-        }
-      });
-    }
-  });
-
   const nameStock = (name) => {
     setNameIsStock(name);
   };
 
   const handleStock = () => {
     setIsOpenStock(!isOpenStock);
-  };
-
-  const onChangeHref = (href) => {
-    if (href === f7.$f7.views.main.router.url) {
-      f7.$f7.panel.close();
-    } else {
-      f7.$f7.dialog.preloader("Đang tải ...");
-      f7.$f7.panel.close();
-      f7.$f7.on("panelClosed", function (panel) {
-         f7.$f7.dialog.close();
-         f7.$f7.views.main.router.navigate(href);
-      });
-    }
   };
 
   return (
@@ -137,23 +95,21 @@ function PanelLeft({ f7 }) {
           <div className="panel-header">Menu Báo cáo</div>
           <div className="panel-body">
             <div className="panel-nav nav-report">
-              {RouterReport &&
-                RouterReport.map((item, index) => (
-                  <div
-                    className="nav-report-item active"
-                    key={index}
-                    data-href={item.Href}
-                  >
-                    <Link
-                      noLinkClass
-                      onClick={() => onChangeHref(item.Href)}
-                      className="nav-report-link"
+              <List>
+                {RouterReport &&
+                  RouterReport.map((item, index) => (
+                    <ListItem
+                      key={index}
+                      link={item.Href}
+                      view="#main-view"
+                      panelClose
+                      reloadAll
                     >
                       <div className="title">{item.Title}</div>
                       <div className="desc">{item.Desc}</div>
-                    </Link>
-                  </div>
-                ))}
+                    </ListItem>
+                  ))}
+              </List>
             </div>
           </div>
           <div className="panel-footer" onClick={handleStock}>

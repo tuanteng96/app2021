@@ -66,7 +66,7 @@ export default class ReportCustomer extends React.Component {
               </Link>
             </div>
             <div className="page-navbar__title">
-              <span className="title">Báo cáo khách hàng</span>
+              <span className="title">Báo cáo sổ quỹ</span>
             </div>
             <div className="page-navbar__noti">
               <NotificationIcon />

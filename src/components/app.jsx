@@ -28,6 +28,8 @@ import { setNotiID, getNotiID } from "./../constants/user";
 import routes from "../js/routes";
 import { NAME_APP } from "../constants/config";
 import { CLOSE_APP } from "../constants/prom21";
+import PanelLeft from "./PanelLeft/PanelLeft";
+import Dom7 from "dom7";
 
 export default class extends React.Component {
   constructor() {
@@ -57,7 +59,21 @@ export default class extends React.Component {
             //console.log("Lần đầu mở App");
           },
           pageInit: function () {
-            //console.log("Khi quay lại");
+            var $$ = Dom7;
+            var $this = this;
+            if (this.views.main?.router?.url === "/") {
+              $$(".nav-report a").removeClass("active");
+              $$(".nav-report li:first-child a").addClass("active");
+            } else {
+              $$(".nav-report a").each(function () {
+                const _this = $$(this);
+                const hrefLink = _this.attr("href");
+                if (hrefLink === $this.views?.main?.router?.url) {
+                  $$(".nav-report a").removeClass("active");
+                  _this.addClass("active");
+                }
+              });
+            }
           },
         },
         view: {
@@ -72,8 +88,9 @@ export default class extends React.Component {
   render() {
     return (
       <App params={this.state.f7params}>
+        <PanelLeft />
         {/* Your main view, should have "view-main" class */}
-        <View main className="safe-areas" url="/" />
+        <View id="main-view" main className="safe-areas" url="/" />
       </App>
     );
   }
@@ -111,7 +128,6 @@ export default class extends React.Component {
   };
 
   componentDidMount() {
-    window.percent = 99;
     window.APP_READY = true;
     document.body.addEventListener("noti_click.go_noti", this.notiDefault);
     document.body.addEventListener("noti_click.prod_id", this.notiProdID);

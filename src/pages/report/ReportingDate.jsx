@@ -2,7 +2,6 @@ import React from "react";
 import { Link, Navbar, Page, Toolbar } from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import NotificationIcon from "../../components/NotificationIcon";
-import PanelLeft from "../../components/PanelLeft/PanelLeft";
 import PageNoData from "../../components/PageNoData";
 
 export default class ReportingDate extends React.Component {
@@ -32,8 +31,8 @@ export default class ReportingDate extends React.Component {
             </div>
           </div>
         </Navbar>
-        <PanelLeft f7={this} />
         <div className="page-render">
+          Báo cáo ngày
           {/* <PageNoData text="Đang cập nhập ..." /> */}
         </div>
         <Toolbar tabbar position="bottom">

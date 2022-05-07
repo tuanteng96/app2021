@@ -2,9 +2,12 @@ import React from "react";
 import {
   Button,
   Link,
+  List,
+  ListItem,
   Navbar,
   Page,
   PageContent,
+  Popover,
   Segmented,
   Sheet,
   Subnavbar,
@@ -15,24 +18,37 @@ import {
 import ToolBarBottom from "../../components/ToolBarBottom";
 import NotificationIcon from "../../components/NotificationIcon";
 import PageNoData from "../../components/PageNoData";
-import { Chart, Interval, Tooltip } from "bizcharts";
+import {
+  Chart,
+  Interval,
+  Tooltip,
+  Axis,
+  Coordinate,
+  getTheme,
+} from "bizcharts";
 
 const data = [
-  { year: "T1", KH: 30 },
-  { year: "T2", KH: 50 },
-  { year: "T3", KH: 61 },
-  { year: "T4", KH: 45 },
-  { year: "T5", KH: 48 },
-  { year: "T6", KH: 90 },
-  { year: "T7", KH: 200 },
-  { year: "T8", KH: 182 },
-  { year: "T9", KH: 90 },
-  { year: "T10", KH: 250 },
-  { year: "T11", KH: 123 },
-  { year: "T12", KH: 189 },
+  { item: "Dịch vụ trị lông", percent: 0.4 },
+  { item: "Dịch vụ tắm trắng", percent: 0.21 },
+  { item: "Dịch vụ giảm béo", percent: 0.17 },
+  { item: "Dịch vụ chăm sóc da", percent: 0.13 },
+  { item: "Dịch vụ chăm sóc bầu", percent: 0.09 },
 ];
+const colors = data.reduce((pre, cur, idx) => {
+  pre[cur.item] = getTheme().colors10[idx];
+  return pre;
+}, {});
 
-export default class ReportCustomer extends React.Component {
+const cols = {
+  percent: {
+    formatter: (val) => {
+      val = val * 100 + "%";
+      return val;
+    },
+  },
+};
+
+export default class ReportServices extends React.Component {
   constructor() {
     super();
     this.state = { sheetOpened: false, initialValues: null };
@@ -66,7 +82,7 @@ export default class ReportCustomer extends React.Component {
               </Link>
             </div>
             <div className="page-navbar__title">
-              <span className="title">Báo cáo khách hàng</span>
+              <span className="title">Báo cáo dịch vụ</span>
             </div>
             <div className="page-navbar__noti">
               <NotificationIcon />
@@ -81,53 +97,78 @@ export default class ReportCustomer extends React.Component {
             </Segmented>
           </Subnavbar>
         </Navbar>
-
         <Tabs animated>
           <Tab id="overview" className="overflow-auto" tabActive>
             <div className="page-render">
               <div className="bg-white p-15px mb-15px rounded">
                 <div className="text-uppercase text-black fw-600 mb-10px">
-                  Khách hàng
+                  Dịch vụ
                 </div>
                 <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
                   <div className="text-gray-700 font-size-xs fw-500">
-                    Hôm nay
+                    Tổng dịch vụ
                   </div>
-                  <div className="fw-600 font-size-sm">50</div>
+                  <div className="fw-600 font-size-sm">200</div>
                 </div>
                 <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Tuần này
+                  <div className="text-primary font-size-xs fw-500">
+                    Đang thực hiện
                   </div>
-                  <div className="fw-600 font-size-sm">120</div>
+                  <div className="fw-600 font-size-sm">20</div>
                 </div>
                 <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Tháng này
+                  <div className="text-success font-size-xs fw-500">
+                    Đã hoàn thành
                   </div>
-                  <div className="fw-600 font-size-sm">500</div>
+                  <div className="fw-600 font-size-sm">77</div>
                 </div>
                 <div className="d--f jc--sb ai--c pt-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Tổng khách hàng
+                  <div className="text-danger font-size-xs fw-500">
+                    Hủy dịch vụ
                   </div>
-                  <div className="fw-600 font-size-sm">1250</div>
+                  <div className="fw-600 font-size-sm">3</div>
                 </div>
               </div>
               <div className="bg-white p-15px rounded">
+                <div className="text-center text-uppercase fw-500 mt-15px">
+                  Biểu đồ dịch vụ tuần này
+                </div>
                 <Chart
                   height={400}
-                  autoFit
                   data={data}
-                  interactions={["active-region"]}
-                  padding={[15, 15, 30, 30]}
+                  scale={cols}
+                  interactions={["element-active"]}
+                  autoFit
+                  //padding={[15, 15, 30, 30]}
                 >
-                  <Interval position="year*KH" />
-                  <Tooltip shared />
+                  <Coordinate type="theta" radius={0.75} />
+                  <Tooltip showTitle={false} />
+                  <Axis visible={false} />
+                  <Interval
+                    position="percent"
+                    adjust="stack"
+                    color="item"
+                    style={{
+                      lineWidth: 1,
+                      stroke: "#fff",
+                    }}
+                    label={[
+                      "item",
+                      (item) => {
+                        return {
+                          offset: 20,
+                          content: (data) => {
+                            return "";
+                            //return `${data.item}\n ${data.percent * 100}%`;
+                          },
+                          style: {
+                            fill: colors[item],
+                          },
+                        };
+                      },
+                    ]}
+                  />
                 </Chart>
-                <div className="text-center text-uppercase fw-500 mt-15px">
-                  Biểu đồ khách hàng theo năm
-                </div>
               </div>
               {/* <PageNoData text="Đang cập nhập ..." /> */}
             </div>
@@ -147,14 +188,16 @@ export default class ReportCustomer extends React.Component {
                     <div className="w-40px h-40px rounded d--f ai--c jc--c bg-light fw-600 overflow-hidden">
                       <img
                         className="w-100"
-                        src="https://preview.keenthemes.com/metronic8/demo12/assets/media/avatars/300-14.jpg"
+                        src="https://bizweb.dktcdn.net/100/431/926/products/d27a9ccd-1e32-4c43-b0ce-00a37978ddc9.jpg"
                         alt=""
                       />
                     </div>
                     <div className="f--1 px-12px">
-                      <div className="text-dark fw-600">Nguyễn Tài Tuấn</div>
+                      <div className="text-dark fw-600">
+                        #106301 - Dịch vụ triệt lông nách
+                      </div>
                       <div className="fw-500 text-muted font-size-xs">
-                        0971.02.11.96 - Khách hàng mới
+                        Đang sử dụng - 30,000,000
                       </div>
                     </div>
                     <div>
@@ -196,7 +239,7 @@ export default class ReportCustomer extends React.Component {
               <Toolbar>
                 <div className="px-15px w-100 d--f ai--c jc--sb">
                   <div className="left line-height-xs text-uppercase fw-500 font-size-md">
-                    Nguyễn Tài Tuấn
+                    #106301 - Dịch vụ triệt lông nách
                   </div>
                   <div className="right">
                     <Link sheetClose>
@@ -208,62 +251,82 @@ export default class ReportCustomer extends React.Component {
               <PageContent className="bg-white">
                 <div className="p-15px">
                   <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
-                    <div className="fw-500 text-gray-700">Số điện thoại</div>
-                    <div className="fw-600 text-dark">0971021196</div>
+                    <div className="fw-500 text-gray-700">Ngày</div>
+                    <div className="fw-600 text-dark">22:30 02/11/2022</div>
                   </div>
                   <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
-                    <div className="fw-500 text-gray-700">Ngày tạo</div>
-                    <div className="fw-600 text-dark">18:00 25/12/2022</div>
-                  </div>
-                  <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
-                    <div className="fw-500 text-gray-700">Cấp bậc</div>
-                    <div className="fw-600 text-dark">
-                      Khách hàng thân thiết
-                    </div>
-                  </div>
-                  <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
-                    <div className="fw-500 text-gray-700">Cơ sở</div>
+                    <div className="fw-500 text-gray-700">Điểm</div>
                     <div className="fw-600 text-dark">Cser Hà Nội</div>
                   </div>
                   <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
-                    <div className="fw-500 text-gray-700">
-                      Tổng tiền thực chi
+                    <div className="fw-500 text-gray-700">Dịch vụ gốc</div>
+                    <div className="fw-600 text-dark">
+                      Dịch vụ triệt lông nách
                     </div>
-                    <div className="fw-600 text-dark">18,000,000</div>
                   </div>
                   <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
-                    <div className="fw-500 text-gray-700">Công nợ</div>
+                    <div className="fw-500 text-gray-700">Thẻ liệu trình</div>
+                    <div className="fw-600 text-dark">2</div>
+                  </div>
+                  <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
+                    <div className="fw-500 text-gray-700">Buổi</div>
+                    <div className="fw-600 text-dark">3</div>
+                  </div>
+                  <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
+                    <div className="fw-500 text-gray-700">Giá trị</div>
                     <div className="fw-600 text-dark">1,000,000</div>
                   </div>
                   <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
-                    <div className="fw-500 text-gray-700">Ví</div>
-                    <div className="fw-600 text-dark">1,000,000</div>
-                  </div>
-                  <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
-                    <div className="fw-500 text-gray-700">Thẻ tiền</div>
-                    <div className="fw-600 text-dark">1,000,000</div>
-                  </div>
-                  <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
-                    <div className="fw-500 text-gray-700">Thẻ bảo hành</div>
-                    <div className="fw-600 text-dark">5 Thẻ</div>
-                  </div>
-                  <div className="mb-10px pb-10px border-bottom-dashed">
                     <div className="fw-500 text-gray-700">
-                      Số buổi DV còn lại / Giá trị
+                      Nhân viên thực hiện
                     </div>
-                    <div className="fw-600 text-dark">1 buổi / 1,000,000</div>
+                    <div className="fw-600 text-dark">Nguyễn Tài Tuấn</div>
+                  </div>
+                  <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
+                    <div className="fw-500 text-gray-700">Tổng lương</div>
+                    <div className="fw-600 text-dark">80,0000</div>
+                  </div>
+                  <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
+                    <div className="fw-500 text-gray-700">Trạng thái</div>
+                    <div className="fw-600 text-dark">Đang thực hiện</div>
+                  </div>
+                  <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
+                    <div className="fw-500 text-gray-700">Đánh giá</div>
+                    <div className="fw-600 text-dark">5 Sao</div>
                   </div>
                   <div>
                     <div className="fw-500 text-gray-700">
-                      Nhân viên phụ trách
+                      Nội dung đánh giá
                     </div>
-                    <div className="fw-600 text-dark">Nguyễn Thị Thu Trang</div>
+                    <div className="mt-10px text-dark">
+                      Thực hiện tốt, nhân viên rất có tâm và có tầm. Chăm da cả
+                      năm không bằng 1 buổi MESO. Bí quyết sở hữu làn da mịn
+                      màng, căng bóng như Diễn viên Hàn Quốc
+                    </div>
                   </div>
                 </div>
               </PageContent>
             </Sheet>
           </Tab>
         </Tabs>
+        <Popover className="popover-detail">
+          <div className="py-10px">
+            <div className="pb-10px mb-10px border-bottom px-15px d--f jc--sb">
+              <div className="text-gray-700 font-size-xs fw-500">Tiền mặt</div>
+              <div className="fw-600 font-size-sm">10,000,000</div>
+            </div>
+            <div className="pb-10px mb-10px border-bottom px-15px d--f jc--sb">
+              <div className="text-gray-700 font-size-xs fw-500">
+                Chuyển khoản
+              </div>
+              <div className="fw-600 font-size-sm">5,000,000</div>
+            </div>
+            <div className="px-15px d--f jc--sb">
+              <div className="text-gray-700 font-size-xs fw-500">Quẹt thẻ</div>
+              <div className="fw-600 font-size-sm">3,000,000</div>
+            </div>
+          </div>
+        </Popover>
         <Toolbar tabbar position="bottom">
           <ToolBarBottom />
         </Toolbar>

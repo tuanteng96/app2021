@@ -183,7 +183,8 @@
                     }
                     .item-input-wrap {
                         position: relative;
-                        input {
+                        input,
+                        select {
                             width: 100%;
                             display: block;
                             border: 1px solid #e4e6ef;

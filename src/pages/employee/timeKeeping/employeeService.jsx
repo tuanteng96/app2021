@@ -340,6 +340,7 @@ export default class employeeService extends React.Component {
                         rangePicker: true,
                         footer: true,
                         toolbarCloseText: "Xác nhận",
+                        backdrop: true,
                       }}
                       clearButton
                       onCalendarChange={this.onChangeDateS}

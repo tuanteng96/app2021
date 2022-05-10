@@ -129,6 +129,7 @@ export default class extends React.Component {
 
   componentDidMount() {
     window.APP_READY = true;
+    window.percent = 100;
     document.body.addEventListener("noti_click.go_noti", this.notiDefault);
     document.body.addEventListener("noti_click.prod_id", this.notiProdID);
     document.body.addEventListener("noti_click.art_id", this.notiArtID);

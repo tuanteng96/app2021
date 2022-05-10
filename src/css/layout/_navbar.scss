@@ -23,7 +23,8 @@
             @include cut-text;
         }
     }
-    &__back {
+    &__back,
+    &__filter {
         width: 40px;
         background: $color-app;
         height: calc(100% - 2px);

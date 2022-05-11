@@ -61,16 +61,36 @@ export default class extends React.Component {
           pageInit: function () {
             var $$ = Dom7;
             var $this = this;
+            $$(".nav-report .item-1")
+              .removeClass("accordion-item-opened")
+              .find(".accordion-item-content").css("height", 0);
             if (this.views.main?.router?.url === "/") {
-              $$(".nav-report a").removeClass("active");
-              $$(".nav-report li:first-child a").addClass("active");
+              $$(".nav-report .item-1").children().removeClass("active");
+              $$(".nav-report li.item-1:first-child")
+                .children()
+                .addClass("active");
             } else {
-              $$(".nav-report a").each(function () {
+              $$(".nav-report .item-1 > a").each(function () {
                 const _this = $$(this);
                 const hrefLink = _this.attr("href");
                 if (hrefLink === $this.views?.main?.router?.url) {
-                  $$(".nav-report a").removeClass("active");
+                  $$(".nav-report .item-2 > a").removeClass("active");
+                  $$(".nav-report .item-1 > a").removeClass("active");
                   _this.addClass("active");
+                }
+              });
+              $$(".nav-report .item-2 > a").each(function () {
+                const _this = $$(this);
+                const hrefLink = _this.attr("href");
+                if (hrefLink === $this.views?.main?.router?.url) {
+                  $$(".nav-report .item-1").children().removeClass("active");
+                  $$(".nav-report .item-2 > a").removeClass("active");
+                  _this.addClass("active");
+                  _this
+                    .parents(".accordion-item")
+                    .addClass("accordion-item-opened")
+                    .find(".accordion-item-content")
+                    .css("height", "auto");;
                 }
               });
             }

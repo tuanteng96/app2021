@@ -1,5 +1,13 @@
 import Dom7 from "dom7";
-import { Link, List, ListItem, Page, Panel, View } from "framework7-react";
+import {
+  AccordionContent,
+  Link,
+  List,
+  ListItem,
+  Page,
+  Panel,
+  View,
+} from "framework7-react";
 import React, { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { getStockNameStorage } from "../../constants/user";
@@ -19,18 +27,36 @@ const RouterReport = [
   {
     Title: "Bán hàng",
     Desc: "Thống kê đơn hàng, thu chi đơn hàng",
-    Href: "/report/sell/",
+    Href: "#",
+    Children: [
+      {
+        Title: "Doanh số",
+        Href: "/report/sell/",
+      },
+      {
+        Title: "Chi tiết SP / DV bán ra",
+        Href: "/",
+      },
+      {
+        Title: "Thanh toán nợ",
+        Href: "/",
+      },
+      {
+        Title: "Trả hàng",
+        Href: "/",
+      },
+    ],
   },
   {
     Title: "Dịch vụ",
     Desc: "Thống kê dịch vụ, thẻ dịch vụ",
     Href: "/report/services/",
   },
-  {
-    Title: "Thu chi",
-    Desc: "Lịch sử giao dịch thu chi",
-    Href: "/report/monthly/",
-  },
+  // {
+  //   Title: "Thu chi",
+  //   Desc: "Lịch sử giao dịch thu chi",
+  //   Href: "/report/monthly/",
+  // },
   {
     Title: "Sổ quỹ",
     Desc: "Tổng hợp, theo dõi sổ quỹ",
@@ -45,25 +71,113 @@ const RouterReport = [
     Title: "Nhân viên",
     Desc: "Thống kê ca nhân viên",
     Href: "/",
+    Children: [
+      {
+        Title: "Hoa hồng",
+        Href: "/",
+      },
+      {
+        Title: "Doanh số",
+        Href: "/",
+      },
+      {
+        Title: "Bảng lương",
+        Href: "/",
+      },
+    ],
+  },
+  {
+    Title: "Công nợ",
+    Desc: "Thống kê công nợ",
+    Href: "/",
+    Children: [
+      {
+        Title: "Công nợ",
+        Href: "/",
+      },
+      {
+        Title: "Báo cáo khóa nợ",
+        Href: "/",
+      },
+    ],
   },
   {
     Title: "Chăm sóc khách hàng",
     Desc: "Thống kê chăm sóc khách hàng",
     Href: "/",
+    Children: [
+      {
+        Title: "Khách hàng sử dụng APP",
+        Href: "/",
+      },
+      {
+        Title: "Khách hàng sinh nhật",
+        Href: "/",
+      },
+      {
+        Title: "Khách hàng sắp lên cấp",
+        Href: "/",
+      },
+      {
+        Title: "Khách gần hết sản phẩm",
+        Href: "/",
+      },
+      {
+        Title: "Khách hàng sử dụng APP",
+        Href: "/",
+      },
+      {
+        Title: "Khách lâu không sử dụng dịch vụ",
+        Href: "/",
+      },
+      {
+        Title: "Khách hết thẻ trong ngày",
+        Href: "/",
+      },
+      {
+        Title: "Thời gian nghe Smart Call",
+        Href: "/",
+      },
+      {
+        Title: "Đánh giá dịch vụ",
+        Href: "/",
+      },
+    ],
   },
   {
-    Title: "Công nợ",
-    Desc: "Ghi nợ, đơn nợ còn và hết",
+    Title: "Báo cáo khác",
+    Desc: "Các loại báo cáo khác",
     Href: "/",
-  },
-  {
-    Title: "Lợi nhuận",
-    Desc: "Tổng hợp chi phí lợi nhận",
-    Href: "/",
+    Children: [
+      {
+        Title: "Top bán hàng",
+        Href: "/",
+      },
+      {
+        Title: "Top doanh số",
+        Href: "/",
+      },
+      {
+        Title: "Dịch vụ đã bán nhưng chưa thực hiện",
+        Href: "/",
+      },
+      {
+        Title: "Tổng tiền ví của khách hàng đang có",
+        Href: "/",
+      },
+      {
+        Title: "Tổng thẻ tiền của khách hàng đang có",
+        Href: "/",
+      },
+      {
+        Title: "Lợi nhuận",
+        Href: "/",
+      },
+    ],
   },
 ];
 
-function PanelLeft({ f7 }) {
+function PanelLeft() {
   const [isOpenStock, setIsOpenStock] = useState(false);
   const [isReload, setIsReload] = useState(0);
   const [nameIsStock, setNameIsStock] = useState("");
@@ -95,18 +209,36 @@ function PanelLeft({ f7 }) {
           <div className="panel-header">Menu Báo cáo</div>
           <div className="panel-body">
             <div className="panel-nav nav-report">
-              <List>
+              <List accordionList>
                 {RouterReport &&
                   RouterReport.map((item, index) => (
                     <ListItem
+                      className="item-1"
                       key={index}
-                      link={item.Href}
+                      link={item.Children ? "#" : item.Href}
                       view="#main-view"
-                      panelClose
-                      reloadAll
+                      panelClose={!item.Children ? true : false}
+                      reloadAll={!item.Children ? true : false}
+                      accordionItem={item.Children ? true : false}
+                      header={item.Title}
+                      footer={item.Desc}
                     >
-                      <div className="title">{item.Title}</div>
-                      <div className="desc">{item.Desc}</div>
+                      {item.Children && (
+                        <AccordionContent>
+                          {item.Children &&
+                            item.Children.map((sub, idx) => (
+                              <ListItem
+                                className="item-2"
+                                view="#main-view"
+                                key={idx}
+                                title={`${idx + 1}. ${sub.Title}`}
+                                link={sub.Href}
+                                panelClose
+                                reloadAll
+                              ></ListItem>
+                            ))}
+                        </AccordionContent>
+                      )}
                     </ListItem>
                   ))}
               </List>

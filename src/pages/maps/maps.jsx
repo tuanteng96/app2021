@@ -56,9 +56,7 @@ export default class extends React.Component {
       variableWidth: true,
     };
     return (
-      <Page
-        name="maps"
-      >
+      <Page name="maps">
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
@@ -134,7 +132,7 @@ export default class extends React.Component {
                         </li>
                         <li className="phone">
                           <i className="las la-phone-volume"></i>
-                          {item.LinkSEO}
+                          {item.LinkSEO || "Chưa có"}
                         </li>
                         <li className="time">
                           <span>Đang mở cửa</span>

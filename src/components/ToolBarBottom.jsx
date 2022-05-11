@@ -148,7 +148,7 @@ export default class ToolBarCustom extends React.Component {
             />
             <Link
               noLinkClass
-              href="/profile/"
+              href="/detail-profile/"
               className={`page-toolbar-bottom__link js-toolbar-link ${TYPE}`}
             >
               <i className="las la-user-circle"></i>

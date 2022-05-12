@@ -278,7 +278,7 @@ export default class extends React.Component {
           )}
         </Navbar>
         <div className="page-render page-render-shop no-bg p-0">
-          <div className="page-shop no-bg p-15">
+          <div className="page-shop no-bg p-15px">
             <div className="page-shop__list">
               <Row>
                 {!loading && (

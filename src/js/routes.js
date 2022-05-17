@@ -51,6 +51,9 @@ import ReportServicesPage from "../pages/report/ReportServices";
 import ReportCashBookPage from "../pages/report/ReportCashBook";
 import ReportMonthlyPage from "../pages/report/ReportMonthly";
 
+// Pos bán hàng
+import PosPage from "../pages/pos/Pos"
+
 import SearchPage from "../pages/search/index";
 import NotFoundPage from '../pages/404.jsx';
 import { getUser } from "../constants/user";
@@ -378,6 +381,13 @@ var routes = [{
     {
         path: '/report/monthly/', // Thu chi
         asyncComponent: () => ReportMonthlyPage,
+        options: {
+            transition: 'f7-cover',
+        }
+    },
+    {
+        path: '/pos/', // Pos bán hàng
+        asyncComponent: () => PosPage,
         options: {
             transition: 'f7-cover',
         }

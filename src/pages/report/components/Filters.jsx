@@ -3,7 +3,7 @@ import { ListInput, Sheet } from "framework7-react";
 import { Formik, Form } from "formik";
 import userService from "../../../service/user.service";
 
-function Filters({ loading, show, onHide, filters, onSubmit }) {
+function Filters({ loading, show, onHide, filters, onSubmit, options }) {
   const [first, setFirst] = useState(0);
   const [ListStock, setListStock] = useState([]);
 
@@ -75,14 +75,15 @@ function Filters({ loading, show, onHide, filters, onSubmit }) {
                         <ListInput
                           label="Chọn ngày"
                           type="datepicker"
-                          placeholder="Ngày bắt đầu - Ngày kết thúc"
+                          placeholder={`${
+                            options.rangePicker
+                              ? "Ngày bắt đầu - Ngày kết thúc"
+                              : "Chọn ngày"
+                          }`}
                           value={values.Date}
                           readonly
                           calendarParams={{
-                            dateFormat: "dd/mm/yyyy",
-                            rangePicker: true,
-                            footer: true,
-                            toolbarCloseText: "Xác nhận",
+                            ...options
                           }}
                           clearButton
                           onCalendarChange={(data) =>

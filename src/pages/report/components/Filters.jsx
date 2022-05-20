@@ -16,7 +16,7 @@ function Filters({ loading, show, onHide, filters, onSubmit, options }) {
       async function fetchStockList() {
         let { data } = await userService.getStock();
         setListStock([
-          { ID: -1, Title: "Tất cả cơ sở" },
+          { ID: "", Title: "Tất cả cơ sở" },
           ...data.data.all.filter((item) => item.ID !== 778),
         ]);
       }
@@ -62,7 +62,21 @@ function Filters({ loading, show, onHide, filters, onSubmit, options }) {
                           value={values.StockID}
                           name="StockID"
                           placeholder="Chọn cơ sở..."
-                          onChange={handleChange}
+                          onChange={(event) => {
+                            setFieldValue("StockID",event.target.value, false);
+                            if (event.target.value) {
+                              const StockName =
+                                ListStock &&
+                                ListStock.filter(
+                                  (item) =>
+                                    item.ID === Number(event.target.value)
+                                )[0].Title;
+                              setFieldValue("StockName", StockName, false);
+                            }
+                            else {
+                              setFieldValue("StockName", "Tất cả cơ sở", false);
+                            }
+                          }}
                           onBlur={handleBlur}
                         >
                           {ListStock &&
@@ -83,7 +97,7 @@ function Filters({ loading, show, onHide, filters, onSubmit, options }) {
                           value={values.Date}
                           readonly
                           calendarParams={{
-                            ...options
+                            ...options,
                           }}
                           clearButton
                           onCalendarChange={(data) =>

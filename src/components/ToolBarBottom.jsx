@@ -50,7 +50,7 @@ export default class ToolBarCustom extends React.Component {
     const TYPE = checkRole();
 
     if (TYPE === "ADMIN") {
-      return 4;
+      return 3;
     }
     if (TYPE === "STAFF") {
       const arrType = [
@@ -135,13 +135,6 @@ export default class ToolBarCustom extends React.Component {
       case "ADMIN":
         return (
           <React.Fragment>
-            <PrivateNav
-              className="page-toolbar-bottom__link js-toolbar-link"
-              icon="las la-cart-arrow-down"
-              text="Bán hàng"
-              roles={[]}
-              href="/pos/"
-            />
             <PrivateNav
               className="page-toolbar-bottom__link js-toolbar-link"
               icon="las la-piggy-bank"

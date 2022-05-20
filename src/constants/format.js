@@ -17,6 +17,14 @@ export const formatPriceVietnamese = (price) => {
     }
 };
 
+export const formatPricePositive = (price) => {
+    if (!price || price === 0) {
+        return "0";
+    } else {
+        return Math.abs(price).toFixed(0).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+    }
+};
+
 //format date service
 export const formatDateSv = (date) => {
     if (date === null) return false;
@@ -72,17 +80,17 @@ export const isFromBiggerThanTo = (dtmfrom, dtmto) => {
 
 //Tính phần trăm sale Product
 export const percentagesSale = (Price, PriceSale) => {
-    return 100 - ((PriceSale / Price) * 100);
-}
-//Check avatar Null
-export const checkImageProduct = (src) => {
-    if (src === "null.gif" || src === "") {
-        return imgNoProduct;
-    } else {
-        return SERVER_APP + "/Upload/image/" + src;
+        return 100 - ((PriceSale / Price) * 100);
     }
-}
-//Check avatar Null
+    //Check avatar Null
+export const checkImageProduct = (src) => {
+        if (src === "null.gif" || src === "") {
+            return imgNoProduct;
+        } else {
+            return SERVER_APP + "/Upload/image/" + src;
+        }
+    }
+    //Check avatar Null
 export const checkAvt = (src) => {
     if (src === "null.gif" || src === "" || src === undefined) {
         return imgAvatarNull

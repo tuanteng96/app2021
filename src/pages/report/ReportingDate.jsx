@@ -16,6 +16,8 @@ import { getStockIDStorage, getStockNameStorage } from "../../constants/user";
 import ReportService from "../../service/report.service";
 import ImageBG from "../../assets/images/profile-img.png";
 import SkeletonReportDate from "./Skeleton/SkeletonReportDate";
+import { formatPricePositive, formatPriceVietnamese } from "../../constants/format";
+import PageNoData from "../../components/PageNoData";
 
 moment.locale("vi");
 export default class ReportingDate extends React.Component {
@@ -26,8 +28,10 @@ export default class ReportingDate extends React.Component {
       loading: false,
       filters: {
         Date: [new Date()],
-        StockID: Number(getStockIDStorage()) || -1,
+        StockID: Number(getStockIDStorage()) || "",
+        StockName: getStockNameStorage() || "Tất cả cơ sở",
       },
+      ResultDay: null,
     };
   }
 
@@ -48,12 +52,21 @@ export default class ReportingDate extends React.Component {
   getReportDays = (isLoading = true, callback) => {
     const { filters } = this.state;
     isLoading && this.setState({ loading: true });
-    ReportService.getReportDate(filters)
-      .then((response) => {
-        console.log(response);
+    const newFilters = {
+      StockID: filters.StockID,
+    };
+    if (filters.Date && filters.Date.length > 0) {
+      newFilters.Date = moment(filters.Date[0]).format("DD/MM/yyyy");
+    }
+    else {
+      newFilters.Date = moment(new Date()).format("DD/MM/yyyy");
+    }
+    ReportService.getReportDate(newFilters)
+      .then(({ data }) => {
         this.setState({
           loading: false,
           sheetOpened: false,
+          ResultDay: data.result,
         });
         callback && callback();
         this.$f7.dialog.close();
@@ -81,8 +94,7 @@ export default class ReportingDate extends React.Component {
   }
 
   render() {
-    const { sheetOpened, filters, loading } = this.state;
-
+    const { sheetOpened, filters, loading, ResultDay } = this.state;
     return (
       <Page name="employee-service" ptr onPtrRefresh={this.loadMore.bind(this)}>
         <Navbar>
@@ -107,140 +119,166 @@ export default class ReportingDate extends React.Component {
           {loading && <SkeletonReportDate />}
           {!loading && (
             <Fragment>
-              <div className="report-welcome bg-white">
-                <div className="report-welcome__top">
-                  <div className="d--f jc--sb">
-                    <div className="pt-15px pl-15px pr-15px pb-35px">
-                      <div className="text-primary2 fw-600 font-size-md mb-3px">
-                        Xin chào !
+              {ResultDay ? (
+                <Fragment>
+                  <div className="report-welcome bg-white">
+                    <div className="report-welcome__top">
+                      <div className="d--f jc--sb">
+                        <div className="pt-15px pl-15px pr-15px pb-35px">
+                          <div className="text-primary2 fw-600 font-size-md mb-3px">
+                            Xin chào !
+                          </div>
+                          <div className="text-primary2 fw-500">
+                            {filters.StockName}
+                          </div>
+                        </div>
+                        <div className="img d--f ai--e jc--c">
+                          <img src={ImageBG}></img>
+                        </div>
                       </div>
-                      <div className="text-primary2 fw-500">
-                        {getStockNameStorage() || "Tất cả cơ sở"}
+                      <div className="icon">
+                        <i className="las la-map-marked-alt text-white"></i>
                       </div>
                     </div>
-                    <div className="img d--f ai--e jc--c">
-                      <img src={ImageBG}></img>
+                  </div>
+                  <div className="bg-white pt-50px pl-15px pr-15px pb-15px mb-15px rounded">
+                    <div className="text-uppercase text-black fw-600 mb-10px">
+                      Thu chi hôm nay
+                    </div>
+                    <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
+                      <div className="text-gray-700 font-size-xs fw-500">
+                        Tổng thu
+                      </div>
+                      <div className="fw-600 font-size-sm text-success">
+                        <i className="las la-arrow-down"></i>{" "}
+                        {formatPricePositive(ResultDay.TgThu)}
+                      </div>
+                    </div>
+                    <div className="d--f jc--sb ai--c pt-8px">
+                      <div className="text-gray-700 font-size-xs fw-500">
+                        Tổng chi
+                      </div>
+                      <div className="fw-600 font-size-sm text-danger">
+                        <i className="las la-arrow-up"></i>{" "}
+                        {formatPricePositive(ResultDay.TgChi)}
+                      </div>
                     </div>
                   </div>
-                  <div className="icon">
-                    <i className="las la-map-marked-alt text-white"></i>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-white pt-50px pl-15px pr-15px pb-15px mb-15px rounded">
-                <div className="text-uppercase text-black fw-600 mb-10px">
-                  Thu chi hôm nay
-                </div>
-                <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Tổng thu
-                  </div>
-                  <div className="fw-600 font-size-sm text-success">
-                    <i className="las la-arrow-down"></i> 15,000,000
-                  </div>
-                </div>
-                <div className="d--f jc--sb ai--c pt-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Tổng chi
-                  </div>
-                  <div className="fw-600 font-size-sm text-danger">
-                    <i className="las la-arrow-up"></i> 8,000,000
-                  </div>
-                </div>
-              </div>
 
-              <div className="bg-white p-15px mb-15px rounded position-relative zindex-1">
-                <div className="text-uppercase text-black fw-600 mb-10px">
-                  Khách hàng
-                </div>
-                <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Khách hàng mới
+                  <div className="bg-white p-15px mb-15px rounded position-relative zindex-1">
+                    <div className="text-uppercase text-black fw-600 mb-10px d--f jc--sb ai--c">
+                      Khách hàng
+                      <span className="text-success font-size-lg font-app-1">
+                        +{ResultDay.KHMoi}{" "}
+                        <span className="text-none font-size-sm fw-400 text-gray-700">
+                          khách hàng mới
+                        </span>
+                      </span>
+                    </div>
+                    <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
+                      <div className="text-gray-700 font-size-xs fw-500">
+                        Đến tại Spa
+                      </div>
+                      <div className="fw-600 font-size-sm">
+                        {ResultDay.KHDenTaiSpa}
+                      </div>
+                    </div>
+                    <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
+                      <div className="text-gray-700 font-size-xs fw-500">
+                        Web / App
+                      </div>
+                      <div className="fw-600 font-size-sm">
+                        {ResultDay.KHWebApp}
+                      </div>
+                    </div>
+                    <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
+                      <div className="text-gray-700 font-size-xs fw-500">
+                        Khách đang CheckIn
+                      </div>
+                      <div className="fw-600 font-size-sm">
+                        {ResultDay.KHDangCheckIn}
+                      </div>
+                    </div>
+                    <div className="d--f jc--sb ai--c pt-8px">
+                      <div className="text-gray-700 font-size-xs fw-500">
+                        Tổng khách CheckIn
+                      </div>
+                      <div className="fw-600 font-size-sm">
+                        {ResultDay.KHCheckIn}
+                      </div>
+                    </div>
+                    <div className="line-report-1"></div>
                   </div>
-                  <div className="fw-600 font-size-sm">50</div>
-                </div>
-                <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Đến tại Spa
-                  </div>
-                  <div className="fw-600 font-size-sm">12</div>
-                </div>
-                <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Web / App
-                  </div>
-                  <div className="fw-600 font-size-sm">25</div>
-                </div>
-                <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Tổng khách CheckIn
-                  </div>
-                  <div className="fw-600 font-size-sm">25</div>
-                </div>
-                <div className="d--f jc--sb ai--c pt-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Khách đang CheckIn
-                  </div>
-                  <div className="fw-600 font-size-sm">16</div>
-                </div>
-                <div className="line-report-1"></div>
-              </div>
 
-              <div className="bg-white p-15px mb-15px rounded position-relative zindex-1">
-                <div className="text-uppercase text-black fw-600 mb-10px">
-                  Bán hàng
-                </div>
-                <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Đơn hàng mới
+                  <div className="bg-white p-15px mb-15px rounded position-relative zindex-1">
+                    <div className="text-uppercase text-black fw-600 mb-10px d--f jc--sb ai--c">
+                      Bán hàng
+                      <span className="text-success font-size-lg font-app-1">
+                        +{ResultDay.DonHangMoi}{" "}
+                        <span className="text-none font-size-sm fw-400 text-gray-700">
+                          đơn hàng mới
+                        </span>
+                      </span>
+                    </div>
+                    <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
+                      <div className="text-gray-700 font-size-xs fw-500">
+                        Doanh số
+                      </div>
+                      <div className="fw-600 font-size-sm">
+                        {formatPriceVietnamese(ResultDay.DSo)}
+                      </div>
+                    </div>
+                    <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
+                      <div className="text-gray-700 font-size-xs fw-500">
+                        Thanh toán
+                      </div>
+                      <div className="fw-600 font-size-sm">
+                        {formatPriceVietnamese(ResultDay.DSo_DaTT)}
+                      </div>
+                    </div>
+                    <div className="d--f jc--sb ai--c pt-8px">
+                      <div className="text-gray-700 font-size-xs fw-500">
+                        Thanh toán nợ
+                      </div>
+                      <div className="fw-600 font-size-sm">
+                        {formatPriceVietnamese(ResultDay.DSo_No)}
+                      </div>
+                    </div>
+                    <div className="line-report-2"></div>
                   </div>
-                  <div className="fw-600 font-size-sm">50</div>
-                </div>
-                <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Doanh số
-                  </div>
-                  <div className="fw-600 font-size-sm">12,000,000</div>
-                </div>
-                <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Thanh toán
-                  </div>
-                  <div className="fw-600 font-size-sm">8,000,000</div>
-                </div>
-                <div className="d--f jc--sb ai--c pt-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Thanh toán nợ
-                  </div>
-                  <div className="fw-600 font-size-sm">4,000,000</div>
-                </div>
-                <div className="line-report-2"></div>
-              </div>
 
-              <div className="bg-white p-15px mb-5px rounded position-relative zindex-1">
-                <div className="text-uppercase text-black fw-600 mb-10px">
-                  Dịch vụ
-                </div>
-                <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Đặt lịch
+                  <div className="bg-white p-15px mb-5px rounded position-relative zindex-1">
+                    <div className="text-uppercase text-black fw-600 mb-10px d--f jc--sb ai--c">
+                      Dịch vụ
+                      <span className="text-success font-size-lg font-app-1">
+                        +{ResultDay.DVu_DatLich}{" "}
+                        <span className="text-none font-size-sm fw-400 text-gray-700">
+                          đặt lịch mới
+                        </span>
+                      </span>
+                    </div>
+                    <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
+                      <div className="text-gray-700 font-size-xs fw-500">
+                        Dịch vụ đang làm
+                      </div>
+                      <div className="fw-600 font-size-sm text-warning">
+                        {ResultDay.DVu_DangTHien}
+                      </div>
+                    </div>
+                    <div className="d--f jc--sb ai--c pt-8px">
+                      <div className="text-gray-700 font-size-xs fw-500">
+                        Dịch vụ hoàn thành
+                      </div>
+                      <div className="fw-600 font-size-sm text-success">
+                        {ResultDay.DVu_DaXong}
+                      </div>
+                    </div>
+                    <div className="line-report-3"></div>
                   </div>
-                  <div className="fw-600 font-size-sm">50</div>
-                </div>
-                <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Dịch vụ đang làm
-                  </div>
-                  <div className="fw-600 font-size-sm text-warning">15</div>
-                </div>
-                <div className="d--f jc--sb ai--c pt-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Dịch vụ hoàn thành
-                  </div>
-                  <div className="fw-600 font-size-sm text-success">4</div>
-                </div>
-                <div className="line-report-3"></div>
-              </div>
+                </Fragment>
+              ) : (
+                <PageNoData text="Không có dữ liệu" />
+              )}
             </Fragment>
           )}
         </div>

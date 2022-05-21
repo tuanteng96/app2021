@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import {
   Button,
   Link,
@@ -13,51 +13,167 @@ import {
   Toolbar,
 } from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
-import NotificationIcon from "../../components/NotificationIcon";
-import PageNoData from "../../components/PageNoData";
-import { Chart, Interval, Tooltip } from "bizcharts";
+import { Animated } from "react-animated-css";
+import OverviewCustomer from "./report-customer/OverviewCustomer";
+import { getStockIDStorage, getStockNameStorage } from "../../constants/user";
+import ReportService from "../../service/report.service";
+import Filters from "../report/components/Filters";
 
-const data = [
-  { year: "T1", KH: 30 },
-  { year: "T2", KH: 50 },
-  { year: "T3", KH: 61 },
-  { year: "T4", KH: 45 },
-  { year: "T5", KH: 48 },
-  { year: "T6", KH: 90 },
-  { year: "T7", KH: 200 },
-  { year: "T8", KH: 182 },
-  { year: "T9", KH: 90 },
-  { year: "T10", KH: 250 },
-  { year: "T11", KH: 123 },
-  { year: "T12", KH: 189 },
-];
+import moment from "moment";
+import "moment/locale/vi";
+moment.locale("vi");
 
 export default class ReportCustomer extends React.Component {
   constructor() {
     super();
-    this.state = { sheetOpened: false, initialValues: null };
+    this.state = {
+      sheet: {
+        filters: false,
+        detail: false,
+      },
+      initialValues: null,
+      tabActive: "overview",
+      dataResult: {
+        Overview: null,
+        List: null,
+      },
+      loading: {
+        Overview: false,
+        List: false,
+      },
+      filters: {
+        Overview: {
+          Date: [new Date()],
+          StockID: Number(getStockIDStorage()) || "",
+          StockName: getStockNameStorage() || "Tất cả cơ sở",
+        },
+      },
+    };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.getOverview();
+  }
 
-  onOpenSheet = (item) => {
-    this.setState({
-      sheetOpened: true,
-      initialValues: item,
-    });
+  componentDidUpdate(prevProps, prevState) {
+    const { filters } = this.state;
+    if (
+      prevState.filters.Overview.Date !== filters.Overview.Date ||
+      prevState.filters.Overview.StockID !== filters.Overview.StockID
+    ) {
+      this.getOverview();
+    }
+  }
+
+  getOverview = (isLoading = true, callback) => {
+    const { loading, filters, dataResult, sheet } = this.state;
+    isLoading &&
+      this.setState({
+        loading: {
+          ...loading,
+          Overview: true,
+        },
+      });
+    const newFilters = {
+      StockID: filters.StockID,
+    };
+    if (filters.Date && filters.Date.length > 0) {
+      newFilters.Date = moment(filters.Date[0]).format("DD/MM/yyyy");
+    } else {
+      newFilters.Date = moment(new Date()).format("DD/MM/yyyy");
+    }
+    ReportService.getReportCustomerOverview(newFilters)
+      .then(({ data }) => {
+        const newResult = {
+          ...data.result,
+          SoKHs_ByMonth_LastYear: data?.result?.SoKHs_ByMonth_LastYear.map(
+            (item, index) => ({
+              year: `T${index + 1}`,
+              KH: item,
+            })
+          ),
+          SoKHs_ByMonth_ThisYear: data?.result?.SoKHs_ByMonth_ThisYear.map(
+            (item, index) => ({
+              year: `T${index + 1}`,
+              KH: item,
+            })
+          ),
+        };
+        this.setState({
+          loading: {
+            ...loading,
+            Overview: false,
+          },
+          dataResult: {
+            ...dataResult,
+            Overview: newResult,
+          },
+          sheet: {
+            ...sheet,
+            filters: false,
+          },
+        });
+        callback && callback();
+        this.$f7.dialog.close();
+      })
+      .catch((error) => console.log(error));
+  };
+
+  onOpenSheet = (item, type) => {
+    const { sheet } = this.state;
+    if (type === "filters") {
+      this.setState({
+        sheet: {
+          ...sheet,
+          filters: true,
+        },
+      });
+    } else {
+      this.setState({
+        sheet: {
+          ...sheet,
+          detail: true,
+        },
+        initialValues: item,
+      });
+    }
   };
 
   onHideSheet = () => {
     this.setState({
-      sheetOpened: false,
+      sheet: {
+        filters: false,
+        detail: false,
+      },
       initialValues: null,
     });
   };
 
+  loadMore(done) {
+    const { tabActive } = this.state;
+    const self = this;
+    if (tabActive === "overview") {
+      this.getOverview(false, () => {
+        setTimeout(() => {
+          done();
+        }, 500);
+      });
+    }
+  }
+
   render() {
-    const { initialValues, sheetOpened } = this.state;
+    const {
+      initialValues,
+      sheetOpened,
+      tabActive,
+      filters,
+      dataResult,
+      loading,
+      sheet,
+    } = this.state;
+
     return (
-      <Page name="employee-service">
+      <Page name="employee-service" ptr onPtrRefresh={this.loadMore.bind(this)}>
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
@@ -68,72 +184,81 @@ export default class ReportCustomer extends React.Component {
             <div className="page-navbar__title">
               <span className="title">Báo cáo khách hàng</span>
             </div>
-            <div className="page-navbar__noti">
-              <NotificationIcon />
+            <div className="page-navbar__filter">
+              <Link onClick={() => this.onOpenSheet("", "filters")}>
+                <i className="las la-filter font-size-xl"></i>
+              </Link>
             </div>
           </div>
           <Subnavbar>
             <Segmented raised>
-              <Button tabLink="#overview" tabLinkActive>
+              <Button
+                onClick={() => this.setState({ tabActive: "overview" })}
+                tabLinkActive={tabActive === "overview"}
+              >
                 Tổng quan
               </Button>
-              <Button tabLink="#list">Danh sách</Button>
+              <Button
+                onClick={() => this.setState({ tabActive: "list" })}
+                tabLinkActive={tabActive === "list"}
+              >
+                Danh sách
+              </Button>
             </Segmented>
           </Subnavbar>
         </Navbar>
 
-        <Tabs animated>
-          <Tab id="overview" className="overflow-auto" tabActive>
-            <div className="page-render">
-              <div className="bg-white p-15px mb-15px rounded">
-                <div className="text-uppercase text-black fw-600 mb-10px">
-                  Khách hàng
-                </div>
-                <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Hôm nay
-                  </div>
-                  <div className="fw-600 font-size-sm">50</div>
-                </div>
-                <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Tuần này
-                  </div>
-                  <div className="fw-600 font-size-sm">120</div>
-                </div>
-                <div className="border-bottom-dashed d--f jc--sb ai--c py-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Tháng này
-                  </div>
-                  <div className="fw-600 font-size-sm">500</div>
-                </div>
-                <div className="d--f jc--sb ai--c pt-8px">
-                  <div className="text-gray-700 font-size-xs fw-500">
-                    Tổng khách hàng
-                  </div>
-                  <div className="fw-600 font-size-sm">1250</div>
-                </div>
-              </div>
-              <div className="bg-white p-15px rounded">
-                <Chart
-                  height={400}
-                  autoFit
-                  data={data}
-                  interactions={["active-region"]}
-                  padding={[15, 15, 30, 30]}
-                >
-                  <Interval position="year*KH" />
-                  <Tooltip shared />
-                </Chart>
-                <div className="text-center text-uppercase fw-500 mt-15px">
-                  Biểu đồ khách hàng theo năm
-                </div>
-              </div>
-              {/* <PageNoData text="Đang cập nhập ..." /> */}
-            </div>
-          </Tab>
-          <Tab id="list" className="bg-white overflow-auto">
-            <div className="page-render">
+        <div className={`page-render ${tabActive === "list" && "bg-white"}`}>
+          {tabActive === "overview" && (
+            <Fragment>
+              <OverviewCustomer
+                data={dataResult.Overview}
+                filters={filters.Overview}
+                loading={loading.Overview}
+              />
+              <Filters
+                show={sheet.filters}
+                onHide={() => {
+                  this.onHideSheet();
+                }}
+                filters={filters.Overview}
+                options={{
+                  dateFormat: "dd/mm/yyyy",
+                  rangePicker: false,
+                  footer: true,
+                  toolbarCloseText: "Đóng",
+                  openIn: "popover",
+                  footer: false,
+                  closeOnSelect: true,
+                }}
+                onSubmit={(values) => {
+                  if (
+                    values.Date !== filters.Overview.Date ||
+                    values.StockID !== filters.Overview.StockID
+                  ) {
+                    this.$f7.dialog.preloader("Đang tải ...");
+                    this.setState({
+                      filters: {
+                        ...filters,
+                        Overview: values,
+                      },
+                    });
+                  } else {
+                    this.getOverview(true, () => {
+                      this.onOpenSheet();
+                    });
+                  }
+                }}
+              />
+            </Fragment>
+          )}
+          {tabActive === "list" && (
+            <Animated
+              animationIn="fadeInLeft"
+              animationOut="fadeOut"
+              isVisible={true}
+              animationInDuration={500}
+            >
               {Array(10)
                 .fill()
                 .map((item, index) => (
@@ -185,85 +310,79 @@ export default class ReportCustomer extends React.Component {
                     </div>
                   </div>
                 ))}
+            </Animated>
+          )}
+        </div>
+        <Sheet
+          className="sheet-scroll"
+          opened={sheetOpened}
+          onSheetClosed={this.onHideSheet}
+          swipeToClose
+          backdrop
+        >
+          <Toolbar>
+            <div className="px-15px w-100 d--f ai--c jc--sb">
+              <div className="left line-height-xs text-uppercase fw-500 font-size-md">
+                Nguyễn Tài Tuấn
+              </div>
+              <div className="right">
+                <Link sheetClose>
+                  <i className="las la-times"></i>
+                </Link>
+              </div>
             </div>
-            <Sheet
-              className="sheet-scroll"
-              opened={sheetOpened}
-              onSheetClosed={this.onHideSheet}
-              swipeToClose
-              backdrop
-            >
-              <Toolbar>
-                <div className="px-15px w-100 d--f ai--c jc--sb">
-                  <div className="left line-height-xs text-uppercase fw-500 font-size-md">
-                    Nguyễn Tài Tuấn
-                  </div>
-                  <div className="right">
-                    <Link sheetClose>
-                      <i className="las la-times"></i>
-                    </Link>
-                  </div>
+          </Toolbar>
+          <PageContent className="bg-white">
+            <div className="p-15px">
+              <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
+                <div className="fw-500 text-gray-700">Số điện thoại</div>
+                <div className="fw-600 text-dark">0971021196</div>
+              </div>
+              <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
+                <div className="fw-500 text-gray-700">Ngày tạo</div>
+                <div className="fw-600 text-dark">18:00 25/12/2022</div>
+              </div>
+              <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
+                <div className="fw-500 text-gray-700">Cấp bậc</div>
+                <div className="fw-600 text-dark">Khách hàng thân thiết</div>
+              </div>
+              <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
+                <div className="fw-500 text-gray-700">Cơ sở</div>
+                <div className="fw-600 text-dark">Cser Hà Nội</div>
+              </div>
+              <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
+                <div className="fw-500 text-gray-700">Tổng tiền thực chi</div>
+                <div className="fw-600 text-dark">18,000,000</div>
+              </div>
+              <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
+                <div className="fw-500 text-gray-700">Công nợ</div>
+                <div className="fw-600 text-dark">1,000,000</div>
+              </div>
+              <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
+                <div className="fw-500 text-gray-700">Ví</div>
+                <div className="fw-600 text-dark">1,000,000</div>
+              </div>
+              <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
+                <div className="fw-500 text-gray-700">Thẻ tiền</div>
+                <div className="fw-600 text-dark">1,000,000</div>
+              </div>
+              <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
+                <div className="fw-500 text-gray-700">Thẻ bảo hành</div>
+                <div className="fw-600 text-dark">5 Thẻ</div>
+              </div>
+              <div className="mb-10px pb-10px border-bottom-dashed">
+                <div className="fw-500 text-gray-700">
+                  Số buổi DV còn lại / Giá trị
                 </div>
-              </Toolbar>
-              <PageContent className="bg-white">
-                <div className="p-15px">
-                  <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
-                    <div className="fw-500 text-gray-700">Số điện thoại</div>
-                    <div className="fw-600 text-dark">0971021196</div>
-                  </div>
-                  <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
-                    <div className="fw-500 text-gray-700">Ngày tạo</div>
-                    <div className="fw-600 text-dark">18:00 25/12/2022</div>
-                  </div>
-                  <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
-                    <div className="fw-500 text-gray-700">Cấp bậc</div>
-                    <div className="fw-600 text-dark">
-                      Khách hàng thân thiết
-                    </div>
-                  </div>
-                  <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
-                    <div className="fw-500 text-gray-700">Cơ sở</div>
-                    <div className="fw-600 text-dark">Cser Hà Nội</div>
-                  </div>
-                  <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
-                    <div className="fw-500 text-gray-700">
-                      Tổng tiền thực chi
-                    </div>
-                    <div className="fw-600 text-dark">18,000,000</div>
-                  </div>
-                  <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
-                    <div className="fw-500 text-gray-700">Công nợ</div>
-                    <div className="fw-600 text-dark">1,000,000</div>
-                  </div>
-                  <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
-                    <div className="fw-500 text-gray-700">Ví</div>
-                    <div className="fw-600 text-dark">1,000,000</div>
-                  </div>
-                  <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
-                    <div className="fw-500 text-gray-700">Thẻ tiền</div>
-                    <div className="fw-600 text-dark">1,000,000</div>
-                  </div>
-                  <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
-                    <div className="fw-500 text-gray-700">Thẻ bảo hành</div>
-                    <div className="fw-600 text-dark">5 Thẻ</div>
-                  </div>
-                  <div className="mb-10px pb-10px border-bottom-dashed">
-                    <div className="fw-500 text-gray-700">
-                      Số buổi DV còn lại / Giá trị
-                    </div>
-                    <div className="fw-600 text-dark">1 buổi / 1,000,000</div>
-                  </div>
-                  <div>
-                    <div className="fw-500 text-gray-700">
-                      Nhân viên phụ trách
-                    </div>
-                    <div className="fw-600 text-dark">Nguyễn Thị Thu Trang</div>
-                  </div>
-                </div>
-              </PageContent>
-            </Sheet>
-          </Tab>
-        </Tabs>
+                <div className="fw-600 text-dark">1 buổi / 1,000,000</div>
+              </div>
+              <div>
+                <div className="fw-500 text-gray-700">Nhân viên phụ trách</div>
+                <div className="fw-600 text-dark">Nguyễn Thị Thu Trang</div>
+              </div>
+            </div>
+          </PageContent>
+        </Sheet>
         <Toolbar tabbar position="bottom">
           <ToolBarBottom />
         </Toolbar>

@@ -89,7 +89,7 @@ export default class ReportingDate extends React.Component {
     this.getReportDays(false, () => {
       setTimeout(() => {
         done();
-      }, 1000);
+      }, 500);
     });
   }
 

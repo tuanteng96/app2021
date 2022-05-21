@@ -1,9 +1,14 @@
 import { getToken } from "../constants/user";
 import http from "../service/http-common";
 
+const SubApi = "/api/v3/r23";
+
 class ReportService {
     getReportDate(data) {
-        return http.post(`/api/v3/r23/bao-cao-ngay/danh-sach?token=${getToken()}`, JSON.stringify(data));
+        return http.post(`${SubApi}/bao-cao-ngay/danh-sach?token=${getToken()}`, JSON.stringify(data));
+    }
+    getReportCustomerOverview = (data) => {
+        return http.post(`${SubApi}/khach-hang/tong-quan?token=${getToken()}`, JSON.stringify(data));
     }
 }
 

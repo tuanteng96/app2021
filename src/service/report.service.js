@@ -10,6 +10,9 @@ class ReportService {
     getReportCustomerOverview = (data) => {
         return http.post(`${SubApi}/khach-hang/tong-quan?token=${getToken()}`, JSON.stringify(data));
     }
+    getReportCustomerList = (data) => {
+        return http.post(`${SubApi}/khach-hang/danh-sach?token=${getToken()}`, JSON.stringify(data));
+    }
 }
 
 export default new ReportService();

@@ -161,6 +161,8 @@ html {
 //Component
 .page-render {
     padding: $pd-app;
+    min-height: 100%;
+    box-sizing: border-box;
 }
 
 .text-empty {

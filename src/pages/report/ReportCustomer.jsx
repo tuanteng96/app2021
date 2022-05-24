@@ -11,15 +11,16 @@ import {
   Toolbar,
 } from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
-import { Animated } from "react-animated-css";
 import OverviewCustomer from "./report-customer/OverviewCustomer";
 import { getStockIDStorage, getStockNameStorage } from "../../constants/user";
 import ReportService from "../../service/report.service";
 import Filters from "../report/components/Filters";
+import ListCustomer from "./report-customer/ListCustomer";
+import FiltersList from "./components/FiltersList";
+import _ from "lodash";
 
 import moment from "moment";
 import "moment/locale/vi";
-import ListCustomer from "./report-customer/ListCustomer";
 moment.locale("vi");
 
 export default class ReportCustomer extends React.Component {
@@ -30,11 +31,9 @@ export default class ReportCustomer extends React.Component {
         filters: false,
         filtersList: false,
       },
-      tabActive: "overview",
-      dataResult: {
-        Overview: null,
-        List: null,
-      },
+      tabActive: "",
+      dataOverview: [],
+      dataList: [],
       loading: {
         Overview: false,
         List: false,
@@ -47,38 +46,55 @@ export default class ReportCustomer extends React.Component {
         },
         List: {
           StockID: Number(getStockIDStorage()) || "", // ID Stock
-          DateStart: new Date(), // Ngày bắt đầu
-          DateEnd: new Date(), // Ngày kết thúc
+          DateStart: [new Date("05/01/2021")], // Ngày bắt đầu
+          DateEnd: [new Date("05/25/2022")], // Ngày kết thúc
           Pi: 1, // Trang hiện tại
           Ps: 10, // Số lượng item
-          GroupCustomerID: '', // ID Nhóm khách hàng
-          ProvincesID: '', // ID Thành phố
-          DistrictsID: '', //ID Huyện
-          SourceName: '', // ID Nguồn
-          StaffID: ''
-        }
+          GroupCustomerID: "", // ID Nhóm khách hàng
+          ProvincesID: "", // ID Thành phố
+          DistrictsID: "", //ID Huyện
+          SourceName: "", // ID Nguồn
+          StaffID: "",
+        },
       },
-      PageTotal: 0
+      PageTotal: 0,
+      showPreloader: false,
     };
   }
 
   componentDidMount() {
-    this.getOverview();
-    this.getList();
+    this.setState({ tabActive: "overview" });
+    // this.getOverview();
+    // this.getList();
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { filters } = this.state;
-    if (
-      prevState.filters.Overview.Date !== filters.Overview.Date ||
-      prevState.filters.Overview.StockID !== filters.Overview.StockID
-    ) {
-      this.getOverview();
+    const { filters, tabActive } = this.state;
+    if (!_.isEqual(prevState.filters.Overview, filters.Overview)) {
+      if (tabActive === "overview") {
+        this.getOverview();
+      }
+    }
+    if (!_.isEqual(prevState.filters.List, filters.List)) {
+      if (tabActive === "list") {
+        this.getList();
+      }
+    }
+    if (prevState.tabActive !== tabActive) {
+      var $$ = this.Dom7;
+      var container = $$(".page-content");
+      container.scrollTop(0, 300);
+      if (tabActive === "overview") {
+        this.getOverview();
+      }
+      else {
+        this.getList();
+      }
     }
   }
 
   getOverview = (isLoading = true, callback) => {
-    const { loading, filters, dataResult, sheet } = this.state;
+    const { loading, filters, sheet } = this.state;
 
     isLoading &&
       this.setState({
@@ -117,13 +133,18 @@ export default class ReportCustomer extends React.Component {
             ...loading,
             Overview: false,
           },
-          dataResult: {
-            ...dataResult,
-            Overview: newResult,
-          },
+          dataOverview: newResult,
+          dataList: null,
           sheet: {
             ...sheet,
             filters: false,
+          },
+          filters: {
+            ...filters,
+            List: {
+              ...filters.List,
+              Pi: 1
+            },
           },
         });
         callback && callback();
@@ -133,49 +154,54 @@ export default class ReportCustomer extends React.Component {
   };
 
   getList = (isLoading = true, callback) => {
-    const { loading, filters, dataResult, sheet } = this.state;
-    const newFilters = {
-      ...filters.List,
-      DateStart: filters.List.DateStart
-        ? moment(filters.List.DateStart).format('DD/MM/yyyy')
-        : null,
-      DateEnd: filters.List.DateEnd
-        ? moment(filters.List.DateEnd).format('DD/MM/yyyy')
-        : null,
-      StaffID: filters.List.StaffID ? filters.List.StaffID.value : '',
-      GroupCustomerID: filters.List.GroupCustomerID
-        ? filters.List.GroupCustomerID.value
-        : '',
-      SourceName: filters.List.SourceName ? filters.List.SourceName.value : '',
-      ProvincesID: filters.List.ProvincesID ? filters.List.ProvincesID.value : '',
-      DistrictsID: filters.List.DistrictsID ? filters.List.DistrictsID.value : ''
-    }
-    isLoading &&
+    const { loading, filters, sheet,dataList, showPreloader } = this.state;
+    !showPreloader && isLoading &&
       this.setState({
         loading: {
           ...loading,
           List: true,
         },
       });
+    const newFilters = {
+      ...filters.List,
+      DateStart: null,
+      DateEnd: null,
+      StaffID: filters.List.StaffID ? filters.List.StaffID.value : "",
+      GroupCustomerID: filters.List.GroupCustomerID
+        ? filters.List.GroupCustomerID.value
+        : "",
+      SourceName: filters.List.SourceName ? filters.List.SourceName.value : "",
+      ProvincesID: filters.List.ProvincesID
+        ? filters.List.ProvincesID.value
+        : "",
+      DistrictsID: filters.List.DistrictsID
+        ? filters.List.DistrictsID.value
+        : "",
+    };
+    if (filters.List.DateStart.length > 0) {
+      newFilters.DateStart = moment(filters.List.DateStart[0]).format(
+        "DD/MM/YYYY"
+      );
+    }
+    if (filters.List.DateEnd.length > 0) {
+      newFilters.DateEnd = moment(filters.List.DateEnd[0]).format("DD/MM/YYYY");
+    }
 
     ReportService.getReportCustomerList(newFilters)
       .then(({ data }) => {
-        console.log(data.result)
         const { Members, Total } = data.result;
         this.setState({
           loading: {
             ...loading,
             List: false,
           },
-          dataResult: {
-            ...dataResult,
-            List: Members,
-          },
+          dataList: showPreloader ? [...dataList, ...Members] : Members,
           sheet: {
             ...sheet,
-            filters: false,
+            filtersList: false,
           },
-          PageTotal: Total
+          PageTotal: Total,
+          showPreloader: false,
         });
         callback && callback();
         this.$f7.dialog.close();
@@ -183,9 +209,9 @@ export default class ReportCustomer extends React.Component {
       .catch((error) => console.log(error));
   };
 
-  onOpenSheet = (type) => {
-    const { sheet } = this.state;
-    if (type === "filters") {
+  onOpenSheet = () => {
+    const { tabActive, sheet } = this.state;
+    if (tabActive === "overview") {
       this.setState({
         sheet: {
           ...sheet,
@@ -197,7 +223,7 @@ export default class ReportCustomer extends React.Component {
         sheet: {
           ...sheet,
           filtersList: true,
-        }
+        },
       });
     }
   };
@@ -206,17 +232,21 @@ export default class ReportCustomer extends React.Component {
     this.setState({
       sheet: {
         filters: false,
-        detail: false,
+        filtersList: false,
       },
-      initialValues: null,
     });
   };
 
   loadMore(done) {
     const { tabActive } = this.state;
-    const self = this;
     if (tabActive === "overview") {
       this.getOverview(false, () => {
+        setTimeout(() => {
+          done();
+        }, 500);
+      });
+    } else {
+      this.getList(false, () => {
         setTimeout(() => {
           done();
         }, 500);
@@ -224,17 +254,47 @@ export default class ReportCustomer extends React.Component {
     }
   }
 
+  loadMoreAsync = () => {
+    const { filters, PageTotal, dataList, tabActive, showPreloader } =
+      this.state;
+    if (tabActive === "overview") return;
+    if (dataList.length >= PageTotal) {
+      return false;
+    }
+    if (showPreloader) return false;
+    this.setState({
+      showPreloader: true,
+      filters: {
+        ...filters,
+        List: {
+          ...filters.List,
+          Pi: filters.List.Pi + 1,
+        },
+      },
+    });
+  };
+
   render() {
     const {
       tabActive,
       filters,
-      dataResult,
+      dataOverview,
+      dataList,
       loading,
       sheet,
+      showPreloader,
     } = this.state;
-    console.log(dataResult.List)
+
     return (
-      <Page name="employee-service" ptr onPtrRefresh={this.loadMore.bind(this)}>
+      <Page
+        name="employee-service"
+        ptr
+        onPtrRefresh={this.loadMore.bind(this)}
+        infinite
+        infiniteDistance={50}
+        infinitePreloader={showPreloader}
+        onInfinite={() => this.loadMoreAsync()}
+      >
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
@@ -246,7 +306,7 @@ export default class ReportCustomer extends React.Component {
               <span className="title">Báo cáo khách hàng</span>
             </div>
             <div className="page-navbar__filter">
-              <Link onClick={() => this.onOpenSheet("filters")}>
+              <Link onClick={() => this.onOpenSheet()}>
                 <i className="las la-filter font-size-xl"></i>
               </Link>
             </div>
@@ -271,58 +331,84 @@ export default class ReportCustomer extends React.Component {
 
         <div className={`page-render ${tabActive === "list" && "bg-white"}`}>
           {tabActive === "overview" && (
-            <Fragment>
-              <OverviewCustomer
-                data={dataResult.Overview}
-                filters={filters.Overview}
-                loading={loading.Overview}
-              />
-              <Filters
-                show={sheet.filters}
-                onHide={() => {
-                  this.onHideSheet();
-                }}
-                filters={filters.Overview}
-                options={{
-                  dateFormat: "dd/mm/yyyy",
-                  rangePicker: false,
-                  footer: true,
-                  toolbarCloseText: "Đóng",
-                  openIn: "popover",
-                  footer: false,
-                  closeOnSelect: true,
-                }}
-                onSubmit={(values) => {
-                  if (
-                    values.Date !== filters.Overview.Date ||
-                    values.StockID !== filters.Overview.StockID
-                  ) {
-                    this.$f7.dialog.preloader("Đang tải ...");
-                    this.setState({
-                      filters: {
-                        ...filters,
-                        Overview: values,
-                      },
-                    });
-                  } else {
-                    this.getOverview(true, () => {
-                      this.onHideSheet();
-                    });
-                  }
-                }}
-              />
-            </Fragment>
+            <OverviewCustomer
+              data={dataOverview}
+              filters={filters.Overview}
+              loading={loading.Overview}
+            />
           )}
           {tabActive === "list" && (
-            <Fragment>
+            <>
               <ListCustomer
-                data={dataResult.List}
+                data={dataList}
                 filters={filters.List}
                 loading={loading.List}
               />
-            </Fragment>
+            </>
           )}
         </div>
+        <Filters
+          show={sheet.filters}
+          onHide={() => {
+            this.onHideSheet();
+          }}
+          filters={filters.Overview}
+          options={{
+            dateFormat: "dd/mm/yyyy",
+            rangePicker: false,
+            footer: true,
+            toolbarCloseText: "Đóng",
+            openIn: "popover",
+            footer: false,
+            closeOnSelect: true,
+          }}
+          onSubmit={(values) => {
+            if (!_.isEqual(values, filters.Overview)) {
+              this.$f7.dialog.preloader("Đang tải ...");
+              this.setState({
+                filters: {
+                  ...filters,
+                  Overview: values,
+                },
+              });
+            } else {
+              this.getOverview(true, () => {
+                this.onHideSheet();
+              });
+            }
+          }}
+        />
+        <FiltersList
+          show={sheet.filtersList}
+          onHide={() => {
+            this.onHideSheet();
+          }}
+          filters={filters.List}
+          options={{
+            dateFormat: "dd/mm/yyyy",
+            rangePicker: false,
+            footer: true,
+            toolbarCloseText: "Đóng",
+            openIn: "popover",
+            footer: false,
+            closeOnSelect: true,
+          }}
+          onSubmit={(values) => {
+            if (!_.isEqual(values, filters.List)) {
+              this.$f7.dialog.preloader("Đang tải ...");
+              this.setState({
+                filters: {
+                  ...filters,
+                  List: values,
+                },
+              });
+            } else {
+              this.getList(true, () => {
+                this.onHideSheet();
+              });
+            }
+          }}
+        />
         <Toolbar tabbar position="bottom">
           <ToolBarBottom />
         </Toolbar>

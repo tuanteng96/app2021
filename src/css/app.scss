@@ -24,7 +24,8 @@
 './components/panel',
 "./components/button",
 './components/svg',
-'./components/sheet';
+'./components/sheet',
+"./components/react-select";
 ////////// layout
 @import './../css/layout/iconanimation';
 @import './../css/layout/button';
@@ -272,4 +273,14 @@ blockquote {
 
 .d-none {
     display: none !important;
+}
+
+.sheet-icon-close {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    width: 35px;
+    height: 32px;
+    font-size: 25px;
+    color: #000;
 }

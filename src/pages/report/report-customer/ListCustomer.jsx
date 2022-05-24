@@ -37,7 +37,7 @@ function ListCustomer({ filters, data, loading }) {
             <Fragment>
               {data.map((item, index) => (
                 <div
-                  className={`d--f ai--c pb-12px mb-12px border-bottom-dashed`}
+                  className={`d--f ai--c ${data.length - 1 !== index && "pb-12px mb-12px border-bottom-dashed"}`}
                   key={index}
                   onClick={() => onOpenSheet(item)}
                 >

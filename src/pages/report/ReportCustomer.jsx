@@ -58,6 +58,7 @@ export default class ReportCustomer extends React.Component {
         },
       },
       PageTotal: 0,
+      PageCount: 0,
       showPreloader: false,
     };
   }
@@ -86,8 +87,7 @@ export default class ReportCustomer extends React.Component {
       container.scrollTop(0, 300);
       if (tabActive === "overview") {
         this.getOverview();
-      }
-      else {
+      } else {
         this.getList();
       }
     }
@@ -143,7 +143,7 @@ export default class ReportCustomer extends React.Component {
             ...filters,
             List: {
               ...filters.List,
-              Pi: 1
+              Pi: 1,
             },
           },
         });
@@ -153,9 +153,10 @@ export default class ReportCustomer extends React.Component {
       .catch((error) => console.log(error));
   };
 
-  getList = (isLoading = true, callback) => {
-    const { loading, filters, sheet,dataList, showPreloader } = this.state;
-    !showPreloader && isLoading &&
+  getList = (isLoading = true, isRefresh = false, callback) => {
+    const { loading, filters, sheet, dataList, showPreloader } = this.state;
+    !showPreloader &&
+      isLoading &&
       this.setState({
         loading: {
           ...loading,
@@ -186,10 +187,13 @@ export default class ReportCustomer extends React.Component {
     if (filters.List.DateEnd.length > 0) {
       newFilters.DateEnd = moment(filters.List.DateEnd[0]).format("DD/MM/YYYY");
     }
+    if (isRefresh) {
+      newFilters.Pi = 1;
+    }
 
     ReportService.getReportCustomerList(newFilters)
       .then(({ data }) => {
-        const { Members, Total } = data.result;
+        const { Members, Total, PCount } = data.result;
         this.setState({
           loading: {
             ...loading,
@@ -201,6 +205,7 @@ export default class ReportCustomer extends React.Component {
             filtersList: false,
           },
           PageTotal: Total,
+          PageCount: PCount,
           showPreloader: false,
         });
         callback && callback();
@@ -237,7 +242,7 @@ export default class ReportCustomer extends React.Component {
     });
   };
 
-  loadMore(done) {
+  loadRefresh(done) {
     const { tabActive } = this.state;
     if (tabActive === "overview") {
       this.getOverview(false, () => {
@@ -246,7 +251,7 @@ export default class ReportCustomer extends React.Component {
         }, 500);
       });
     } else {
-      this.getList(false, () => {
+      this.getList(false, true, () => {
         setTimeout(() => {
           done();
         }, 500);
@@ -255,12 +260,9 @@ export default class ReportCustomer extends React.Component {
   }
 
   loadMoreAsync = () => {
-    const { filters, PageTotal, dataList, tabActive, showPreloader } =
-      this.state;
+    const { filters, PageCount, tabActive, showPreloader } = this.state;
     if (tabActive === "overview") return;
-    if (dataList.length >= PageTotal) {
-      return false;
-    }
+    if (filters.List.Pi >= PageCount) return;
     if (showPreloader) return false;
     this.setState({
       showPreloader: true,
@@ -289,7 +291,7 @@ export default class ReportCustomer extends React.Component {
       <Page
         name="employee-service"
         ptr
-        onPtrRefresh={this.loadMore.bind(this)}
+        onPtrRefresh={this.loadRefresh.bind(this)}
         infinite
         infiniteDistance={50}
         infinitePreloader={showPreloader}
@@ -338,13 +340,11 @@ export default class ReportCustomer extends React.Component {
             />
           )}
           {tabActive === "list" && (
-            <>
-              <ListCustomer
-                data={dataList}
-                filters={filters.List}
-                loading={loading.List}
-              />
-            </>
+            <ListCustomer
+              data={dataList}
+              filters={filters.List}
+              loading={loading.List}
+            />
           )}
         </div>
         <Filters

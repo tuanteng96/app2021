@@ -46,8 +46,8 @@ export default class ReportCustomer extends React.Component {
         },
         List: {
           StockID: Number(getStockIDStorage()) || "", // ID Stock
-          DateStart: [new Date("05/01/2021")], // Ngày bắt đầu
-          DateEnd: [new Date("05/25/2022")], // Ngày kết thúc
+          DateStart: [], // Ngày bắt đầu
+          DateEnd: [], // Ngày kết thúc
           Pi: 1, // Trang hiện tại
           Ps: 10, // Số lượng item
           GroupCustomerID: "", // ID Nhóm khách hàng

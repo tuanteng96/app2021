@@ -30,7 +30,6 @@ function AsyncSelectGroupsCustomer({ value, onChange }) {
 
   return (
     <AsyncSelect
-      menuPosition="fixed"
       className="select-control"
       classNamePrefix="select"
       cacheOptions
@@ -39,6 +38,7 @@ function AsyncSelectGroupsCustomer({ value, onChange }) {
       placeholder="Chọn nhóm khách hàng"
       value={value}
       onChange={onChange}
+      isClearable={true}
     />
   )
 }

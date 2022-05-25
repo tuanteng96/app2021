@@ -31,9 +31,9 @@ function AsyncSelectProvinces({ onChange, value, ...props }) {
   return (
     <AsyncPaginate
       {...props}
+      isClearable={true}
       className="select-control"
       classNamePrefix="select"
-      isClearable={true}
       loadOptions={getAllProvinces}
       placeholder="Chọn tỉnh thành"
       value={value}

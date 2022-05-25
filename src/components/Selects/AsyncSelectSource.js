@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import AsyncSelect from 'react-select/async'
 import moreApi from "../../service/more.service";
 
-function AsyncSelectSource({ value, onChange }) {
+function AsyncSelectSource({ value, onChange, ...props }) {
   const typingTimeoutRef = useRef(null)
   const getAllSource = (inputValue, callback) => {
     if (typingTimeoutRef.current) {
@@ -30,7 +30,7 @@ function AsyncSelectSource({ value, onChange }) {
 
   return (
     <AsyncSelect
-      menuPosition="fixed"
+      {...props}
       className="select-control"
       classNamePrefix="select"
       cacheOptions
@@ -39,8 +39,9 @@ function AsyncSelectSource({ value, onChange }) {
       placeholder="Chọn nguồn khách hàng"
       value={value}
       onChange={onChange}
+      isClearable={true}
     />
-  )
+  );
 }
 
 export default AsyncSelectSource

@@ -37,7 +37,10 @@ function ListCustomer({ filters, data, loading }) {
             <Fragment>
               {data.map((item, index) => (
                 <div
-                  className={`d--f ai--c ${data.length - 1 !== index && "pb-12px mb-12px border-bottom-dashed"}`}
+                  className={`d--f ai--c ${
+                    data.length - 1 !== index &&
+                    "pb-12px mb-12px border-bottom-dashed"
+                  }`}
                   key={index}
                   onClick={() => onOpenSheet(item)}
                 >
@@ -204,11 +207,15 @@ function ListCustomer({ filters, data, loading }) {
             </div>
             <div className="mb-10px pb-10px border-bottom-dashed d--f jc--sb ai--c">
               <div className="fw-500 text-gray-700">Công nợ</div>
-              <div className="fw-600 text-dark">{initialValues?.cong_no}</div>
+              <div className="fw-600 text-dark">
+                {formatPriceVietnamese(initialValues?.cong_no)}
+              </div>
             </div>
             <div className="d--f jc--sb ai--c">
               <div className="fw-500 text-gray-700">Thẻ tiền</div>
-              <div className="fw-600 text-dark">{initialValues?.the_tien}</div>
+              <div className="fw-600 text-dark">
+                {formatPriceVietnamese(initialValues?.the_tien)}
+              </div>
             </div>
           </div>
         </PageContent>

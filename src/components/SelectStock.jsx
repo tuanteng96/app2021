@@ -38,7 +38,6 @@ export default class SelectStock extends React.Component {
           arrStock.push(item);
         }
       });
-
       this.setState({
         CurrentStockID: CurrentStockID,
         arrStock: arrStock,

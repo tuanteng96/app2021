@@ -113,7 +113,7 @@ export default class ToolBarCustom extends React.Component {
               icon="las la-chart-bar"
               text="Báo cáo"
               roles={["director"]}
-              href="/report/date/"
+              href="/report/"
             />
             <PrivateNav
               className="page-toolbar-bottom__link js-toolbar-link"
@@ -147,7 +147,7 @@ export default class ToolBarCustom extends React.Component {
               icon="las la-chart-bar"
               text="Báo cáo"
               roles={[]}
-              href="/report/date/"
+              href="/report/"
             />
             <Link
               noLinkClass

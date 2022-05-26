@@ -50,6 +50,7 @@ import ReportSellPage from "../pages/report/ReportSell";
 import ReportServicesPage from "../pages/report/ReportServices";
 import ReportCashBookPage from "../pages/report/ReportCashBook";
 import ReportMonthlyPage from "../pages/report/ReportMonthly";
+import ReportPage from "../pages/report/index";
 
 // Pos bán hàng
 import PosPage from "../pages/pos/Pos"
@@ -79,7 +80,7 @@ const checkRouterHome = () => {
 
     if (ACC_TYPE === "U") {
         if (infoUser.ID === 1) {
-            return ReportingDatePage;
+            return ReportPage;
         } else {
             const groupRole = infoUser.GroupTitles;
             if (groupRole.includes("service")) {
@@ -339,6 +340,13 @@ var routes = [{
     {
         path: '/employee/statistical/', // Thống kê
         asyncComponent: () => EmployeeStatisticalPage,
+        options: {
+            transition: 'f7-cover',
+        }
+    },
+    {
+        path: '/report/', // Báo cáo ngày
+        asyncComponent: () => ReportPage,
         options: {
             transition: 'f7-cover',
         }

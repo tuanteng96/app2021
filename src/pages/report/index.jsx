@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Link,
-  Navbar,
-  Page,
-  Toolbar,
-} from "framework7-react";
+import { Link, Navbar, Page, Toolbar } from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import NotificationIcon from "../../components/NotificationIcon";
 import PageNoData from "../../components/PageNoData";
@@ -14,6 +9,7 @@ import { SERVER_APP } from "../../constants/config";
 import Dom7 from "dom7";
 import UserService from "../../service/user.service";
 import { getStockIDStorage, getUser } from "../../constants/user";
+import IframeReport from "./IframeReport";
 
 window.Info = {
   User: getUser(),
@@ -33,25 +29,7 @@ export default class Report extends React.Component {
   }
 
   componentDidMount() {
-    var $ = Dom7;
-    if ($(".dialog-preloader").length === 0) {
-      this.$f7.dialog.preloader("Đang tải báo cáo ... ");
-    }
-    UserService.getStock().then((response) => {
-      const ListStock = response.data.data.all.filter(
-        (item) => item.ID !== 778
-      );
-      window.Info = {
-        ...window.Info,
-        User: getUser(),
-        Stocks: ListStock,
-        CrStockID: getStockIDStorage(),
-      };
-      window.token = localStorage.getItem("token");
-      this.setState({
-        isShow: true,
-      });
-    });
+    
   }
 
   openStock = () => {
@@ -80,17 +58,17 @@ export default class Report extends React.Component {
           </div>
         </Navbar>
         <div className="h-100">
-          {isShow && (
-            <IframeResizer
-              scrolling={true}
-              heightCalculationMethod="bodyScroll"
-              src={`${SERVER_APP}/App23/index.html`}
-              style={{ border: 0, width: "100%", height: "100%" }}
-              onLoad={() => {
-                this.$f7.dialog.close();
-              }}
-            />
-          )}
+          <IframeReport f7={this.$f7}/>
+          {/* <IframeResizer
+            scrolling={true}
+            heightCalculationMethod="bodyScroll"
+            src={`${SERVER_APP}/App23/index.aspx`}
+            style={{ border: 0, width: "100%", height: "100%" }}
+            onLoad={() => {
+              this.$f7.dialog.close();
+            }}
+            id="your-frame-id"
+          /> */}
         </div>
         <Toolbar tabbar position="bottom">
           <ToolBarBottom />

@@ -331,9 +331,7 @@ export default class ScheduleSpa extends React.Component {
                 arrStock &&
                 arrStock.map((item, index) => (
                   <Col width={arrStock.length > 1 ? "50" : "100"} key={index}>
-                    <div
-                      className="location"
-                    >
+                    <div className="location">
                       <div
                         className="location-item"
                         onClick={() => this.handleStock(item)}
@@ -464,10 +462,10 @@ export default class ScheduleSpa extends React.Component {
                         >
                           {children.map((sub, i) => (
                             <div
-                              className={
-                                "group-time__item " +
-                                this.checkTime(item.date, sub.fullTime)
-                              }
+                              className={`group-time__item ${item.name === "today" && this.checkTime(
+                                item.date,
+                                sub.fullTime
+                              )}`}
                               key={i}
                               onClick={() => this.handleTime(sub.time)}
                             >

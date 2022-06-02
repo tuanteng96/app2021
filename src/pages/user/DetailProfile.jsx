@@ -228,7 +228,7 @@ export default class extends React.Component {
               <div className="name">Avatar</div>
               <div className="content">
                 <div className="content-avatar">
-                  <img src={checkAvt(memberInfo && memberInfo.Photo)} />
+                  <img src={checkAvt(memberInfo?.Photo || memberInfo?.Avatar)} />
                 </div>
               </div>
             </div>

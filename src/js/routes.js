@@ -44,12 +44,6 @@ import EmployeeServiceDiaryPage from "../pages/employee/timeKeeping/employeeServ
 import EmployeeServiceSchedulePage from "../pages/employee/timeKeeping/employeeServiceSchedule";
 import EmployeeStatisticalPage from "../pages/employee/statistical/employeeStatistical";
 // Thống kê
-import ReportingDatePage from "../pages/report/ReportingDate";
-import ReportCustomerPage from "../pages/report/ReportCustomer";
-import ReportSellPage from "../pages/report/ReportSell";
-import ReportServicesPage from "../pages/report/ReportServices";
-import ReportCashBookPage from "../pages/report/ReportCashBook";
-import ReportMonthlyPage from "../pages/report/ReportMonthly";
 import ReportPage from "../pages/report/index";
 
 // Pos bán hàng

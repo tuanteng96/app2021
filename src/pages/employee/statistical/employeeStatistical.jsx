@@ -164,7 +164,7 @@ export default class employeeStatistical extends React.Component {
             </div>
             <div className="page-navbar__title">
               <span className="title">
-                Thống Kê ({monthCurrent && monthCurrent})
+                Thống kê ({monthCurrent && monthCurrent})
               </span>
             </div>
             <div className="page-navbar__noti">

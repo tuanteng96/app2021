@@ -2,12 +2,7 @@ import React from "react";
 import { Link, Navbar, Page, Toolbar } from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import NotificationIcon from "../../components/NotificationIcon";
-import PageNoData from "../../components/PageNoData";
 import SelectStock from "../../components/SelectStock";
-import IframeResizer from "iframe-resizer-react";
-import { SERVER_APP } from "../../constants/config";
-import Dom7 from "dom7";
-import UserService from "../../service/user.service";
 import { getStockIDStorage, getUser } from "../../constants/user";
 import IframeReport from "./IframeReport";
 
@@ -28,9 +23,7 @@ export default class Report extends React.Component {
     };
   }
 
-  componentDidMount() {
-    
-  }
+  componentDidMount() {}
 
   openStock = () => {
     this.setState({
@@ -39,7 +32,6 @@ export default class Report extends React.Component {
   };
 
   render() {
-    const { isShow } = this.state;
     return (
       <Page name="employee-service">
         <Navbar>
@@ -50,7 +42,9 @@ export default class Report extends React.Component {
               </Link>
             </div>
             <div className="page-navbar__title">
-              <span className="title">Báo cáo</span>
+              <span className="title">
+                Báo cáo
+              </span>
             </div>
             <div className="page-navbar__noti">
               <NotificationIcon />
@@ -58,17 +52,7 @@ export default class Report extends React.Component {
           </div>
         </Navbar>
         <div className="h-100">
-          <IframeReport f7={this.$f7}/>
-          {/* <IframeResizer
-            scrolling={true}
-            heightCalculationMethod="bodyScroll"
-            src={`${SERVER_APP}/App23/index.aspx`}
-            style={{ border: 0, width: "100%", height: "100%" }}
-            onLoad={() => {
-              this.$f7.dialog.close();
-            }}
-            id="your-frame-id"
-          /> */}
+          <IframeReport f7={this.$f7} />
         </div>
         <Toolbar tabbar position="bottom">
           <ToolBarBottom />

@@ -69,6 +69,15 @@ export default class extends React.Component {
     const height = this.divElement.clientHeight - this.divBtn.clientHeight - 67;
     this.setState({ height });
     const self = this;
+    // Check query từ Danh sách dịch vụ tới
+    if(this.$f7route?.query?.SelectedId && this.$f7route?.query?.SelectedTitle) {
+      const {SelectedTitle, SelectedId} = this.$f7route.query;
+      this.handleService({
+        ID: Number(SelectedId),
+        Title: SelectedTitle
+      })
+    }
+    //
     if (this.$f7route.params.ID && this.state.isParams) {
       self.$f7.dialog.preloader("Đang tải ...");
       const { ID } = this.$f7route.params;
@@ -259,7 +268,6 @@ export default class extends React.Component {
             </button>
           </div>
         );
-        break;
       case 1:
         return (
           <div className="schedule-toolbar">
@@ -284,7 +292,6 @@ export default class extends React.Component {
         );
       default:
         return <ToolBarBottom />;
-        break;
     }
   };
 

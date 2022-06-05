@@ -20,6 +20,7 @@ import {
 import ListService from "./components/Service/ListService";
 import SlideList from "../home/components/BannerSlide/SlideList";
 import ServiceHot from "./components/ServiceHot/ServiceHot";
+import SlideListCenter from "./components/BannerSlide/SlideListCenter";
 const ListImage = React.lazy(() =>
   import("../home/components/Customer/ListImage")
 );
@@ -170,8 +171,8 @@ export default class extends React.Component {
                     ></input>
                   </div>
                   <SlideList BannerName="App.Banner" autoplaySpeed={3000} />
-                  <ListService id="42" />
-                  {getUser() && <ListService id="45" />}
+                  <ListService className="mt-8px" id="42" />
+                  {getUser() && <ListService className="my-10px" id="45" />}
                 </div>
               </div>
               <ServiceHot f7={this.$f7router} />
@@ -179,12 +180,12 @@ export default class extends React.Component {
                 <ListImage />
               </Suspense>
               <SlideList
-                className="banner-main"
+                className="banner-main bg-white px-15px pt-15px"
                 BannerName="App.Main"
                 autoplaySpeed={4000}
               />
-              <SlideList
-                className="banner-main"
+              <SlideListCenter
+                className="mb-8px px-15px pb-15px pt-12px"
                 BannerName="App.MainSale"
                 autoplaySpeed={4500}
               />

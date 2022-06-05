@@ -31,8 +31,9 @@ export default class ListService extends React.Component {
   };
   render() {
     const { arrService, isLoading } = this.state;
+    const {className} = this.props;
     return (
-      <div className="body-service">
+      <div className={`body-service ${className}`}>
         <Row>
           {!isLoading &&
             arrService &&

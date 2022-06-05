@@ -492,8 +492,58 @@
             }
             .service-about {
                 &__img {
+                    position: relative;
                     img {
                         width: 100%;
+                    }
+                    button {
+                        position: absolute;
+                        right: 15px;
+                        bottom: 15px;
+                        display: inline-block;
+                        width: auto;
+                        z-index: 2;
+                        border: 1px solid $color-app;
+                        background: $color-app;
+                        color: $white;
+                        border-radius: 4px;
+                        padding: 8px 12px;
+                        font-weight: 500;
+                    }
+                    ._btn {
+                        background: $color-app;
+                        position: absolute;
+                        top: 15px;
+                        left: 0;
+                        padding: 10px 15px;
+                        color: #fff;
+                        font-weight: 500;
+                        border-top-right-radius: 2px;
+                        border-bottom-right-radius: 2px;
+                        cursor: pointer;
+                        &:after, 
+                        &:before {
+                            position: absolute;
+                            content: '';
+                            display: block;
+                        }
+                        &:after {
+                            width: 0.313em;
+                            height: 0.313em;
+                            background: #dadbdc;
+                            bottom: -0.313em;
+                            left: -4px;
+                            border-radius: 0.313em 0 0 0.313em;
+                        }
+                        &:before {
+                            width: 0.469em;
+                            height: 100%;
+                            padding: 0 0 0.438em;
+                            top: 0;
+                            left: -6px;
+                            background: inherit;
+                            border-radius: 0.313em 0 0 0.313em;
+                        }
                     }
                 }
                 &__title {

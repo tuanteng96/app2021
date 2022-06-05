@@ -37,11 +37,11 @@ function ShopListServiceItem({ item, CateId }) {
                     className={
                       "price " +
                       (subitem.IsDisplayPrice !== 0 &&
-                      checkSale(
-                        subitem.SaleBegin,
-                        subitem.SaleEnd,
-                        subitem.PriceSale
-                      ) === true
+                        checkSale(
+                          subitem.SaleBegin,
+                          subitem.SaleEnd,
+                          subitem.PriceSale
+                        ) === true
                         ? "sale"
                         : "")
                     }

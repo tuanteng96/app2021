@@ -111,14 +111,11 @@
                 }
             }
             &-service {
-                padding: 5px 0 15px;
                 a {
                     display: block;
                     text-align: center;
-                    padding: 0 6px;
-                    margin-top: 18px;
                     img {
-                        //border-radius: 12px;
+                        border-radius: 4px;
                         //box-shadow: 5px 10px 28px rgba(0, 0, 0, 0.25);
                     }
                     .text {
@@ -276,13 +273,14 @@
             li {
                 width: auto;
                 height: auto;
-                margin: 0 0 0 8px;
+                margin: 0 0 0 5px;
                 button {
                     padding: 0;
                     background: $white;
                     border: 1px solid $color-app;
-                    width: 11px;
-                    height: 11px;
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 100%;
                     &::before {
                         display: none;
                     }
@@ -314,4 +312,12 @@
 .slider-hot {
     background: #fff;
     padding-top: 12px;
+}
+
+.home-slide-center {
+    display: flex;
+    align-items: center;
+    a:nth-child(2) {
+        padding: 0 10px;
+    }
 }

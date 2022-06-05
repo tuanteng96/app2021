@@ -13,7 +13,6 @@ function ScheduleService({
   height,
   selectedService,
   handleService,
-  onRefresh,
   DateTimeBook,
 }) {
   const [loading, setLoading] = useState(false);

@@ -60,7 +60,6 @@ export default class extends React.Component {
         cateID,
         userId
       );
-
       const resultRes = result.data;
       const { images, combos } = resultRes;
 

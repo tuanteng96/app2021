@@ -117,7 +117,7 @@ export default class extends React.Component {
         this.setState({
           arrSearch: arrSearch,
           isSearch: true,
-          keySearch: key, 
+          keySearch: key,
         });
       })
       .catch((e) => console.log(e));
@@ -209,7 +209,7 @@ export default class extends React.Component {
       idOpen,
       showPreloader,
     } = this.state;
-    
+
     return (
       <Page
         name="shop-List"
@@ -275,11 +275,11 @@ export default class extends React.Component {
                             <div className="page-shop__service-item service-about">
                               <div
                                 className="service-about__img"
-                                onClick={() =>
-                                  this.setState({ idOpen: item.root.ID })
-                                }
                               >
                                 <img
+                                  onClick={() =>
+                                    this.setState({ idOpen: item.root.ID })
+                                  }
                                   src={
                                     SERVER_APP +
                                     "/Upload/image/" +
@@ -287,6 +287,8 @@ export default class extends React.Component {
                                   }
                                   alt={item.root.Title}
                                 />
+                                <Link href={`/schedule/?SelectedTitle=${item.root.Title}&SelectedId=${item.root.ID}`} className="_btn">Đặt lịch ngay</Link>
+                                {/* <button>Đặt lịch ngay</button> */}
                               </div>
                               <div
                                 className="service-about__title"
@@ -298,9 +300,13 @@ export default class extends React.Component {
                               </div>
                               {item.root.Desc !== "" || item.root.Detail ? (
                                 <div className="service-about__content">
-                                  <div className="service-about__content-text">
-                                    {ReactHtmlParser(item.root.Desc)}
-                                  </div>
+                                  {
+                                    item.root.Desc && (
+                                      <div className="service-about__content-text">
+                                        {ReactHtmlParser(item.root.Desc)}
+                                      </div>
+                                    )
+                                  }
                                   <Button
                                     fill
                                     sheetOpen={`.demo-sheet-${item.root.ID}`}
@@ -366,17 +372,17 @@ export default class extends React.Component {
                           {arrSearch &&
                             arrSearch.map((item) => (
                               <li key={item.id}>
-                                <Link href={"/shop/detail/" + item.id}>
+                                <Link href={"/shop/detail/" + item.id + "?Type=Service"}>
                                   <div className="title">{item.title}</div>
                                   <div
                                     className={
                                       "price " +
                                       (item.source.IsDisplayPrice !== 0 &&
-                                      checkSale(
-                                        item.source.SaleBegin,
-                                        item.source.SaleEnd,
-                                        item.source.PriceSale
-                                      ) === true
+                                        checkSale(
+                                          item.source.SaleBegin,
+                                          item.source.SaleEnd,
+                                          item.source.PriceSale
+                                        ) === true
                                         ? "sale"
                                         : "")
                                     }

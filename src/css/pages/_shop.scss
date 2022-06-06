@@ -515,13 +515,14 @@
                         position: absolute;
                         top: 15px;
                         left: 0;
-                        padding: 10px 15px;
+                        padding: 7px 15px;
                         color: #fff;
                         font-weight: 500;
                         border-top-right-radius: 2px;
                         border-bottom-right-radius: 2px;
+                        font-size: 13px;
                         cursor: pointer;
-                        &:after, 
+                        &:after,
                         &:before {
                             position: absolute;
                             content: '';
@@ -537,8 +538,7 @@
                         }
                         &:before {
                             width: 0.469em;
-                            height: 100%;
-                            padding: 0 0 0.438em;
+                            height: calc(100% + 0.438em);
                             top: 0;
                             left: -6px;
                             background: inherit;

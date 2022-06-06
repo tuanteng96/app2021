@@ -117,10 +117,10 @@
             }
         }
         &-item {
-            box-shadow: $shadow-menu;
+            // box-shadow: $shadow-menu;
             background-color: $white;
             border-radius: .375rem;
-            display: block;
+            display: block !important;
             .text {
                 padding: 14px;
                 a {

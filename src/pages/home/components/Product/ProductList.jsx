@@ -50,12 +50,11 @@ export default class ProductList extends React.Component {
             {arrCateList && arrCateList.length > 0 && (
               <div className="home-page__product">
                 <div className="head">
-                  <h5>Sản phẩm mới</h5>
-                  <div className="all">
+                  <h5>
                     <Link href="/shop/794/">
-                      Xem tất cả <i className="las la-angle-right"></i>
+                      Sản phẩm mới <i className="las la-angle-right"></i>
                     </Link>
-                  </div>
+                  </h5>
                 </div>
                 <div className="body">
                   <Row>

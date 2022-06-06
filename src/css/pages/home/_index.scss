@@ -239,6 +239,10 @@
                 margin: 0;
                 font-size: 15px;
                 text-transform: uppercase;
+                a {
+                    color: #000;
+                    display: inline-block;
+                }
             }
             .all a {
                 color: #1c3faa;

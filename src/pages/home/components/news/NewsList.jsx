@@ -61,17 +61,17 @@ export default class NewsList extends React.Component {
       centerPadding: "20px",
       variableWidth: true,
     };
-    
+    console.log(NewTitle)
     return (
       <div className="home-page__news">
         <div className="page-news__list">
           <div className="page-news__list-head">
-            <h5>{NewTitle && NewTitle && NewTitle.length > 0 && [0].Title}</h5>
-            <div className="all">
+            <h5>
               <Link href="/news-list/">
-                Xem tất cả <i className="las la-angle-right"></i>
+                {NewTitle && NewTitle.length > 0 && NewTitle[0].Title}{" "}
+                <i className="las la-angle-right"></i>
               </Link>
-            </div>
+            </h5>
           </div>
           <div className="page-news__list-ul">
             {!isLoading && (

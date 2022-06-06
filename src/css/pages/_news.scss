@@ -103,6 +103,10 @@
                 margin: 0;
                 font-size: 15px;
                 text-transform: uppercase;
+                a {
+                    color: #000;
+                    display: inline-block;
+                }
             }
             .all {
                 a {
@@ -136,7 +140,7 @@
                     line-height: 20px;
                     p {
                         margin: 0;
-                        @include cut-text;
+                        @include cut-text-to(2);
                     }
                 }
             }

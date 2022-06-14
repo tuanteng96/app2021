@@ -61,7 +61,6 @@ export default class NewsList extends React.Component {
       centerPadding: "20px",
       variableWidth: true,
     };
-    console.log(NewTitle)
     return (
       <div className="home-page__news">
         <div className="page-news__list">

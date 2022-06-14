@@ -61,7 +61,6 @@ export default class extends React.Component {
 
   render() {
     const { isLoading, NewTitle, arrNews } = this.state;
-    console.log(NewTitle);
     return (
       <Page
         name="news-list"

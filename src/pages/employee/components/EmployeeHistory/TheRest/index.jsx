@@ -3,7 +3,6 @@ import UserService from "../../../../../service/user.service";
 
 import "moment/locale/vi";
 import moment from "moment";
-import { groupbyDDHHMM } from "../../../../../constants/format";
 import PageNoData from "../../../../../components/PageNoData";
 import LoadingChart from "../../../../../components/Loading/LoadingChart";
 moment.locale("vi");
@@ -69,23 +68,22 @@ function TheRest({ MemberID }) {
                     {item.OrderItem.ProdTitle} ({item.Title})
                   </div>
                   <div className="mb-3px">
-                    Số buổi còn{" "}
                     {item.TabIndex === 1 ? (
                       <span className="text-danger fw-500">Thẻ bảo hành</span>
                     ) : (
                       <>
-                        <span className="text-danger fw-500">
+                        Số buổi còn <span className="text-danger fw-500 px-5px">
                           {item.Services.length}
-                        </span>{" "}
+                        </span>
                         buổi
                       </>
                     )}
                   </div>
                   <div>
-                    Buổi gần nhất{" "}
-                    {item.LastSession
+                    Buổi gần nhất
+                    <span className="fw-500 pl-5px">{item.LastSession
                       ? moment(item.LastSession).format("HH:mm DD-MM-YYYY")
-                      : "Chưa thực hiện"}
+                      : "Thẻ mới chưa thực hiện"}</span>
                   </div>
                 </div>
               ))}

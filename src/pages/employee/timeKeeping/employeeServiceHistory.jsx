@@ -66,7 +66,7 @@ export default class employeeServiceHistory extends React.Component {
                 tabLinkActive={tabActive === "SPDM"}
                 onClick={() => this.setState({ tabActive: "SPDM" })}
               >
-                Sản phẩm đã mua
+                SP / DV đã mua
               </Link>
               <Link
                 noLinkClass

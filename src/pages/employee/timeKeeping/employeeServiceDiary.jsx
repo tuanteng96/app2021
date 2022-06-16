@@ -12,6 +12,7 @@ import {
 import staffService from "../../../service/staff.service";
 import "moment/locale/vi";
 import moment from "moment";
+import { SERVER_APP } from "../../../constants/config";
 moment.locale("vi");
 
 export default class employeeServiceDiary extends React.Component {
@@ -127,6 +128,11 @@ export default class employeeServiceDiary extends React.Component {
     done();
   }
 
+  fixedContentDomain = (content) => {
+    if (!content) return "";
+    return content.replace(/src=\"\//g, 'src="' + SERVER_APP + "/");
+  };
+
   render() {
     const { arrNoti, loadingSubmit, sheetOpened, Note, isPublic } = this.state;
     return (
@@ -158,7 +164,7 @@ export default class employeeServiceDiary extends React.Component {
             <ul>
               {arrNoti.map((item, index) => (
                 <li key={index} className={item.IsPublic > 0 ? "public" : ""}>
-                  <div className="content">{ReactHtmlParser(item.Content)}</div>
+                  <div className="content">{ReactHtmlParser(this.fixedContentDomain(item.Content))}</div>
                   <div className="time">
                     {moment(item.CreateDate).fromNow()}
                   </div>

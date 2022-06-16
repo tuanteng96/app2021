@@ -70,7 +70,7 @@ export default class ItemCardService extends React.Component {
                         <img src={checkAvt2(user.Avatar)} alt={user.FullName} />
                         <Popover className={"popover-menu-" + user.ID}>
                           <div className="popover-name-nav">
-                            Nhân viên thực hiện : <span>{user.FullName}</span>
+                            Thực hiện : <span>{user.FullName}</span>
                           </div>
                         </Popover>
                       </span>

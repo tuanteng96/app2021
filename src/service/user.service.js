@@ -17,8 +17,8 @@ class UserService {
     getSubscribe(usn, isUser, token) {
         return http.get(`/app/index.aspx?cmd=authen&USN=${usn}&token=${token}&IsUser=${isUser}`);
     }
-    getListTagService(username, password, memberid) {
-        return http.get(`/services/preview.aspx?a=1&token=${getToken()}&cmd=loadOrderService&MemberID=${memberid}&IsMember=1&fromOrderAdd=0`);
+    getListTagService(memberid, ismember) {
+        return http.get(`/services/preview.aspx?a=1&token=${getToken()}&cmd=loadOrderService&MemberID=${memberid}&IsMember=${ismember}&fromOrderAdd=0`);
     }
     getBarCode(memberid) {
         return http.get(`/services/preview.aspx?cmd=Barcode&mid=${memberid}`);

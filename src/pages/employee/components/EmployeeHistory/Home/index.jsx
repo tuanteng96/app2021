@@ -23,7 +23,7 @@ function History({ MemberID }) {
         const newData = [];
         for (let item of data) {
           for (let service of item.Services) {
-            if (service.Status === "done") newData.push(service);
+            if (service.Status === "done") newData.push({ ...service, ProdTitle: item.OrderItem.ProdTitle });
           }
         }
         setListData(groupbyDDHHMM(newData));
@@ -52,7 +52,7 @@ function History({ MemberID }) {
                         </div>
                         <div className="service-name fw-500">
                           <i className="fas fa-heart pr-5px"></i>
-                          {sub.Title}
+                          {sub.ProdTitle} ({sub.Title})
                         </div>
                         <div className="staff fw-500">
                           <i className="fas fa-user-alt pr-5px"></i>

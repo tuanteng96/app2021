@@ -90,8 +90,10 @@ export default class extends React.Component {
     );
   };
 
-  handleClickBirthday = () => {
-    this.setState({ isOpen: true });
+  handleClickBirthday = (BirthDate) => {
+    if (!BirthDate) {
+      this.setState({ isOpen: true });
+    }
   };
 
   handleCancelBirthday = () => {
@@ -252,7 +254,7 @@ export default class extends React.Component {
             </div>
             <div
               className="page-detail-profile__item"
-              onClick={this.handleClickBirthday}
+              onClick={() => this.handleClickBirthday(memberInfo?.BirthDate)}
             >
               <div className="name">Ngày sinh</div>
               <div className="content">

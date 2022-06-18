@@ -407,6 +407,22 @@ export default class employeeServiceDetail extends React.Component {
                     )}
                   </span>
                 </li>
+                <li>
+                  <span>Ví</span>
+                  <span>
+                    {formatPriceVietnamese(
+                      itemDetail && itemDetail.member.Present.nap_vi
+                    )}
+                  </span>
+                </li>
+                <li>
+                  <span>Thẻ tiền</span>
+                  <span>
+                    {formatPriceVietnamese(
+                      itemDetail && itemDetail.member.Present.the_tien_kha_dung
+                    )}
+                  </span>
+                </li>
                 {itemDetail && itemDetail.Status === "done" ? (
                   <li>
                     <span className="w-100">Ghi chú</span>

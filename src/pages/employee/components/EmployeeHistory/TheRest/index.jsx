@@ -1,21 +1,33 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, {
+  forwardRef,
+  Fragment,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 import UserService from "../../../../../service/user.service";
+import PageNoData from "../../../../../components/PageNoData";
+import LoadingChart from "../../../../../components/Loading/LoadingChart";
 
 import "moment/locale/vi";
 import moment from "moment";
-import PageNoData from "../../../../../components/PageNoData";
-import LoadingChart from "../../../../../components/Loading/LoadingChart";
 moment.locale("vi");
 
-function TheRest({ MemberID }) {
+const TheRest = forwardRef(({ MemberID }, ref) => {
   const [ListData, setListData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getListHistory();
+    getListRest();
   }, [MemberID]);
 
-  const getListHistory = (isLoading = true) => {
+  useImperativeHandle(ref, () => ({
+    onRefreshRest(callback) {
+      getListRest(false, callback && callback());
+    },
+  }));
+
+  const getListRest = (isLoading = true, callback) => {
     isLoading && setLoading(true);
     UserService.getListTagService(MemberID, 0)
       .then(({ data }) => {
@@ -51,10 +63,11 @@ function TheRest({ MemberID }) {
         }
         setListData(newData);
         setLoading(false);
+        callback && callback;
       })
       .catch((error) => console.log(error));
-    };
-    
+  };
+
   return (
     <div className="min-h-100 p-15px bs-bb">
       {loading && <LoadingChart />}
@@ -72,7 +85,8 @@ function TheRest({ MemberID }) {
                       <span className="text-danger fw-500">Thẻ bảo hành</span>
                     ) : (
                       <>
-                        Số buổi còn <span className="text-danger fw-500 px-5px">
+                        Số buổi còn{" "}
+                        <span className="text-danger fw-500 px-5px">
                           {item.Services.length}
                         </span>
                         buổi
@@ -81,9 +95,11 @@ function TheRest({ MemberID }) {
                   </div>
                   <div>
                     Buổi gần nhất
-                    <span className="fw-500 pl-5px">{item.LastSession
-                      ? moment(item.LastSession).format("HH:mm DD-MM-YYYY")
-                      : "Thẻ mới chưa thực hiện"}</span>
+                    <span className="fw-500 pl-5px">
+                      {item.LastSession
+                        ? moment(item.LastSession).format("HH:mm DD-MM-YYYY")
+                        : "Thẻ mới chưa thực hiện"}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -95,6 +111,5 @@ function TheRest({ MemberID }) {
       )}
     </div>
   );
-}
-
+});
 export default TheRest;

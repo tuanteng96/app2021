@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { forwardRef, Fragment, useEffect, useImperativeHandle, useState } from "react";
 import UserService from "../../../../../service/user.service";
 
 import "moment/locale/vi";
@@ -8,7 +8,7 @@ import PageNoData from "../../../../../components/PageNoData";
 import LoadingChart from "../../../../../components/Loading/LoadingChart";
 moment.locale("vi");
 
-function History({ MemberID }) {
+const History = forwardRef(({ MemberID }, ref) => {
   const [ListData, setListData] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -16,18 +16,29 @@ function History({ MemberID }) {
     getListHistory();
   }, [MemberID]);
 
-  const getListHistory = (isLoading = true) => {
+  useImperativeHandle(ref, () => ({
+    onRefreshHistory(callback) {
+      getListHistory(false, callback && callback());
+    },
+  }));
+
+  const getListHistory = (isLoading = true, callback) => {
     isLoading && setLoading(true);
-    UserService.getListTagService(MemberID)
+    UserService.getListTagService(MemberID, 0)
       .then(({ data }) => {
         const newData = [];
         for (let item of data) {
           for (let service of item.Services) {
-            if (service.Status === "done") newData.push({ ...service, ProdTitle: item.OrderItem.ProdTitle });
+            if (service.Status === "done")
+              newData.push({
+                ...service,
+                ProdTitle: item.OrderItem.ProdTitle,
+              });
           }
         }
         setListData(groupbyDDHHMM(newData));
         setLoading(false);
+        callback && callback();
       })
       .catch((error) => console.log(error));
   };
@@ -76,6 +87,6 @@ function History({ MemberID }) {
       {loading && <LoadingChart />}
     </div>
   );
-}
+});
 
 export default History;

@@ -23,13 +23,35 @@ export default class employeeServiceHistory extends React.Component {
     this.state = {
       tabActive: "DV",
     };
+    this.selectorRef = React.createRef(null);
   }
   componentDidMount() {}
+
+  async loadRefresh(done) {
+    const { tabActive } = this.state;
+    if (tabActive === "DV") {
+      this?.selectorRef?.current?.onRefreshHistory(() => done());
+    }
+    if (tabActive === "SPDM") {
+      this?.selectorRef?.current?.onRefreshProduct(() => done());
+    }
+    if (tabActive === "BC") {
+      this?.selectorRef?.current?.onRefreshRest(() => done());
+    }
+    if (!this?.selectorRef.current) {
+      done();
+    }
+  }
+
   render() {
     const { tabActive } = this.state;
     const { memberId, orderItem } = this.$f7route.params;
     return (
-      <Page name="employee-history">
+      <Page
+        name="employee-history"
+        ptr
+        onPtrRefresh={this.loadRefresh.bind(this)}
+      >
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
@@ -86,7 +108,7 @@ export default class employeeServiceHistory extends React.Component {
             animationInDuration={500}
             isVisible={true}
           >
-            <History MemberID={memberId} />
+            <History MemberID={memberId} ref={this.selectorRef} />
           </Animated>
         )}
         {tabActive === "SPDM" && (
@@ -97,7 +119,7 @@ export default class employeeServiceHistory extends React.Component {
             animationInDuration={500}
             isVisible={true}
           >
-            <Products MemberID={memberId} />
+            <Products MemberID={memberId} ref={this.selectorRef} />
           </Animated>
         )}
         {tabActive === "BC" && (
@@ -108,7 +130,7 @@ export default class employeeServiceHistory extends React.Component {
             animationInDuration={500}
             isVisible={true}
           >
-            <TheRest MemberID={memberId} />
+            <TheRest MemberID={memberId} ref={this.selectorRef} />
           </Animated>
         )}
         <Toolbar tabbar position="bottom">

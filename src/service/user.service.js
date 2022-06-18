@@ -70,6 +70,9 @@ class UserService {
     postReviews(memberid, data) {
         return http.post(`/api/v3/OrderService?cmd=get_service_unrate&mid=${memberid}`, data);
     }
+    getListProductMember(memberid, Ps) {
+        return http.get(`/api/v3/member23?cmd=da_mua&memberid=${memberid}&ps=${Ps}`);
+    }
     getNotification(acctype, accid, offset, next) {
         return http.get(`/api/v3/noti2?cmd=nextoffset&acctype=${acctype}&accid=${accid}&offset=${offset}&next=${next}`);
     }

@@ -22,8 +22,8 @@ const TheRest = forwardRef(({ MemberID }, ref) => {
   }, [MemberID]);
 
   useImperativeHandle(ref, () => ({
-    onRefreshRest(callback) {
-      getListRest(false, callback && callback());
+    onRefreshRest(fn) {
+      getListRest(false, fn);
     },
   }));
 
@@ -63,7 +63,7 @@ const TheRest = forwardRef(({ MemberID }, ref) => {
         }
         setListData(newData);
         setLoading(false);
-        callback && callback;
+        callback && callback();
       })
       .catch((error) => console.log(error));
   };

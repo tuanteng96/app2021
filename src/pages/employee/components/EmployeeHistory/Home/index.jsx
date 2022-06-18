@@ -17,8 +17,8 @@ const History = forwardRef(({ MemberID }, ref) => {
   }, [MemberID]);
 
   useImperativeHandle(ref, () => ({
-    onRefreshHistory(callback) {
-      getListHistory(false, callback && callback());
+    onRefreshHistory(fn) {
+      getListHistory(false, fn);
     },
   }));
 

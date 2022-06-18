@@ -17,8 +17,8 @@ const Products = forwardRef(({ MemberID }, ref) => {
   }, [MemberID]);
 
   useImperativeHandle(ref, () => ({
-    onRefreshProduct(callback) {
-      getListProducts(false, callback && callback());
+    onRefreshProduct(fn) {
+      getListProducts(false, fn);
     },
   }));
 

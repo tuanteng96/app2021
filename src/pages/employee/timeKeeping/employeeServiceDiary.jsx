@@ -72,7 +72,6 @@ export default class employeeServiceDiary extends React.Component {
     this.setState({
       [name]: value,
     });
-    console.log(value);
   };
 
   orderSubmit = () => {

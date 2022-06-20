@@ -354,11 +354,7 @@ export default class employeeServiceDetail extends React.Component {
             <div className="page-navbar__back">
               <Link
                 onClick={() =>
-                  this.$f7router.back("/employee/service/", {
-                    force: true,
-                    ignoreCache: true,
-                    reload: true,
-                  })
+                  this.$f7router.back()
                 }
               >
                 <i className="las la-angle-left"></i>

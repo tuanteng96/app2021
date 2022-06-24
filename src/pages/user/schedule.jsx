@@ -70,8 +70,8 @@ export default class extends React.Component {
     this.setState({ height });
     const self = this;
     // Check query từ Danh sách dịch vụ tới
-    if(this.$f7route?.query?.SelectedId && this.$f7route?.query?.SelectedTitle) {
-      const {SelectedTitle, SelectedId} = this.$f7route.query;
+    if (this.$f7route?.query?.SelectedId && this.$f7route?.query?.SelectedTitle) {
+      const { SelectedTitle, SelectedId } = this.$f7route.query;
       this.handleService({
         ID: Number(SelectedId),
         Title: SelectedTitle
@@ -162,12 +162,12 @@ export default class extends React.Component {
     const date =
       Array.isArray(dateSplit) && dateSplit.length > 0
         ? dateSplit[2] +
-          "-" +
-          dateSplit[1] +
-          "-" +
-          dateSplit[0] +
-          " " +
-          DateTimeBook.time
+        "-" +
+        dateSplit[1] +
+        "-" +
+        dateSplit[0] +
+        " " +
+        DateTimeBook.time
         : "";
     const dataSubmit = {
       booking: [
@@ -177,7 +177,7 @@ export default class extends React.Component {
           BookDate: date,
           Desc: serviceNote,
           StockID: DateTimeBook.stock || 0,
-          AtHome: DateTimeBook.AtHome,
+          AtHome: DateTimeBook.AtHome
         },
       ],
     };
@@ -239,23 +239,21 @@ export default class extends React.Component {
 
   controlsStep = () => {
     const { DateTimeBook, isLoadingStep1, selectedService } = this.state;
-    
+
     switch (this.state.tabCurrent) {
       case 0:
         return (
           <div className="schedule-toolbar">
             <button
               type="button"
-              className={`btn-submit-order btn-submit-order ${
-                (DateTimeBook && !DateTimeBook["time"]) ||
-                (DateTimeBook && !DateTimeBook.stock) ||
-                !DateTimeBook ||
-                !DateTimeBook.date
+              className={`btn-submit-order btn-submit-order ${(DateTimeBook && !DateTimeBook["time"]) ||
+                  (DateTimeBook && !DateTimeBook.stock) ||
+                  !DateTimeBook ||
+                  !DateTimeBook.date
                   ? "btn-no-click"
                   : ""
-              } ${!DateTimeBook && "btn-no-click"} ${
-                isLoadingStep1 && "loading"
-              }`}
+                } ${!DateTimeBook && "btn-no-click"} ${isLoadingStep1 && "loading"
+                }`}
               onClick={() => this.nextService()}
             >
               <span>Chọn dịch vụ</span>
@@ -274,10 +272,9 @@ export default class extends React.Component {
             <button
               type="button"
               className={`btn-submit-order btn-submit-order 
-              ${
-                !selectedService ||
+              ${!selectedService ||
                 (selectedService.length === 0 && "btn-no-click")
-              }`}
+                }`}
               onClick={() => this.nextSuccessService()}
             >
               <span>Đặt lịch ngay</span>
@@ -345,10 +342,10 @@ export default class extends React.Component {
     return (
       <Page
         name="schedule"
-        // ptr
-        // infiniteDistance={50}
-        //infinitePreloader={showPreloader}
-        //onPtrRefresh={this.loadRefresh.bind(this)}
+      // ptr
+      // infiniteDistance={50}
+      //infinitePreloader={showPreloader}
+      //onPtrRefresh={this.loadRefresh.bind(this)}
       >
         <Navbar>
           <div className="page-navbar">
@@ -531,28 +528,32 @@ export default class extends React.Component {
                       ))}
                   </div>
                 </div>
-                <div className="sheet-service-body__athome">
-                  <div>
-                    <i className="las la-home"></i> Sử dụng dịch vụ tại nhà
-                  </div>
-                  <label>
-                    <input
-                      type="checkbox"
-                      onChange={(evt) => {
-                        const isChecked = evt.target.checked;
-                        this.setState((prevState) => ({
-                          ...prevState,
-                          DateTimeBook: {
-                            ...prevState.DateTimeBook,
-                            AtHome: isChecked,
-                          },
-                        }));
-                      }}
-                      checked={DateTimeBook.AtHome}
-                    />
-                    <span />
-                  </label>
-                </div>
+                {
+                  window.GlobalConfig?.APP?.Booking?.AtHome && (
+                    <div className="sheet-service-body__athome">
+                      <div>
+                        <i className="las la-home"></i> Sử dụng dịch vụ tại nhà
+                      </div>
+                      <label>
+                        <input
+                          type="checkbox"
+                          onChange={(evt) => {
+                            const isChecked = evt.target.checked;
+                            this.setState((prevState) => ({
+                              ...prevState,
+                              DateTimeBook: {
+                                ...prevState.DateTimeBook,
+                                AtHome: isChecked,
+                              },
+                            }));
+                          }}
+                          checked={DateTimeBook.AtHome}
+                        />
+                        <span />
+                      </label>
+                    </div>
+                  )
+                }
                 <div className="sheet-service-body__note">
                   <textarea
                     onChange={this.handleNote}

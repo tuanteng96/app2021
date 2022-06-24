@@ -180,15 +180,22 @@ export default class extends React.Component {
                 <ListImage />
               </Suspense>
               <SlideList
-                className="banner-main bg-white px-15px pt-15px"
+                className={`banner-main bg-white ${window.GlobalConfig.APP.Home?.SliderFull ? "mb-8px" : "px-15px pt-15px"} `}
                 BannerName="App.Main"
                 autoplaySpeed={4000}
               />
-              <SlideListCenter
-                className="mb-8px px-15px pb-15px pt-12px"
-                BannerName="App.MainSale"
-                autoplaySpeed={4500}
-              />
+              {
+                window.GlobalConfig.APP.Home?.SliderFull ? <SlideList
+                  className="banner-main bg-white"
+                  BannerName="App.MainSale"
+                  autoplaySpeed={4500}
+                /> : <SlideListCenter
+                  className="mb-8px px-15px pb-15px pt-12px"
+                  BannerName="App.MainSale"
+                  autoplaySpeed={4500}
+                />
+              }
+
               <Suspense fallback={<div>Loading...</div>}>
                 <SlideList
                   containerClass="pl-15px pr-15px slider-hot"

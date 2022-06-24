@@ -60,7 +60,7 @@ export default class SlideList extends React.Component {
                           <Link
                             noLinkClass
                             href={item.Link ? item.Link : `/adv/${item.ID}`}
-                            className={`body-slide__item rounded overflow-hidden ${
+                            className={`body-slide__item d-block ${!window.GlobalConfig.APP.Home?.SliderFull && "rounded"} overflow-hidden ${
                               validURL(item.Link) ? "external" : ""
                             }`}
                             key={item.ID}

@@ -180,7 +180,7 @@ export default class extends React.Component {
             {iOS() && Uuid && (
               <IframeResizer
                 heightCalculationMethod="bodyScroll"
-                src={`${SERVER_APP}/App2021/forgotUI?uuid=${Uuid}`}
+                src={`${SERVER_APP}/App2021/forgotUI?uuid=${Uuid}&color=${window?.GlobalConfig?.APP?.Css["--ezs-color"].replaceAll('#', '')}`}
                 style={{ border: 0 }}
                 onLoad={() => this.$f7.dialog.close()}
               />

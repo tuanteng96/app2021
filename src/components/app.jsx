@@ -79,12 +79,18 @@ export default class extends React.Component {
         view: {
           allowDuplicateUrls: true,
           routesBeforeEnter: function (to, from, resolve, reject) {
-            resolve();
+            if(window.GlobalConfig) {
+              resolve();
+            }
           },
         },
       }
     };
   }
+
+  componentDidMount() {
+  }
+
   render() {
     return (
       <App params={this.state.f7params}>

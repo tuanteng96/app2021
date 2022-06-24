@@ -65,7 +65,15 @@ export default class ScheduleSpa extends React.Component {
     let slideActive = -1;
     var min = -1;
     var now = new Date().getTime();
-    for (let day = 0; day <= 815; day += 15) {
+
+    const { TimeOpen, TimeClose, TimeNext } = window?.GlobalConfig?.APP?.Booking;
+
+    let startdate = moment().set(TimeOpen);
+    let closingDate = moment().set(TimeClose);
+    var duration = moment.duration(closingDate.diff(startdate));
+    var MinutesTotal = duration.asMinutes();
+
+    for (let day = 0; day <= MinutesTotal; day += TimeNext) {
       var time = moment("2020-11-05T07:30:00").add(day, "m").format("LT");
       var timeFull = moment("2020-11-05T07:30:00").add(day, "m").format("LTS");
 
@@ -379,15 +387,15 @@ export default class ScheduleSpa extends React.Component {
                                 ? "active"
                                 : ""
                               : item.name === "other"
-                              ? "active"
-                              : ""
+                                ? "active"
+                                : ""
                           }
                         >
                           {item.name !== "other"
                             ? item.dateFormat
                             : DateTimeBook.date && DateTimeBook.isOther
-                            ? DateTimeBook.date
-                            : item.dateFormat}
+                              ? DateTimeBook.date
+                              : item.dateFormat}
                         </span>
                       </div>
                     </Col>

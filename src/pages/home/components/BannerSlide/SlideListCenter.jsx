@@ -45,7 +45,7 @@ export default class SlideListCenter extends React.Component {
                                     arrBanner.slice(0, 3).map((item, index) => <Link
                                         noLinkClass
                                         href={item.Link ? item.Link : `/adv/${item.ID}`}
-                                        className={`rounded overflow-hidden ${validURL(item.Link) ? "external" : ""
+                                        className={`${!window.GlobalConfig.APP.Home?.SliderFull && "rounded"} overflow-hidden ${validURL(item.Link) ? "external" : ""
                                             }`}
                                         key={index}
                                     >

@@ -10,6 +10,9 @@ import {
   Navbar,
   Page,
   Sheet,
+  Subnavbar,
+  Tab,
+  Tabs,
   Toolbar,
 } from "framework7-react";
 import NotificationIcon from "../../../components/NotificationIcon";
@@ -24,6 +27,7 @@ import moment from "moment";
 import "moment/locale/vi";
 import PageNoData from "../../../components/PageNoData";
 import SkeletonService from "./skeleton/SkeletonService";
+import { groupbyTIME } from "../../../constants/format";
 moment.locale("vi");
 export default class employeeService extends React.Component {
   constructor() {
@@ -68,10 +72,11 @@ export default class employeeService extends React.Component {
     staffService
       .getServiceStaff(user, data)
       .then((response) => {
-        const result = response.data.data;
+        const { data, mBook } = response.data;
         setTimeout(() => {
           this.setState({
-            arrService: result,
+            arrService: groupbyTIME(data,"BookDate"),
+            mBook: groupbyTIME(mBook, "BookDate"),
             isLoading: false,
           });
         }, 200);
@@ -204,6 +209,7 @@ export default class employeeService extends React.Component {
   render() {
     const {
       arrService,
+      mBook,
       isLoading,
       loadingSubmit,
       sheetOpened,
@@ -236,81 +242,175 @@ export default class employeeService extends React.Component {
               <NotificationIcon />
             </div>
           </div>
+          <Subnavbar className="cardservice-tab-head">
+            <div className="cardservice-title">
+              <Link noLinkClass className="w-50" tabLink="#sv" tabLinkActive>
+                Dịch vụ
+              </Link>
+              <Link noLinkClass className="w-50" tabLink="#book">
+                Đặt lịch
+              </Link>
+            </div>
+          </Subnavbar>
         </Navbar>
         <div className="page-render employee-service p-0">
-          <div className="employee-service__list">
-            {isLoading && <SkeletonService />}
-            {!isLoading && arrService && (
-              <>
-                {arrService.length > 0 ? (
-                  arrService.map((item, index) => (
-                    <div key={index}>
-                      <div className="item">
-                        <h3>
-                          {this.checkStatus(item.Status)}
-                          {item.Title}
-                        </h3>
-                        <ul>
-                          <li>
-                            <span>Khách hàng : </span>
-                            <span>{item.member.FullName}</span>
-                          </li>
-                          <li>
-                            <span>Ngày đặt lịch : </span>
-                            <span>{moment(item.BookDate).format("L")}</span>
-                          </li>
-                          <li>
-                            <span>Giờ đặt lịch : </span>
-                            <span>{moment(item.BookDate).format("LT")}</span>
-                          </li>
-                          <li>
-                            <span>Số phút : </span>
-                            <span>{item.Minutes}p/Ca</span>
-                          </li>
-                        </ul>
-                        <Button
-                          noClassName
-                          raised={true}
-                          actionsOpen={`#actions-group-${item.ID}`}
-                        ></Button>
-                      </div>
-                      <Actions
-                        className="actions-custom"
-                        id={`actions-group-${item.ID}`}
-                      >
-                        <ActionsGroup>
-                          <ActionsLabel>{item.Title}</ActionsLabel>
-                          <ActionsButton
-                            onClick={() => this.handleDetail(item)}
+          <Tabs animated>
+            <Tab id="sv" tabActive>
+              <div className="employee-service__list">
+                {isLoading && <SkeletonService />}
+                {!isLoading && arrService && (
+                  <>
+                    {arrService.length > 0 ? (
+                      arrService.map((item, index) => (
+                        <div key={index}>
+                          <div className="item">
+                            <h3>
+                              {this.checkStatus(item.Status)}
+                              {item.Title}
+                            </h3>
+                            <ul>
+                              <li>
+                                <span>Khách hàng : </span>
+                                <span>{item.member.FullName}</span>
+                              </li>
+                              <li>
+                                <span>Ngày đặt lịch : </span>
+                                <span>{moment(item.BookDate).format("L")}</span>
+                              </li>
+                              <li>
+                                <span>Giờ đặt lịch : </span>
+                                <span>{moment(item.BookDate).format("LT")}</span>
+                              </li>
+                              <li>
+                                <span>Số phút : </span>
+                                <span>{item.Minutes}p/Ca</span>
+                              </li>
+                            </ul>
+                            <Button
+                              noClassName
+                              raised={true}
+                              actionsOpen={`#actions-group-${item.ID}`}
+                            ></Button>
+                          </div>
+                          <Actions
+                            className="actions-custom"
+                            id={`actions-group-${item.ID}`}
                           >
-                            Xem chi tiết
-                          </ActionsButton>
-                          <ActionsButton onClick={() => this.handleDiary(item)}>
-                            Nhật ký
-                          </ActionsButton>
-                          <ActionsButton
-                            onClick={() => this.handleSchedule(item)}
-                          >
-                            Lịch trình
-                          </ActionsButton>
-                          <ActionsButton
-                            onClick={() => this.handleHistory(item)}
-                          >
-                            Lịch sử khách hàng
-                          </ActionsButton>
-                        </ActionsGroup>
-                        <ActionsGroup>
-                          <ActionsButton color="red">Đóng</ActionsButton>
-                        </ActionsGroup>
-                      </Actions>
-                    </div>
-                  ))
-                ) : (
-                  <PageNoData text="Bạn không có lịch dịch vụ !" />
+                            <ActionsGroup>
+                              <ActionsLabel>{item.Title}</ActionsLabel>
+                              <ActionsButton
+                                onClick={() => this.handleDetail(item)}
+                              >
+                                Xem chi tiết
+                              </ActionsButton>
+                              <ActionsButton onClick={() => this.handleDiary(item)}>
+                                Nhật ký
+                              </ActionsButton>
+                              <ActionsButton
+                                onClick={() => this.handleSchedule(item)}
+                              >
+                                Lịch trình
+                              </ActionsButton>
+                              <ActionsButton
+                                onClick={() => this.handleHistory(item)}
+                              >
+                                Lịch sử khách hàng
+                              </ActionsButton>
+                            </ActionsGroup>
+                            <ActionsGroup>
+                              <ActionsButton color="red">Đóng</ActionsButton>
+                            </ActionsGroup>
+                          </Actions>
+                        </div>
+                      ))
+                    ) : (
+                      <PageNoData text="Bạn không có lịch dịch vụ !" />
+                    )}
+                  </>
                 )}
-              </>
-            )}
-          </div>
+              </div>
+            </Tab>
+            <Tab id="book">
+              <div className="employee-service__list">
+                {isLoading && <SkeletonService />}
+                {!isLoading && mBook && (
+                  <>
+                    {mBook.length > 0 ? (
+                      mBook.map((item, index) => (
+                        <div key={index}>
+                          <div className="item">
+                            <h3>
+                              <span className="label-inline label-light-info">Đã xác nhận {item?.Type ? "- Khách vãng lai" : ""}</span>
+                              {item.RootTitles} {item.AtHome && "- Tại nhà"}
+                            </h3>
+                            <ul>
+                              <li>
+                                <span>Khách hàng : </span>
+                                <span>{item?.Member?.FullName}</span>
+                              </li>
+                              <li>
+                                <span>Số điện thoại : </span>
+                                <span>{item?.Member?.MobilePhone || "Không có"}</span>
+                              </li>
+                              <li>
+                                <span>Cơ sở : </span>
+                                <span>{item.Stock.Title}</span>
+                              </li>
+                              <li>
+                                <span>Ngày đặt lịch : </span>
+                                <span>{moment(item.BookDate).format("L")}</span>
+                              </li>
+                              <li>
+                                <span>Giờ đặt lịch : </span>
+                                <span>{moment(item.BookDate).format("LT")}</span>
+                              </li>
+                              <li className="w-100 p-0">
+                                <span>Ghi chú : </span>
+                                <span>{item.Desc || "Không có"}</span>
+                              </li>
+                            </ul>
+                            {item.MemberID && (
+                              <Button
+                                noClassName
+                                raised={true}
+                                actionsOpen={`#actions-group-${item.ID}`}
+                              ></Button>
+                            )}
+                          </div>
+                          <Actions
+                            className="actions-custom"
+                            id={`actions-group-${item.ID}`}
+                          >
+                            <ActionsGroup>
+                              <ActionsLabel>{item.RootTitles}</ActionsLabel>
+                              <ActionsButton
+                                onClick={() => this.handleDetail(item)}
+                              >
+                                Xem chi tiết
+                              </ActionsButton>
+                              <ActionsButton onClick={() => this.handleDiary(item)}>
+                                Nhật ký
+                              </ActionsButton>
+                              <ActionsButton
+                                onClick={() => this.handleHistory(item)}
+                              >
+                                Lịch sử khách hàng
+                              </ActionsButton>
+                            </ActionsGroup>
+                            <ActionsGroup>
+                              <ActionsButton color="red">Đóng</ActionsButton>
+                            </ActionsGroup>
+                          </Actions>
+                        </div>
+                      ))
+                    ) : (
+                      <PageNoData text="Bạn không có lịch dịch vụ !" />
+                    )}
+                  </>
+                )}
+              </div>
+            </Tab>
+          </Tabs>
         </div>
 
         <Sheet
@@ -359,9 +459,8 @@ export default class employeeService extends React.Component {
                 </div>
                 <div className="sheet-pay-body__btn">
                   <button
-                    className={`page-btn-order btn-submit-order ${
-                      loadingSubmit && "loading"
-                    }`}
+                    className={`page-btn-order btn-submit-order ${loadingSubmit && "loading"
+                      }`}
                     onClick={() => this.searchSubmit()}
                   >
                     <span>Tìm dịch vụ</span>

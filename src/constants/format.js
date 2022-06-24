@@ -137,6 +137,12 @@ export const checkDateDiff = (dateEnd) => {
     return diffDays;
 }
 
+export const groupbyTIME = (arr, name = "BookDate") => {
+    return arr.sort(function(left, right) {
+        return moment.utc(left[name]).diff(moment.utc(right[name]))
+    })
+}
+
 //Group item theo ngày
 export const groupbyDDHHMM = (arr, name = "BookDate") => {
     const newArr = [];

@@ -1,6 +1,6 @@
 //Color App
-$color-app: #ff898d; //(* Bắt buộc ) Màu App
-$color-app-bold: #fd434a; //(* Bắt buộc ) Màu đậm hơn từ $color-app
+$color-app: var(--ezs-color); //(* Bắt buộc ) Màu App
+$color-app-bold: var(--ezs-color-gradient); //(* Bắt buộc ) Màu đậm hơn từ $color-app
 $color-star: #fcd93a;
 $color-bg-app: #f1f5f8;
 $color-gray-bg: #f0f4f7;

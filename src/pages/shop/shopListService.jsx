@@ -298,7 +298,7 @@ export default class extends React.Component {
                               >
                                 {item.root.Title}
                               </div>
-                              {item.root.Desc !== "" || item.root.Detail ? (
+                              {window.GlobalConfig.APP.Prod.IsDetailOriginal && (item.root.Desc !== "" || item.root.Detail) ? (
                                 <div className="service-about__content">
                                   {
                                     item.root.Desc && (

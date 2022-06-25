@@ -4,6 +4,7 @@ import IconForgot from "../../assets/images/forgot-change.png";
 import userService from "../../service/user.service";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { SERVER_APP } from "../../constants/config";
 
 toast.configure();
 
@@ -128,7 +129,10 @@ export default class extends React.Component {
               Bạn vui lòng truy cập Email hoặc OTP qua số điện thoại để lấy mã
               xác thực.
             </div>
-            <img className="logo-reg" src={IconForgot} />
+            <img
+              className="logo-reg"
+              src={`${SERVER_APP}/app2021/images/forgot-password.png`}
+            />
             <form onSubmit={this.handleSubmit}>
               <div className="page-login__form-item">
                 <input

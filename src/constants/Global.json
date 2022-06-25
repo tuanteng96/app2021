@@ -1,7 +1,4 @@
 {
-    "SERVER": {
-        "Domain": "https://cser.vn"
-    },
     "APP": {
         "Name": "Cser Beauty",
         "Version": "2.0",
@@ -19,20 +16,20 @@
         },
         "Booking": {
             "TimeOpen": {
-                "hour": "7", 
-                "minute": "30", 
+                "hour": "7",
+                "minute": "30",
                 "second": "00"
             },
             "TimeClose": {
-                "hour": "21", 
-                "minute": "00", 
+                "hour": "21",
+                "minute": "00",
                 "second": "00"
             },
             "TimeNext": 15,
             "AtHome": false
         },
         "Prod": {
-            "IsDetailOriginal" : true
+            "IsDetailOriginal": true
         },
         "Css": {
             "--ezs-color": "#ff898d",

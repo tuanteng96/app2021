@@ -175,12 +175,17 @@ export default class extends React.Component {
                 Nhập địa chỉ email hoặc số điện thoại và chúng tôi sẽ gửi cho
                 bạn một liên kết để đặt lại mật khẩu.
               </div>
-              <img className="logo-reg" src={IconForgot} />
+              <img
+                className="logo-reg"
+                src={`${SERVER_APP}/app2021/images/forgot-password.png`}
+              />
             </div>
             {iOS() && Uuid && (
               <IframeResizer
                 heightCalculationMethod="bodyScroll"
-                src={`${SERVER_APP}/App2021/forgotUI?uuid=${Uuid}&color=${window?.GlobalConfig?.APP?.Css["--ezs-color"].replaceAll('#', '')}`}
+                src={`${SERVER_APP}/App2021/forgotUI?uuid=${Uuid}&color=${window?.GlobalConfig?.APP?.Css[
+                  "--ezs-color"
+                ].replaceAll("#", "")}`}
                 style={{ border: 0 }}
                 onLoad={() => this.$f7.dialog.close()}
               />

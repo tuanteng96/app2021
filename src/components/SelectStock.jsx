@@ -107,6 +107,7 @@ export default class SelectStock extends React.Component {
   render() {
     const arrStock = this.state.arrStock;
     const StockID = this.state.StockID && this.state.StockID;
+    if (!arrStock) return "";
     return (
       <Actions className="action-stock" ref="actionStock">
         <ActionsGroup>

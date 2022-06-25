@@ -72,15 +72,15 @@ export default class ScheduleSpa extends React.Component {
     let closingDate = moment().set(TimeClose);
     var duration = moment.duration(closingDate.diff(startdate));
     var MinutesTotal = duration.asMinutes();
-
     for (let day = 0; day <= MinutesTotal; day += TimeNext) {
-      var time = moment("2020-11-05T07:30:00").add(day, "m").format("LT");
-      var timeFull = moment("2020-11-05T07:30:00").add(day, "m").format("LTS");
-
+      
+      var time = moment().set(TimeOpen).add(day, "m").format("LT");
+      var timeFull = moment().set(TimeOpen).add(day, "m").format("LTS");
+      
       var d = new Date();
-      d.setHours(7);
-      d.setMinutes(30);
-      d.setSeconds(0);
+      d.setHours(TimeOpen.hour);
+      d.setMinutes(TimeOpen.minute);
+      d.setSeconds(TimeOpen.second);
 
       d.setMinutes(d.getMinutes() + day);
 

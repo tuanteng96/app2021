@@ -4,8 +4,10 @@ import { Page, Link, Toolbar, f7 } from "framework7-react";
 import UserService from "../../service/user.service";
 import IconSearch from "../../assets/images/icon-search.png";
 import { FaRegUser, FaMapMarkerAlt, FaChevronDown } from "react-icons/fa";
-const ModalReviews = React.lazy(() => import("../../components/ModalReviews"));
-const SelectStock = React.lazy(() => import("../../components/SelectStock"));
+// const ModalReviews = React.lazy(() => import("../../components/ModalReviews"));
+// const SelectStock = React.lazy(() => import("../../components/SelectStock"));
+import ModalReviews from "../../components/ModalReviews";
+import SelectStock from "../../components/SelectStock";
 import CartToolBar from "../../components/CartToolBar";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import NotificationIcon from "../../components/NotificationIcon";
@@ -21,14 +23,18 @@ import ListService from "./components/Service/ListService";
 import SlideList from "../home/components/BannerSlide/SlideList";
 import ServiceHot from "./components/ServiceHot/ServiceHot";
 import SlideListCenter from "./components/BannerSlide/SlideListCenter";
-const ListImage = React.lazy(() =>
-  import("../home/components/Customer/ListImage")
-);
-const NewsList = React.lazy(() => import("../home/components/news/NewsList"));
-const QuickAction = React.lazy(() => import("../../components/quickAction"));
-const ProductList = React.lazy(() =>
-  import("../home/components/Product/ProductList")
-);
+import ListImage from "../home/components/Customer/ListImage";
+// const ListImage = React.lazy(() =>
+//   import("../home/components/Customer/ListImage")
+// );
+import NewsList from "../home/components/news/NewsList";
+// const NewsList = React.lazy(() => import("../home/components/news/NewsList"));
+// const QuickAction = React.lazy(() => import("../../components/quickAction"));
+import QuickAction from "../../components/quickAction";
+// const ProductList = React.lazy(() =>
+//   import("../home/components/Product/ProductList")
+// );
+import ProductList from "../home/components/Product/ProductList";
 
 export default class extends React.Component {
   constructor() {
@@ -171,7 +177,10 @@ export default class extends React.Component {
                     ></input>
                   </div>
                   <SlideList BannerName="App.Banner" autoplaySpeed={3000} />
-                  <ListService className={`mt-8px ${getUser() ? "" : "mb-10px"}`} id="42" />
+                  <ListService
+                    className={`mt-8px ${getUser() ? "" : "mb-10px"}`}
+                    id="42"
+                  />
                   {getUser() && <ListService className="my-10px" id="45" />}
                 </div>
               </div>
@@ -180,34 +189,33 @@ export default class extends React.Component {
                 <ListImage />
               </Suspense>
               <SlideList
-                className={`banner-main bg-white ${window.GlobalConfig.APP.Home?.SliderFull ? "mb-8px" : "px-15px pt-15px"} `}
+                className={`banner-main bg-white ${
+                  window.GlobalConfig.APP.Home?.SliderFull
+                    ? "mb-8px"
+                    : "px-15px pt-15px"
+                } `}
                 BannerName="App.Main"
                 autoplaySpeed={4000}
               />
-              {
-                window.GlobalConfig.APP.Home?.SliderFull ? <SlideList
+              {window.GlobalConfig.APP.Home?.SliderFull ? (
+                <SlideList
                   className="banner-main bg-white"
                   BannerName="App.MainSale"
                   autoplaySpeed={4500}
-                /> : <SlideListCenter
+                />
+              ) : (
+                <SlideListCenter
                   className="mb-8px px-15px pb-15px pt-12px"
                   BannerName="App.MainSale"
                   autoplaySpeed={4500}
                 />
-              }
-
-              <Suspense fallback={<div>Loading...</div>}>
-                <SlideList
-                  containerClass="pl-15px pr-15px slider-hot"
-                  BannerName="App.DVHOT"
-                />
-              </Suspense>
-              <Suspense fallback={<div>Loading...</div>}>
-                <ProductList />
-              </Suspense>
-              <Suspense fallback={<div>Loading...</div>}>
-                <NewsList />
-              </Suspense>
+              )}
+              <SlideList
+                containerClass="pl-15px pr-15px slider-hot"
+                BannerName="App.DVHOT"
+              />
+              <ProductList />
+              <NewsList />
             </div>
           </div>
         </div>
@@ -215,15 +223,13 @@ export default class extends React.Component {
           <ToolBarBottom />
         </Toolbar>
 
-        <Suspense fallback={<div>Loading...</div>}>
-          <SelectStock
-            isOpenStock={isOpenStock}
-            nameStock={(name) => this.nameStock(name)}
-            isReload={isReload}
-          />
-          <ModalReviews />
-          <QuickAction />
-        </Suspense>
+        <SelectStock
+          isOpenStock={isOpenStock}
+          nameStock={(name) => this.nameStock(name)}
+          isReload={isReload}
+        />
+        <ModalReviews />
+        <QuickAction />
       </Page>
     );
   }

@@ -5,14 +5,22 @@ import ReactHtmlParser from "react-html-parser";
 import NewsDataService from "../../service/news.service";
 import UserService from "../../service/user.service";
 import Slider from "react-slick";
-const ModalReviews = React.lazy(() => import('../../components/ModalReviews'));
-const SelectStock = React.lazy(() => import('../../components/SelectStock'));
-const CartComponent = React.lazy(() =>
-  import("../../components/CartComponent")
-);
+// const ModalReviews = React.lazy(() => import('../../components/ModalReviews'));
+// const SelectStock = React.lazy(() => import('../../components/SelectStock'));
+// const CartComponent = React.lazy(() =>
+//   import("../../components/CartComponent")
+// );
+import ModalReviews from "../../components/ModalReviews";
+import SelectStock from "../../components/SelectStock";
+import CartComponent from "../../components/CartComponent";
 import ToolBarBottom from "../../components/ToolBarBottom";
-import Skeleton from 'react-loading-skeleton';
-import { getUser, setStockIDStorage, getStockIDStorage, setStockNameStorage } from "../../constants/user";
+import Skeleton from "react-loading-skeleton";
+import {
+  getUser,
+  setStockIDStorage,
+  getStockIDStorage,
+  setStockNameStorage,
+} from "../../constants/user";
 
 export default class extends React.Component {
   constructor() {
@@ -72,8 +80,8 @@ export default class extends React.Component {
   componentDidMount() {
     const userInfo = getUser();
     this.setState({
-      userInfo: userInfo
-    })
+      userInfo: userInfo,
+    });
     this.$f7ready((f7) => {
       this.setState({ width: window.innerWidth });
       this.getBanner();
@@ -92,7 +100,7 @@ export default class extends React.Component {
       .catch((e) => {
         console.log(e);
       });
-  }
+  };
 
   getNewsAll = () => {
     NewsDataService.getAll()
@@ -105,12 +113,12 @@ export default class extends React.Component {
       .catch((e) => {
         console.log(e);
       });
-  }
+  };
 
   onPageBeforeIn = () => {
     const getStock = getStockIDStorage();
     UserService.getStock()
-      .then(response => {
+      .then((response) => {
         const arrStock = response.data.data.all;
         const countStock = arrStock.length;
         const CurrentStockID = response.data.data.CurrentStockID;
@@ -123,12 +131,12 @@ export default class extends React.Component {
         setTimeout(() => {
           if (CurrentStockID === 0 && !getStock && countStock > 2) {
             this.setState({
-              isOpenStock: true
-            })
+              isOpenStock: true,
+            });
           }
         }, 500);
       })
-      .catch(e => console.log(e))
+      .catch((e) => console.log(e));
   };
 
   render() {
@@ -265,12 +273,9 @@ export default class extends React.Component {
         <Toolbar tabbar position="bottom">
           <ToolBarBottom />
         </Toolbar>
-
-        <Suspense fallback={<div>Loading...</div>}>
-          <SelectStock isOpenStock={isOpenStock} />
-          <ModalReviews />
-          <CartComponent />
-        </Suspense>
+        <SelectStock isOpenStock={isOpenStock} />
+        <ModalReviews />
+        <CartComponent />
       </Page>
     );
   }

@@ -1,6 +1,5 @@
 import React from "react";
-import Nodata from "../assets/images/nodata.png";
-import Skeleton from 'react-loading-skeleton';
+import { SERVER_APP } from "../constants/config";
 
 
 export default class PageNoData extends React.Component {
@@ -9,7 +8,7 @@ export default class PageNoData extends React.Component {
         return (
             <div className="page-nodata">
                 <div className="page-nodata__img">
-                    <img src={Nodata || <Skeleton height={314} />} alt="Chưa có dữ liệu"/>
+                    <img src={SERVER_APP + "/app2021/images/nodata.png"} alt="Chưa có dữ liệu"/>
                 </div>
                 <div className="page-nodata__text">
                     {data.text}

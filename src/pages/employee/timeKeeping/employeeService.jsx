@@ -75,7 +75,7 @@ export default class employeeService extends React.Component {
         const { data, mBook } = response.data;
         setTimeout(() => {
           this.setState({
-            arrService: groupbyTIME(data,"BookDate"),
+            arrService: groupbyTIME(data, "BookDate"),
             mBook: groupbyTIME(mBook, "BookDate"),
             isLoading: false,
           });
@@ -99,6 +99,31 @@ export default class employeeService extends React.Component {
       default:
         return (
           <span className="label-inline label-light-info">Chưa thực hiện</span>
+        );
+    }
+  };
+
+  checkStatusBook = (item) => {
+    switch (item?.Status) {
+      case "KHACH_KHONG_DEN":
+        return (
+          <span className="label-inline label-light-success">
+            Khách không đến {item?.Member.IsAnonymous && "- Khách vãng lai"} {item?.IsNew && "- Khách mới"}
+          </span>
+        );
+      case "KHACH_DEN":
+        return (
+          <span className="label-inline label-light-warning">
+            Khách tới {item?.Member.IsAnonymous && "- Khách vãng lai"}{" "}
+            {item?.IsNew && "- Khách mới"}
+          </span>
+        );
+      default:
+        return (
+          <span className="label-inline label-light-info">
+            Đã xác nhận {item?.Member.IsAnonymous && "- Khách vãng lai"}{" "}
+            {item?.IsNew && "- Khách mới"}
+          </span>
         );
     }
   };
@@ -279,7 +304,9 @@ export default class employeeService extends React.Component {
                               </li>
                               <li>
                                 <span>Giờ đặt lịch : </span>
-                                <span>{moment(item.BookDate).format("LT")}</span>
+                                <span>
+                                  {moment(item.BookDate).format("LT")}
+                                </span>
                               </li>
                               <li>
                                 <span>Số phút : </span>
@@ -303,7 +330,9 @@ export default class employeeService extends React.Component {
                               >
                                 Xem chi tiết
                               </ActionsButton>
-                              <ActionsButton onClick={() => this.handleDiary(item)}>
+                              <ActionsButton
+                                onClick={() => this.handleDiary(item)}
+                              >
                                 Nhật ký
                               </ActionsButton>
                               <ActionsButton
@@ -340,17 +369,23 @@ export default class employeeService extends React.Component {
                         <div key={index}>
                           <div className="item">
                             <h3>
-                              <span className="label-inline label-light-info">Đã xác nhận {item?.Type ? "- Khách vãng lai" : ""}</span>
+                              {this.checkStatusBook(item)}
                               {item.RootTitles} {item.AtHome && "- Tại nhà"}
                             </h3>
                             <ul>
                               <li>
                                 <span>Khách hàng : </span>
-                                <span>{item?.Member?.FullName}</span>
+                                <span>
+                                  {item?.FullName || item?.Member?.FullName}
+                                </span>
                               </li>
                               <li>
                                 <span>Số điện thoại : </span>
-                                <span>{item?.Member?.MobilePhone || "Không có"}</span>
+                                <span>
+                                  {item?.Phone ||
+                                    item?.Member?.MobilePhone ||
+                                    "Không có"}
+                                </span>
                               </li>
                               <li>
                                 <span>Cơ sở : </span>
@@ -362,14 +397,16 @@ export default class employeeService extends React.Component {
                               </li>
                               <li>
                                 <span>Giờ đặt lịch : </span>
-                                <span>{moment(item.BookDate).format("LT")}</span>
+                                <span>
+                                  {moment(item.BookDate).format("LT")}
+                                </span>
                               </li>
                               <li className="w-100 p-0">
                                 <span>Ghi chú : </span>
                                 <span>{item.Desc || "Không có"}</span>
                               </li>
                             </ul>
-                            {item.MemberID && (
+                            {!item?.Member?.IsAnonymous && (
                               <Button
                                 noClassName
                                 raised={true}
@@ -388,7 +425,9 @@ export default class employeeService extends React.Component {
                               >
                                 Xem chi tiết
                               </ActionsButton>
-                              <ActionsButton onClick={() => this.handleDiary(item)}>
+                              <ActionsButton
+                                onClick={() => this.handleDiary(item)}
+                              >
                                 Nhật ký
                               </ActionsButton>
                               <ActionsButton
@@ -459,8 +498,9 @@ export default class employeeService extends React.Component {
                 </div>
                 <div className="sheet-pay-body__btn">
                   <button
-                    className={`page-btn-order btn-submit-order ${loadingSubmit && "loading"
-                      }`}
+                    className={`page-btn-order btn-submit-order ${
+                      loadingSubmit && "loading"
+                    }`}
                     onClick={() => this.searchSubmit()}
                   >
                     <span>Tìm dịch vụ</span>

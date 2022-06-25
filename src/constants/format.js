@@ -1,8 +1,6 @@
 import {
     SERVER_APP
 } from "../constants/config";
-import imgAvatarNull from "./../assets/images/avatar-null.png";
-import imgAvatarNull2 from "./../assets/images/avatar-null2.png";
 import imgNoProduct from "./../assets/images/no-product.png";
 import moment from 'moment';
 import 'moment/locale/vi';
@@ -85,7 +83,7 @@ export const percentagesSale = (Price, PriceSale) => {
     //Check avatar Null
 export const checkImageProduct = (src) => {
         if (src === "null.gif" || src === "") {
-            return imgNoProduct;
+            return SERVER_APP + "/app2021/images/no-product.png"
         } else {
             return SERVER_APP + "/Upload/image/" + src;
         }
@@ -93,14 +91,14 @@ export const checkImageProduct = (src) => {
     //Check avatar Null
 export const checkAvt = (src) => {
     if (src === "null.gif" || src === "" || src === undefined) {
-        return imgAvatarNull
+        return SERVER_APP + "/app2021/images/avatar-null.png"
     } else {
         return SERVER_APP + "/Upload/image/" + src;
     }
 }
 export const checkAvt2 = (src) => {
     if (src === "null.gif" || src === "") {
-        return imgAvatarNull2;
+        return SERVER_APP + "/app2021/images/avatar-null2.png"
     } else {
         return SERVER_APP + "/Upload/image/" + src;
     }

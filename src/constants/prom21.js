@@ -76,7 +76,7 @@ export const OPEN_QRCODE = () => {
 
 export const SEND_TOKEN_FIREBASE = () => {
     var t = window.app21 || {};
-    if (typeof t.prom !== 'undefined' && window.VERSION && window.VERSION > 1) {
+    if (typeof t.prom !== 'undefined' && window?.GlobalConfig?.APP?.Version > 1) {
         return new Promise((resolve, reject) => {
             t.prom('KEY', JSON.stringify({ key: 'FirebaseNotiToken' })).then(({ data }) => {
                 resolve({ Token: data });

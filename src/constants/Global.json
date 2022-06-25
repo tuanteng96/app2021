@@ -29,7 +29,8 @@
             "AtHome": false
         },
         "Prod": {
-            "IsDetailOriginal": true
+            "IsDetailOriginal": true,
+            "AppMuaHang": 0
         },
         "Css": {
             "--ezs-color": "#ff898d",

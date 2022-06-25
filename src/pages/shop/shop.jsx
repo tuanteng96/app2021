@@ -15,7 +15,7 @@ export default class extends React.Component {
       isLoading: true,
       isOpenStock: false,
       showPreloader: false,
-      isUI: window.AppMuaHang || 0
+      isUI: window?.GlobalConfig?.APP?.Prod?.AppMuaHang || 0
     };
   }
 

@@ -54,7 +54,7 @@ function IframeReport({ f7 }) {
   return (
     <IframeComm
       attributes={{
-        src: `${SERVER_APP}/App23/index.html`,
+        src: `${SERVER_APP}/App23/index.html?v=${new Date().valueOf()}`,
         width: "100%",
         height: "100%",
         frameBorder: 0,

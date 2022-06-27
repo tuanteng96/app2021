@@ -18,7 +18,7 @@
         .btn-quick {
             &-trans {
                 transform: translateX(-15px);
-                .headset {
+                svg {
                     opacity: 0;
                 }
                 .times {
@@ -92,7 +92,7 @@
             display: flex;
             transform: translateX(15px);
             transition: transform .3s ease;
-            .headset {
+            svg {
                 opacity: 1;
             }
             .times {

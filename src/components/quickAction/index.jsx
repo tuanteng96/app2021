@@ -72,7 +72,7 @@ export default class quickAction extends React.Component {
         </div>
         <div className="btn-quick" onClick={this.onOpen}>
           <div className="btn-quick-trans">
-            <i className="las la-headset headset"></i>
+            <FaWhatsapp />
             <i className="las la-times times"></i>
           </div>
         </div>

@@ -11,6 +11,9 @@
             "messagingSenderId": "1087460686681",
             "appId": "1:1087460686681:web:5ecbbb8bcd5596faf3aa48"
         },
+        "Prom": {
+            "NotiMp3Push": true
+        },
         "Home": {
             "SliderFull": false
         },

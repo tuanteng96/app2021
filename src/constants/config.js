@@ -1,4 +1,3 @@
-console.log(window?.SERVER);
 export const SERVER_APP =
   window.location.origin === "http://localhost:8080"
     ? "https://cser.vn"

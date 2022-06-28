@@ -4,6 +4,7 @@ import { Page, Link, Toolbar } from "framework7-react";
 import UserService from "../../service/user.service";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { getStockIDStorage } from "../../constants/user";
 
 toast.configure();
 export default class extends React.Component {
@@ -25,6 +26,7 @@ export default class extends React.Component {
     const fullname = this.state.fullname;
     const password = this.state.password;
     const phone = this.state.phone;
+    const stockId = getStockIDStorage();
     const phone_regex = /((09|03|07|08|05)+([0-9]{8})\b)/g;
     if (fullname === "" || password === "" || phone === "") {
       toast.error("Vui lòng nhập đầy đủ thông tin!", {
@@ -49,7 +51,7 @@ export default class extends React.Component {
     const self = this;
     self.$f7.preloader.show();
 
-    UserService.register(fullname, password, phone, 0)
+    UserService.register(fullname, password, phone, stockId || 0)
       .then((repsonse) => {
         self.$f7.preloader.hide();
         if (repsonse.data.error) {
@@ -57,18 +59,17 @@ export default class extends React.Component {
             position: toast.POSITION.TOP_LEFT,
             autoClose: 3000,
           });
-        }
-        else {
+        } else {
           toast.success("Đăng ký thành công.", {
             position: toast.POSITION.TOP_LEFT,
             autoClose: 1000,
             onClose: () => {
-              self.$f7router.navigate('/login/');
-            }
+              self.$f7router.navigate("/login/");
+            },
           });
         }
       })
-      .catch(e => console.log(e))
+      .catch((e) => console.log(e));
   };
 
   handleChangeInput = (event) => {

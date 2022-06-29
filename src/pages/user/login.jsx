@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { SERVER_APP } from "./../../constants/config";
-import { setUserStorage } from "../../constants/user";
+import { setStockIDStorage, setStockNameStorage, setUserStorage } from "../../constants/user";
 import { Page, Link, Toolbar } from "framework7-react";
 import UserService from "../../service/user.service";
 import { toast } from "react-toastify";
@@ -77,6 +77,8 @@ export default class extends React.Component {
                 }, 300);
               });
             }
+            setStockIDStorage(userData.ByStockID);
+            setStockNameStorage(userData.StockName);
           });
         }
       })

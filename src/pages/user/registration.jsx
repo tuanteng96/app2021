@@ -5,6 +5,7 @@ import UserService from "../../service/user.service";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getStockIDStorage } from "../../constants/user";
+import SelectStock from "../../components/SelectStock";
 
 toast.configure();
 export default class extends React.Component {
@@ -17,6 +18,8 @@ export default class extends React.Component {
       phone: "",
       arrNews: [],
       arrBanner: [],
+      isOpenStock: false,
+      isReload: 0,
     };
   }
   componentDidMount() {
@@ -27,6 +30,14 @@ export default class extends React.Component {
     const password = this.state.password;
     const phone = this.state.phone;
     const stockId = getStockIDStorage();
+
+    if (!stockId) {
+      this.setState({
+        isOpenStock: !this.state.isOpenStock,
+      });
+      return;
+    }
+
     const phone_regex = /((09|03|07|08|05)+([0-9]{8})\b)/g;
     if (fullname === "" || password === "" || phone === "") {
       toast.error("Vui lòng nhập đầy đủ thông tin!", {
@@ -51,7 +62,7 @@ export default class extends React.Component {
     const self = this;
     self.$f7.preloader.show();
 
-    UserService.register(fullname, password, phone, stockId || 0)
+    UserService.register(fullname, password, phone, stockId)
       .then((repsonse) => {
         self.$f7.preloader.hide();
         if (repsonse.data.error) {
@@ -89,8 +100,7 @@ export default class extends React.Component {
   }
 
   render() {
-    const isLoading = this.state.isLoading;
-    const password = this.state.password;
+    const { isLoading, isOpenStock, password, isReload } = this.state;
     return (
       <Page noNavbar noToolbar name="login">
         <div className="page-wrapper page-login">
@@ -102,17 +112,16 @@ export default class extends React.Component {
           <div className="page-login__content">
             <div className="page-login__logo">
               <div className="logo">
-                <img className="logo-reg" src={SERVER_APP + "/app/images/logo-app.png"} />
+                <img
+                  className="logo-reg"
+                  src={SERVER_APP + "/app/images/logo-app.png"}
+                />
               </div>
-              <div className="title">
-                Xin chào, Bắt đầu tạo tài khoản nào
-              </div>
+              <div className="title">Xin chào, Bắt đầu tạo tài khoản nào</div>
             </div>
             <div className="page-login__form">
               <form>
-                <div className="title">
-                  Tạo tài khoản mới
-                </div>
+                <div className="title">Tạo tài khoản mới</div>
                 <div className="page-login__form-item">
                   <input
                     type="text"
@@ -124,7 +133,7 @@ export default class extends React.Component {
                 </div>
                 <div className="page-login__form-item">
                   <input
-                    type='tel'
+                    type="tel"
                     value={this.state.phone}
                     onChange={this.phoneChange}
                     pattern="^-?[0-9]\d*\.?\d*$"
@@ -146,7 +155,8 @@ export default class extends React.Component {
                     type="button"
                     onClick={() => this.registrationSubmit()}
                     className={
-                      "btn-login btn-me" + (isLoading === true ? " loading" : "")
+                      "btn-login btn-me" +
+                      (isLoading === true ? " loading" : "")
                     }
                   >
                     <span>Đăng ký</span>
@@ -159,6 +169,11 @@ export default class extends React.Component {
             Bạn chưa có tài khoản ? <Link href="/login/">Đăng nhập</Link>
           </div>
         </div>
+        <SelectStock
+          isOpenStock={isOpenStock}
+          //nameStock={(name) => this.nameStock(name)}
+          isReload={isReload}
+        />
       </Page>
     );
   }

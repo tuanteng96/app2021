@@ -468,7 +468,7 @@ export default class employeeServiceDetail extends React.Component {
                 </li>
                 <li>
                   <span className="w-100">Nhân viên thực hiện</span>
-                  <span className="w-100">{performStaff || itemDetail?.UserServices.map(user => user.FullName).join(", ")}</span>
+                  <span className="w-100">{performStaff || itemDetail && itemDetail.UserServices && itemDetail.UserServices.map(user => user.FullName).join(", ")}</span>
                 </li>
                 {
                   surcharget && (

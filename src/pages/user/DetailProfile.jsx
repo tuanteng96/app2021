@@ -17,7 +17,11 @@ import DatePicker from "react-mobile-datepicker";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { NAME_APP, VERSION_APP } from "../../constants/config";
-import { REMOVE_BADGE, SEND_TOKEN_FIREBASE, SET_BADGE } from "../../constants/prom21";
+import {
+  REMOVE_BADGE,
+  SEND_TOKEN_FIREBASE,
+  SET_BADGE,
+} from "../../constants/prom21";
 import { iOS } from "../../constants/helpers";
 
 export default class extends React.Component {
@@ -56,7 +60,7 @@ export default class extends React.Component {
       })
       .catch((err) => console.log(err));
   };
-  
+
   signOut = () => {
     const $$this = this;
     $$this.$f7.dialog.confirm(
@@ -134,6 +138,40 @@ export default class extends React.Component {
     self.$f7router.navigate("/edit-password/");
   };
 
+  handleDeleteUser = () => {
+    const $$this = this;
+    this.$f7.dialog.confirm(
+      "Khi thực hiện xóa tài khoản bạn sẽ mất hết toàn bộ dữ liệu và không thể khôi phục lại.",
+      "Cảnh báo !",
+      async () => {
+        f7.dialog.preloader(`Đang thực hiện ...`);
+        const { ID, acc_type } = getUser();
+        UserService.deleteUserLogin()
+          .then(() => {
+            SEND_TOKEN_FIREBASE().then(async (response) => {
+              if (!response.error && response.Token) {
+                await UserService.authRemoveFirebase({
+                  Token: response.Token,
+                  ID: ID,
+                  Type: acc_type,
+                });
+              } else {
+                app_request("unsubscribe", "");
+              }
+              iOS() && REMOVE_BADGE();
+              await localStorage.clear();
+              await new Promise((resolve) => setTimeout(resolve, 100));
+              f7.dialog.close();
+              $$this.$f7router.navigate("/", {
+                reloadCurrent: true,
+              });
+            });
+          })
+          .catch((error) => console.log(error));
+      }
+    );
+  };
+
   getStockCurrent = () => {
     const StockCurrentName = getStockNameStorage();
     this.setState({
@@ -178,7 +216,6 @@ export default class extends React.Component {
   }
 
   render() {
-    
     const { memberInfo } = this.state;
     const IDStockName = this.state.IDStockName;
     const dateConfig = {
@@ -232,7 +269,9 @@ export default class extends React.Component {
               <div className="name">Avatar</div>
               <div className="content">
                 <div className="content-avatar">
-                  <img src={checkAvt(memberInfo?.Photo || memberInfo?.Avatar)} />
+                  <img
+                    src={checkAvt(memberInfo?.Photo || memberInfo?.Avatar)}
+                  />
                 </div>
               </div>
             </div>
@@ -346,6 +385,20 @@ export default class extends React.Component {
                 <i className="las la-angle-right"></i>
               </div>
             </div>
+            {window?.GlobalConfig?.APP?.User?.IsDelete && (
+              <div
+                className="page-detail-profile__item"
+                onClick={() => this.handleDeleteUser()}
+              >
+                <div className="name">Cảnh báo</div>
+                <div className="content">
+                  <div className="content-text text-danger fw-500">
+                    Xóa tài khoản
+                  </div>
+                  <i className="las la-angle-right text-danger"></i>
+                </div>
+              </div>
+            )}
             <div className="line-logout"></div>
           </div>
           <div className="page-detail-profile__footer">

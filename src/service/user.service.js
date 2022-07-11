@@ -94,6 +94,9 @@ class UserService {
     getConfig(name) {
         return http.get(`/api/v3/config?cmd=getnames&names=${name}`);
     }
+    deleteUserLogin() {
+        return http.get(`app/index.aspx?cmd=deleteAccount&token=${getToken()}`);
+    }
     authForget(data) {
         return http.post(`/api/v3/authen?cmd=forget`, data);
     }

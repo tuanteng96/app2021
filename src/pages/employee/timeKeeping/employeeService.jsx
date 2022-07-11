@@ -308,7 +308,7 @@ export default class employeeService extends React.Component {
                               </li>
                               <li>
                                 <span>Số phút : </span>
-                                <span>{item.Minutes}p/Ca</span>
+                                <span>{item.RootMinutes}p/Ca</span>
                               </li>
                             </ul>
                             <Button

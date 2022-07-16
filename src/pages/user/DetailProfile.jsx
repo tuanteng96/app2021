@@ -215,6 +215,11 @@ export default class extends React.Component {
     }, 600);
   }
 
+  onLoadRefresh() {
+    this.getInfoMember();
+    this.getStockCurrent();
+  }
+
   render() {
     const { memberInfo } = this.state;
     const IDStockName = this.state.IDStockName;
@@ -241,10 +246,10 @@ export default class extends React.Component {
         onPageBeforeIn={this.onPageBeforeIn.bind(this)}
         name="detail-profile"
         noToolbar
-        ptr
-        infiniteDistance={50}
-        infinitePreloader={this.state.showPreloader}
-        onPtrRefresh={this.loadRefresh.bind(this)}
+        // ptr
+        // infiniteDistance={50}
+        // infinitePreloader={this.state.showPreloader}
+        // onPtrRefresh={this.loadRefresh.bind(this)}
       >
         <Navbar>
           <div className="page-navbar">
@@ -254,7 +259,9 @@ export default class extends React.Component {
               </Link>
             </div>
             <div className="page-navbar__title">
-              <span className="title">Thông tin cá nhân</span>
+              <span onClick={() => this.onLoadRefresh()} className="title">
+                Thông tin cá nhân
+              </span>
             </div>
             <div className="page-navbar__noti">
               <Link onClick={() => this.signOut()}>

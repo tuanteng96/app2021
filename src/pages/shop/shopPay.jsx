@@ -156,20 +156,7 @@ export default class extends React.Component {
     const PriceOrder = items[indexUpdate].PriceOrder;
 
     if (hisQty === 1) {
-      $$this.$f7.dialog.confirm("Xóa sản phẩm này ?", () => {
-        const itemsNew = items.filter((item) => item.ID !== ID);
-        const itemDelete = {
-          ID: ID,
-          Qty: hisQty,
-        };
-        let newItemDelete = [...deletedsOrder, itemDelete];
-
-        this.setState({
-          items: itemsNew,
-          deletedsOrder: newItemDelete,
-        });
-        this.TotalProduct(itemsNew);
-      });
+      this.onDelete(ID)
     } else {
       const indexUpdate2 = editsOrder.findIndex((obj) => obj.ID === ID);
       const Qty = (items[indexUpdate].Qty = hisQty - 1);
@@ -194,7 +181,6 @@ export default class extends React.Component {
           items: items,
         });
       }
-
       this.TotalProduct(items);
       this.delayedClick();
     }

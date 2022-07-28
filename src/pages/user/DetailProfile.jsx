@@ -11,6 +11,7 @@ import {
   getPassword,
   getStockNameStorage,
   app_request,
+  setUserStorage,
 } from "../../constants/user";
 import UserService from "../../service/user.service";
 import DatePicker from "react-mobile-datepicker";
@@ -18,6 +19,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { NAME_APP, VERSION_APP } from "../../constants/config";
 import {
+  PHOTO_TO_SERVER,
   REMOVE_BADGE,
   SEND_TOKEN_FIREBASE,
   SET_BADGE,
@@ -56,6 +58,7 @@ export default class extends React.Component {
           this.setState({
             memberInfo: memberInfo,
           });
+          setUserStorage(memberInfo.token, memberInfo);
         }
       })
       .catch((err) => console.log(err));
@@ -215,6 +218,62 @@ export default class extends React.Component {
     }, 600);
   }
 
+  onChangeAddress = (memberInfo) => {
+    if (!memberInfo) return false;
+    this.$f7.dialog.prompt("Nhập địa chỉ mới của bạn ?", async (address) => {
+      this.$f7.dialog.preloader("Đang thực hiện ...");
+      const obj = {};
+      if (memberInfo.acc_type === "M") {
+        obj.member = {
+          HomeAddress: address,
+        };
+      } else {
+        obj.user = {
+          HomeAddress: address,
+        };
+      }
+      UserService.updateInfo(obj)
+        .then(() => {
+          toast.success("Cập nhập địa chỉ thành công !", {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: 1500,
+          });
+          this.onLoadRefresh();
+          this.$f7.dialog.close();
+        })
+        .catch((error) => console.log(error));
+    });
+  };
+
+  onChangeAvatar = (memberInfo) => {
+    if (!memberInfo) return false;
+    PHOTO_TO_SERVER()
+      .then((rs) => {
+        this.$f7.dialog.preloader("Đang Upload...");
+        const obj = {};
+        if (memberInfo.acc_type === "M") {
+          obj.member = {
+            Avatar: rs.data,
+          };
+        } else {
+          obj.user = {
+            Avatar: rs.data,
+          };
+        }
+        UserService.updateInfo(obj)
+          .then(() => {
+            toast.success("Cập nhập hình ảnh thành công !", {
+              position: toast.POSITION.TOP_CENTER,
+              autoClose: 1500,
+            });
+            this.onLoadRefresh();
+            this.$f7.dialog.close();
+          })
+          .catch((error) => console.log(error));
+      })
+      .catch((z) => console.log("aaa Error:", z));
+  };
+
   onLoadRefresh() {
     this.getInfoMember();
     this.getStockCurrent();
@@ -274,12 +333,16 @@ export default class extends React.Component {
           <div className="page-detail-profile__box">
             <div className="page-detail-profile__item">
               <div className="name">Avatar</div>
-              <div className="content">
+              <div
+                className="content"
+                onClick={() => onChangeAvatar(memberInfo)}
+              >
                 <div className="content-avatar">
                   <img
                     src={checkAvt(memberInfo?.Photo || memberInfo?.Avatar)}
                   />
                 </div>
+                <i className="las la-angle-right"></i>
               </div>
             </div>
             <div className="page-detail-profile__item">
@@ -352,7 +415,10 @@ export default class extends React.Component {
                 <i className="las la-angle-right"></i>
               </div>
             </div>
-            <div className="page-detail-profile__item">
+            <div
+              className="page-detail-profile__item"
+              onClick={() => this.onChangeAddress(memberInfo)}
+            >
               <div className="name">Địa chỉ</div>
               <div className="content">
                 <div className="content-text">
@@ -360,6 +426,7 @@ export default class extends React.Component {
                     ? memberInfo.HomeAddress
                     : "Chưa cập nhập"}
                 </div>
+                <i className="las la-angle-right"></i>
               </div>
             </div>
             <div

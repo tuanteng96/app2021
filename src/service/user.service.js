@@ -109,6 +109,9 @@ class UserService {
     authRemoveFirebase({ Token, Type, ID }) {
         return http.get(`/api/v3/apptoken?cmd=call&token=${Token}&accid=${ID}&acctype=${Type}&logout=1`);
     }
+    updateInfo(data) {
+        return http.post(`/api/v3/in4@edit?token=${getToken()}`, JSON.stringify(data));
+    }
 }
 
 export default new UserService();

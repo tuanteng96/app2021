@@ -336,9 +336,9 @@ export default class extends React.Component {
                                   </span>
                                 </React.Fragment>
                               )}
+                              <span className="px">,</span>
                             </React.Fragment>
                           )}
-                          <span className="px">,</span>
                           <span>Còn nợ :</span>
                           <span className="price">
                             {formatPriceVietnamese(

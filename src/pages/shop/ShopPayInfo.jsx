@@ -22,11 +22,18 @@ export default class extends React.Component {
       deletedsOrder: [],
       editsOrder: [],
       noteOrder: "",
+      SenderAddress: "",
       isLoading: true,
       isBtn: false,
     };
   }
   componentDidMount() {
+    const infoUser = getUser();
+    if (infoUser) {
+      this.setState({
+        SenderAddress: infoUser.HomeAddress,
+      });
+    }
     this.getOrder();
   }
   getOrder = () => {
@@ -59,7 +66,7 @@ export default class extends React.Component {
   };
 
   handleSubmit = () => {
-    const { order, noteOrder } = this.state;
+    const { order, noteOrder, SenderAddress } = this.state;
     const infoUser = getUser();
     const stockid = getStockIDStorage();
     const self = this;
@@ -72,6 +79,7 @@ export default class extends React.Component {
         SenderID: infoUser.ID,
         Status: "user_sent",
         SenderOther: noteOrder,
+        SenderAddress: SenderAddress,
       },
       forceStockID: stockid,
     };
@@ -102,7 +110,7 @@ export default class extends React.Component {
   };
 
   render() {
-    const { items, order, isLoading, isBtn } = this.state;
+    const { items, order, isLoading, isBtn, SenderAddress } = this.state;
 
     const infoUser = getUser();
 
@@ -143,9 +151,17 @@ export default class extends React.Component {
                   </span>
                 </div>
                 <div className="address">
-                  {infoUser && infoUser.HomeAddress !== ""
-                    ? infoUser.HomeAddress
-                    : "Bạn chưa nhập địa chỉ? Vui lòng cập nhật thông tin."}
+                  <textarea
+                    name="SenderAddress"
+                    className="w-100 mt-12px"
+                    placeholder="Nhập địa chỉ nhận hàng ..."
+                    value={SenderAddress}
+                    onChange={(evt) =>
+                      this.setState({ SenderAddress: evt.target.value })
+                    }
+                  >
+                    {infoUser?.HomeAddress}
+                  </textarea>
                 </div>
                 <div className="line"></div>
               </div>

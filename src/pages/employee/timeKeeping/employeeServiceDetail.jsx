@@ -355,7 +355,7 @@ export default class employeeServiceDetail extends React.Component {
       isLoading,
       isShowBtn
     } = this.state;
-    
+
     return (
       <Page name="employee-service">
         <Navbar>
@@ -392,12 +392,16 @@ export default class employeeServiceDetail extends React.Component {
                   <span>Khách hàng</span>
                   <span>{itemDetail?.member?.FullName || itemDetail?.Member?.FullName}</span>
                 </li>
-                <li>
-                  <span>Địa chỉ</span>
-                  <span>
-                    {itemDetail?.member?.HomeAddress || "Chưa có"}
-                  </span>
-                </li>
+                {
+                  !window?.GlobalConfig?.APP?.Staff?.hideAddressMember && (
+                    <li>
+                      <span>Địa chỉ</span>
+                      <span>
+                        {itemDetail?.member?.HomeAddress || "Chưa có"}
+                      </span>
+                    </li>
+                  )
+                }
                 {
                   itemDetail?.member?.Present && (
                     <>
@@ -439,17 +443,21 @@ export default class employeeServiceDetail extends React.Component {
                 ) : (
                   ""
                 )}
-                <li>
-                  <span>Số điện thoại</span>
-                  <span
-                    onClick={() =>
-                      this.onCallPhone(itemDetail?.member?.MobilePhone || itemDetail?.Member?.MobilePhone)
-                    }
-                    className="text-link"
-                  >
-                    {itemDetail?.member?.MobilePhone || itemDetail?.Member?.MobilePhone || "Không có"}
-                  </span>
-                </li>
+                {
+                  !window?.GlobalConfig?.APP?.Staff?.hidePhoneMember && (
+                    <li>
+                      <span>Số điện thoại</span>
+                      <span
+                        onClick={() =>
+                          this.onCallPhone(itemDetail?.member?.MobilePhone || itemDetail?.Member?.MobilePhone)
+                        }
+                        className="text-link"
+                      >
+                        {itemDetail?.member?.MobilePhone || itemDetail?.Member?.MobilePhone || "Không có"}
+                      </span>
+                    </li>
+                  )
+                }
                 <li>
                   <span>Thời gian</span>
                   <span>{itemDetail && itemDetail.BookStr || moment(itemDetail?.BookDate).format("HH:mm DD/MM/YYY")}</span>

@@ -338,11 +338,16 @@ export default class employeeService extends React.Component {
                               >
                                 Lịch trình
                               </ActionsButton>
-                              <ActionsButton
-                                onClick={() => this.handleHistory(item)}
-                              >
-                                Lịch sử khách hàng
-                              </ActionsButton>
+                              {
+                                !window?.GlobalConfig?.APP?.Staff?.hideHistoryMember && (
+                                  <ActionsButton
+                                    onClick={() => this.handleHistory(item)}
+                                  >
+                                    Lịch sử khách hàng
+                                  </ActionsButton>
+                                )
+                              }
+
                             </ActionsGroup>
                             <ActionsGroup>
                               <ActionsButton color="red">Đóng</ActionsButton>
@@ -496,9 +501,8 @@ export default class employeeService extends React.Component {
                 </div>
                 <div className="sheet-pay-body__btn">
                   <button
-                    className={`page-btn-order btn-submit-order ${
-                      loadingSubmit && "loading"
-                    }`}
+                    className={`page-btn-order btn-submit-order ${loadingSubmit && "loading"
+                      }`}
                     onClick={() => this.searchSubmit()}
                   >
                     <span>Tìm dịch vụ</span>

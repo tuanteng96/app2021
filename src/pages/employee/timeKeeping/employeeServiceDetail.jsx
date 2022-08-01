@@ -361,16 +361,14 @@ export default class employeeServiceDetail extends React.Component {
         <Navbar>
           <div className="page-navbar">
             <div className="page-navbar__back">
-              <Link
-                onClick={() =>
-                  this.$f7router.back()
-                }
-              >
+              <Link onClick={() => this.$f7router.back()}>
                 <i className="las la-angle-left"></i>
               </Link>
             </div>
             <div className="page-navbar__title">
-              <span className="title">{itemDetail?.Title || itemDetail?.RootTitles}</span>
+              <span className="title">
+                {itemDetail?.Title || itemDetail?.RootTitles}
+              </span>
             </div>
             <div className="page-navbar__noti">
               <NotificationIcon />
@@ -390,48 +388,50 @@ export default class employeeServiceDetail extends React.Component {
                 </li>
                 <li>
                   <span>Khách hàng</span>
-                  <span>{itemDetail?.member?.FullName || itemDetail?.Member?.FullName}</span>
+                  <span>
+                    {itemDetail?.member?.FullName ||
+                      itemDetail?.Member?.FullName}
+                  </span>
                 </li>
-                {
-                  !window?.GlobalConfig?.APP?.Staff?.hideAddressMember && (
+                {!window?.GlobalConfig?.APP?.Staff?.hideAddressMember && (
+                  <li>
+                    <span>Địa chỉ</span>
+                    <span>{itemDetail?.member?.HomeAddress || "Chưa có"}</span>
+                  </li>
+                )}
+                {itemDetail?.member?.Present && (
+                  <>
                     <li>
-                      <span>Địa chỉ</span>
+                      <span>Công nợ</span>
                       <span>
-                        {itemDetail?.member?.HomeAddress || "Chưa có"}
+                        {formatPriceVietnamese(
+                          itemDetail && itemDetail.member.Present.no
+                        )}
                       </span>
                     </li>
-                  )
-                }
-                {
-                  itemDetail?.member?.Present && (
-                    <>
-                      <li>
-                        <span>Công nợ</span>
-                        <span>
-                          {formatPriceVietnamese(
-                            itemDetail && itemDetail.member.Present.no
-                          )}
-                        </span>
-                      </li>
-                      <li>
-                        <span>Ví</span>
-                        <span>
-                          {formatPriceVietnamese(
-                            itemDetail && itemDetail.member.Present.nap_vi
-                          )}
-                        </span>
-                      </li>
-                      <li>
-                        <span>Thẻ tiền</span>
-                        <span>
-                          {formatPriceVietnamese(
-                            itemDetail && itemDetail.member.Present.the_tien_kha_dung
-                          )}
-                        </span>
-                      </li>
-                    </>
-                  )
-                }
+                    {!window?.GlobalConfig?.APP?.Staff?.hideWalletCard && (
+                      <>
+                        <li>
+                          <span>Ví</span>
+                          <span>
+                            {formatPriceVietnamese(
+                              itemDetail && itemDetail.member.Present.nap_vi
+                            )}
+                          </span>
+                        </li>
+                        <li>
+                          <span>Thẻ tiền</span>
+                          <span>
+                            {formatPriceVietnamese(
+                              itemDetail &&
+                                itemDetail.member.Present.the_tien_kha_dung
+                            )}
+                          </span>
+                        </li>
+                      </>
+                    )}
+                  </>
+                )}
 
                 {itemDetail && itemDetail.Status === "done" ? (
                   <li>
@@ -443,26 +443,32 @@ export default class employeeServiceDetail extends React.Component {
                 ) : (
                   ""
                 )}
-                {
-                  !window?.GlobalConfig?.APP?.Staff?.hidePhoneMember && (
-                    <li>
-                      <span>Số điện thoại</span>
-                      <span
-                        onClick={() =>
-                          this.onCallPhone(itemDetail?.member?.MobilePhone || itemDetail?.Member?.MobilePhone)
-                        }
-                        className="text-link"
-                      >
-                        {itemDetail?.member?.MobilePhone || itemDetail?.Member?.MobilePhone || "Không có"}
-                      </span>
-                    </li>
-                  )
-                }
+                {!window?.GlobalConfig?.APP?.Staff?.hidePhoneMember && (
+                  <li>
+                    <span>Số điện thoại</span>
+                    <span
+                      onClick={() =>
+                        this.onCallPhone(
+                          itemDetail?.member?.MobilePhone ||
+                            itemDetail?.Member?.MobilePhone
+                        )
+                      }
+                      className="text-link"
+                    >
+                      {itemDetail?.member?.MobilePhone ||
+                        itemDetail?.Member?.MobilePhone ||
+                        "Không có"}
+                    </span>
+                  </li>
+                )}
                 <li>
                   <span>Thời gian</span>
-                  <span>{itemDetail && itemDetail.BookStr || moment(itemDetail?.BookDate).format("HH:mm DD/MM/YYY")}</span>
+                  <span>
+                    {(itemDetail && itemDetail.BookStr) ||
+                      moment(itemDetail?.BookDate).format("HH:mm DD/MM/YYY")}
+                  </span>
                 </li>
-                {'Minutes' in itemDetail && (
+                {"Minutes" in itemDetail && (
                   <li>
                     <span>Số phút</span>
                     <span>{itemDetail && (itemDetail.Minutes || 0)}p /Ca</span>
@@ -471,27 +477,36 @@ export default class employeeServiceDetail extends React.Component {
                 <li>
                   <span>Điểm</span>
                   <span>
-                    {itemDetail?.StockID ? this.checkStock(itemDetail.StockID) : itemDetail.Stock.Title}
+                    {itemDetail?.StockID
+                      ? this.checkStock(itemDetail.StockID)
+                      : itemDetail.Stock.Title}
                   </span>
                 </li>
                 <li>
                   <span className="w-100">Nhân viên thực hiện</span>
-                  <span className="w-100">{performStaff || itemDetail && itemDetail.UserServices && itemDetail.UserServices.map(user => user.FullName).join(", ")}</span>
+                  <span className="w-100">
+                    {performStaff ||
+                      (itemDetail &&
+                        itemDetail.UserServices &&
+                        itemDetail.UserServices.map(
+                          (user) => user.FullName
+                        ).join(", "))}
+                  </span>
                 </li>
-                {
-                  surcharget && (
-                    <li>
-                      <span className="w-100">Phụ phí</span>
-                      <span className="w-100">
-                        {(surcharget && surcharget) || "Chưa có phụ phí"}
-                      </span>
-                    </li>
-                  )
-                }
-                {'Desc' in itemDetail && (
+                {surcharget && (
+                  <li>
+                    <span className="w-100">Phụ phí</span>
+                    <span className="w-100">
+                      {(surcharget && surcharget) || "Chưa có phụ phí"}
+                    </span>
+                  </li>
+                )}
+                {"Desc" in itemDetail && (
                   <li>
                     <span className="w-100">Ghi chú</span>
-                    <span className="w-100">{itemDetail?.Desc || "Không có"}</span>
+                    <span className="w-100">
+                      {itemDetail?.Desc || "Không có"}
+                    </span>
                   </li>
                 )}
               </ul>
@@ -584,8 +599,9 @@ export default class employeeServiceDetail extends React.Component {
                     </button>
                   ) : (
                     <button
-                      className={`page-btn-order btn-submit-order ${loadingSubmit && "loading"
-                        }`}
+                      className={`page-btn-order btn-submit-order ${
+                        loadingSubmit && "loading"
+                      }`}
                       onClick={() => this.orderSubmit(itemDetail.ID)}
                     >
                       <span>Hoàn thành</span>
@@ -615,34 +631,31 @@ export default class employeeServiceDetail extends React.Component {
         />
 
         <Toolbar tabbar position="bottom">
-          {
-            isShowBtn ? (
-              <div className="page-toolbar">
-                <div className="page-toolbar__order">
-                  <button
-                    className={`page-btn-order btn-submit-order ${itemDetail && itemDetail.Status === "done" ? "success" : ""
-                      }`}
-                    onClick={() => this.openSheet()}
-                  >
-                    <span>
-                      {itemDetail && itemDetail.Status === "done"
-                        ? "Xem hình ảnh"
-                        : "Báo cáo xong"}
-                    </span>
-                  </button>
-                </div>
+          {isShowBtn ? (
+            <div className="page-toolbar">
+              <div className="page-toolbar__order">
+                <button
+                  className={`page-btn-order btn-submit-order ${
+                    itemDetail && itemDetail.Status === "done" ? "success" : ""
+                  }`}
+                  onClick={() => this.openSheet()}
+                >
+                  <span>
+                    {itemDetail && itemDetail.Status === "done"
+                      ? "Xem hình ảnh"
+                      : "Báo cáo xong"}
+                  </span>
+                </button>
               </div>
-            ) : (
-              <button
-                className={`page-btn-order btn-submit-order`}
-                onClick={() => this.$f7router.back()}
-              >
-                <span>
-                  Đóng
-                </span>
-              </button>
-            )
-          }
+            </div>
+          ) : (
+            <button
+              className={`page-btn-order btn-submit-order`}
+              onClick={() => this.$f7router.back()}
+            >
+              <span>Đóng</span>
+            </button>
+          )}
         </Toolbar>
         <SelectStock isOpenStock={this.state.isOpenStock} />
       </Page>

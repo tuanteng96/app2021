@@ -29,8 +29,7 @@ import SkeletonDetail from "./skeleton/SkeletonDetail";
 import { CALL_PHONE, PHOTO_TO_SERVER } from "../../../constants/prom21";
 import Resizer from "react-image-file-resizer";
 import moment from "moment";
-import ToolBarBottom from "../../../components/ToolBarBottom"
-
+import ToolBarBottom from "../../../components/ToolBarBottom";
 
 toast.configure();
 
@@ -42,7 +41,7 @@ export default class employeeServiceDetail extends React.Component {
       loadingSubmit: false,
       photos: [],
       isLoading: true,
-      isShowBtn: true
+      isShowBtn: true,
     };
   }
 
@@ -105,9 +104,11 @@ export default class employeeServiceDetail extends React.Component {
       const response = await staffService.getServiceStaff(user, data);
       const { result, mBook } = {
         result: response.data.data,
-        mBook: response.data.mBook
+        mBook: response.data.mBook,
       };
-      const itemDetail = result.find((item) => item.ID === parseInt(cateID)) || mBook.find((item) => item.ID === parseInt(cateID));
+      const itemDetail =
+        result.find((item) => item.ID === parseInt(cateID)) ||
+        mBook.find((item) => item.ID === parseInt(cateID));
       const dataPP = {
         cmd: "service_fee",
         OrderServiceID: itemDetail.ID,
@@ -124,7 +125,8 @@ export default class employeeServiceDetail extends React.Component {
       this.setState({
         itemDetail: itemDetail,
         surcharget: resulSurchargetNew.join(", "),
-        isShowBtn: mBook.findIndex((item) => item.ID === parseInt(cateID)) === -1
+        isShowBtn:
+          mBook.findIndex((item) => item.ID === parseInt(cateID)) === -1,
       });
       setTimeout(() => {
         this.setState({ isLoading: false });
@@ -252,7 +254,7 @@ export default class employeeServiceDetail extends React.Component {
     };
     staffService
       .updateImageStaff(cateID, dataSrc)
-      .then((response) => { })
+      .then((response) => {})
       .catch((error) => console.log(error));
   };
 
@@ -353,7 +355,7 @@ export default class employeeServiceDetail extends React.Component {
       sheetOpened,
       loadingSubmit,
       isLoading,
-      isShowBtn
+      isShowBtn,
     } = this.state;
 
     return (
@@ -399,39 +401,36 @@ export default class employeeServiceDetail extends React.Component {
                     <span>{itemDetail?.member?.HomeAddress || "Chưa có"}</span>
                   </li>
                 )}
-                {itemDetail?.member?.Present && (
-                  <>
-                    <li>
-                      <span>Công nợ</span>
-                      <span>
-                        {formatPriceVietnamese(
-                          itemDetail && itemDetail.member.Present.no
-                        )}
-                      </span>
-                    </li>
-                    {!window?.GlobalConfig?.APP?.Staff?.hideWalletCard && (
-                      <>
-                        <li>
-                          <span>Ví</span>
-                          <span>
-                            {formatPriceVietnamese(
-                              itemDetail && itemDetail.member.Present.nap_vi
-                            )}
-                          </span>
-                        </li>
-                        <li>
-                          <span>Thẻ tiền</span>
-                          <span>
-                            {formatPriceVietnamese(
-                              itemDetail &&
-                                itemDetail.member.Present.the_tien_kha_dung
-                            )}
-                          </span>
-                        </li>
-                      </>
-                    )}
-                  </>
-                )}
+                {itemDetail?.member?.Present &&
+                  !window?.GlobalConfig?.APP?.Staff?.hideWalletCard && (
+                    <>
+                      <li>
+                        <span>Công nợ</span>
+                        <span>
+                          {formatPriceVietnamese(
+                            itemDetail && itemDetail.member.Present.no
+                          )}
+                        </span>
+                      </li>
+                      <li>
+                        <span>Ví</span>
+                        <span>
+                          {formatPriceVietnamese(
+                            itemDetail && itemDetail.member.Present.nap_vi
+                          )}
+                        </span>
+                      </li>
+                      <li>
+                        <span>Thẻ tiền</span>
+                        <span>
+                          {formatPriceVietnamese(
+                            itemDetail &&
+                              itemDetail.member.Present.the_tien_kha_dung
+                          )}
+                        </span>
+                      </li>
+                    </>
+                  )}
 
                 {itemDetail && itemDetail.Status === "done" ? (
                   <li>

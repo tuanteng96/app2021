@@ -42,6 +42,7 @@ export default class employeeServiceDetail extends React.Component {
       photos: [],
       isLoading: true,
       isShowBtn: true,
+      NoteCurrent: "",
     };
   }
 
@@ -79,7 +80,7 @@ export default class employeeServiceDetail extends React.Component {
       .catch((error) => console.log(error));
   };
 
-  getService = async () => {
+  getService = async (callback) => {
     if (!getUser()) return false;
     const infoMember = getUser();
     const user = {
@@ -124,13 +125,14 @@ export default class employeeServiceDetail extends React.Component {
       });
       this.setState({
         itemDetail: itemDetail,
+        Note: itemDetail.Desc,
+        NoteCurrent: itemDetail.Desc,
         surcharget: resulSurchargetNew.join(", "),
         isShowBtn:
           mBook.findIndex((item) => item.ID === parseInt(cateID)) === -1,
       });
-      setTimeout(() => {
-        this.setState({ isLoading: false });
-      }, 200);
+      this.setState({ isLoading: false });
+      callback && callback();
     } catch (error) {
       console.log(error);
     }
@@ -171,6 +173,7 @@ export default class employeeServiceDetail extends React.Component {
   closeSheet = () => {
     this.setState({
       sheetOpened: false,
+      Note: this.state.NoteCurrent,
     });
   };
 
@@ -218,6 +221,23 @@ export default class employeeServiceDetail extends React.Component {
         }
       })
       .catch((err) => console.log(err));
+  };
+
+  updateDesc = (ServiceID) => {
+    f7.dialog.preloader("Đang cập nhập...");
+    const { Note } = this.state;
+    if (!getUser()) return false;
+    staffService
+      .updateDescStaff(ServiceID, { Desc: Note })
+      .then((response) => {
+        this.getService(() => {
+          f7.dialog.close();
+          this.setState({
+            sheetOpened: false,
+          });
+        });
+      })
+      .catch((error) => console.log(error));
   };
 
   openBrowserImage = (index) => {
@@ -349,6 +369,7 @@ export default class employeeServiceDetail extends React.Component {
   render() {
     const {
       itemDetail,
+      Note,
       performStaff,
       surcharget,
       photos,
@@ -526,17 +547,14 @@ export default class employeeServiceDetail extends React.Component {
             <div className="sheet-swipe-product__content">
               <div className="sheet-pay-body">
                 <div className="sheet-pay-body__form">
-                  {itemDetail && itemDetail.Status !== "done" ? (
-                    <div className="item">
-                      <label>Ghi chú</label>
-                      <textarea
-                        placeholder="Nhập ghi chú"
-                        onChange={this.handleNote}
-                      ></textarea>
-                    </div>
-                  ) : (
-                    ""
-                  )}
+                  <div className="item">
+                    <label>Ghi chú</label>
+                    <textarea
+                      placeholder="Nhập ghi chú"
+                      onChange={this.handleNote}
+                      value={Note}
+                    ></textarea>
+                  </div>
                   <div className="item">
                     <label>Hình ảnh dịch vụ</label>
                     <div className="list-images">
@@ -582,7 +600,19 @@ export default class employeeServiceDetail extends React.Component {
                     </div>
                   </div>
                 </div>
-                <div className="sheet-pay-body__btn">
+                <div className="sheet-pay-body__btn d-flex">
+                  <button
+                    className={`page-btn-order btn-submit-order bg-primary mr-10px`}
+                    onClick={() => this.updateDesc(itemDetail.ID)}
+                  >
+                    <span>Cập nhập</span>
+                    <div className="loading-icon">
+                      <div className="loading-icon__item item-1"></div>
+                      <div className="loading-icon__item item-2"></div>
+                      <div className="loading-icon__item item-3"></div>
+                      <div className="loading-icon__item item-4"></div>
+                    </div>
+                  </button>
                   {itemDetail && itemDetail.Status === "done" ? (
                     <button
                       className={`page-btn-order btn-submit-order`}

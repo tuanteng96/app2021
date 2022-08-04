@@ -21,6 +21,9 @@ class StaffService {
     uploadImageStaff(file) {
         return http.post(`/api/v3/file?cmd=upload`, file);
     }
+    updateDescStaff(id, data) {
+        return http.post(`/api/v3/orderservice?cmd=desc&osid=${id}`, qs.stringify(data));
+    }
     updateImageStaff(id, data) {
         return http.post(`/api/v3/orderservice?cmd=attachment&osid=${id}`, qs.stringify(data));
     }

@@ -29,7 +29,7 @@ export default class ServiceHot extends React.Component {
   getServicesAll = () => {
     let stockid = getStockIDStorage();
     stockid ? stockid : 0;
-    ShopDataService.getServiceOriginal()
+    ShopDataService.getServiceOriginal(stockid)
       .then(({ data }) => {
         const result = data.data;
         if (result) {

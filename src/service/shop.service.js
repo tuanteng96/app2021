@@ -26,8 +26,8 @@ class ShopDataService {
     getServiceParentID(id, stockid) {
         return http.get(`/app/index.aspx?cmd=service_parentid&token=${getToken()}&id=${id}&stockid=${stockid}`);
     }
-    getServiceOriginal() {
-        return http.get(`/api/v3/prod?cmd=roots&token=${getToken()}`);
+    getServiceOriginal(stockid) {
+        return http.get(`/api/v3/prod?cmd=roots&stockid=${stockid}&token=${getToken()}`);
     }
     getServiceProdID(id, stockid) {
         return http.get(`/app/index.aspx?cmd=service_prodsid&token=${getToken()}&id=${id}&stockid=${stockid}`);

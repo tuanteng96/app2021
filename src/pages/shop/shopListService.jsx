@@ -173,7 +173,9 @@ export default class extends React.Component {
   };
 
   loadMoreAsync = () => {
-    const { arrService, Count, Pi, currentId, showPreloader } = this.state;
+    const { arrService, Count, Pi, currentId, showPreloader, isSearch } =
+      this.state;
+    if (isSearch) return;
     if (Pi >= Count) {
       return false;
     }
@@ -259,111 +261,114 @@ export default class extends React.Component {
           </Subnavbar>
         </Navbar>
         <div className="page-render p-0">
-          <div className="page-shop page-shop-scroll p-15px">
-            <div className="page-shop__service">
-              {isSearch === false ? (
-                <>
-                  {isLoading && <SkeletonListService />}
-                  {!isLoading && (
-                    <div className="page-shop__service-list">
-                      {arrService &&
-                        arrService.map((item, index) => (
-                          <div
-                            className="page-shop__service-item"
-                            key={item.root.ID}
-                          >
-                            <div className="page-shop__service-item service-about">
-                              <div
-                                className="service-about__img"
-                              >
-                                <img
-                                  onClick={() =>
-                                    this.setState({ idOpen: item.root.ID })
-                                  }
-                                  src={
-                                    SERVER_APP +
-                                    "/Upload/image/" +
-                                    item.root.Thumbnail
-                                  }
-                                  alt={item.root.Title}
-                                />
-                                <Link href={`/schedule/?SelectedTitle=${item.root.Title}&SelectedId=${item.root.ID}`} className="_btn">Đặt lịch ngay</Link>
-                                {/* <button>Đặt lịch ngay</button> */}
-                              </div>
-                              <div
-                                className="service-about__title"
+          {!isSearch && (
+            <div className="page-shop page-shop-scroll p-15px">
+              <div className="page-shop__service">
+                {isLoading && <SkeletonListService />}
+                {!isLoading && (
+                  <div className="page-shop__service-list">
+                    {arrService &&
+                      arrService.map((item, index) => (
+                        <div
+                          className="page-shop__service-item"
+                          key={item.root.ID}
+                        >
+                          <div className="page-shop__service-item service-about">
+                            <div className="service-about__img">
+                              <img
                                 onClick={() =>
                                   this.setState({ idOpen: item.root.ID })
                                 }
+                                src={
+                                  SERVER_APP +
+                                  "/Upload/image/" +
+                                  item.root.Thumbnail
+                                }
+                                alt={item.root.Title}
+                              />
+                              <Link
+                                href={`/schedule/?SelectedTitle=${item.root.Title}&SelectedId=${item.root.ID}`}
+                                className="_btn"
                               >
-                                {item.root.Title}
-                              </div>
-                              {window.GlobalConfig.APP.Prod.IsDetailOriginal && (item.root.Desc !== "" || item.root.Detail) ? (
-                                <div className="service-about__content">
-                                  {
-                                    item.root.Desc && (
-                                      <div className="service-about__content-text">
-                                        {ReactHtmlParser(item.root.Desc)}
-                                      </div>
-                                    )
-                                  }
+                                Đặt lịch ngay
+                              </Link>
+                              {/* <button>Đặt lịch ngay</button> */}
+                            </div>
+                            <div
+                              className="service-about__title"
+                              onClick={() =>
+                                this.setState({ idOpen: item.root.ID })
+                              }
+                            >
+                              {item.root.Title}
+                            </div>
+                            {window.GlobalConfig.APP.Prod.IsDetailOriginal &&
+                            (item.root.Desc !== "" || item.root.Detail) ? (
+                              <div className="service-about__content">
+                                {item.root.Desc && (
+                                  <div className="service-about__content-text">
+                                    {ReactHtmlParser(item.root.Desc)}
+                                  </div>
+                                )}
+                                <Button
+                                  fill
+                                  sheetOpen={`.demo-sheet-${item.root.ID}`}
+                                  className="show-more"
+                                >
+                                  Chi tiết{" "}
+                                  <i className="las la-angle-right"></i>
+                                </Button>
+                                <Sheet
+                                  opened={Number(idOpen) === item.root.ID}
+                                  className={`demo-sheet-${item.root.ID} sheet-detail`}
+                                  style={{
+                                    height: "auto",
+                                    "--f7-sheet-bg-color": "#fff",
+                                  }}
+                                  //swipeToClose
+                                  onSheetClosed={() => {
+                                    this.setState({ idOpen: "" });
+                                  }}
+                                  backdrop
+                                >
                                   <Button
-                                    fill
-                                    sheetOpen={`.demo-sheet-${item.root.ID}`}
+                                    sheetClose={`.demo-sheet-${item.root.ID}`}
                                     className="show-more"
                                   >
-                                    Chi tiết{" "}
-                                    <i className="las la-angle-right"></i>
+                                    <i className="las la-times"></i>
                                   </Button>
-                                  <Sheet
-                                    opened={Number(idOpen) === item.root.ID}
-                                    className={`demo-sheet-${item.root.ID} sheet-detail`}
-                                    style={{
-                                      height: "auto",
-                                      "--f7-sheet-bg-color": "#fff",
-                                    }}
-                                    //swipeToClose
-                                    onSheetClosed={() => {
-                                      this.setState({ idOpen: "" });
-                                    }}
-                                    backdrop
-                                  >
-                                    <Button
-                                      sheetClose={`.demo-sheet-${item.root.ID}`}
-                                      className="show-more"
-                                    >
-                                      <i className="las la-times"></i>
-                                    </Button>
-                                    <PageContent>
-                                      <div className="page-shop__service-detail">
-                                        <div className="title">
-                                          <h4>{item.root.Title}</h4>
-                                        </div>
-                                        <div className="content">
-                                          {ReactHtmlParser(item.root.Desc)}
-                                          {ReactHtmlParser(
-                                            this.fixedContentDomain(
-                                              item.root.Detail
-                                            )
-                                          )}
-                                        </div>
+                                  <PageContent>
+                                    <div className="page-shop__service-detail">
+                                      <div className="title">
+                                        <h4>{item.root.Title}</h4>
                                       </div>
-                                    </PageContent>
-                                  </Sheet>
-                                </div>
-                              ) : (
-                                ""
-                              )}
-                              <ShopListServiceItem
-                                item={item}
-                              />
-                            </div>
+                                      <div className="content">
+                                        {ReactHtmlParser(item.root.Desc)}
+                                        {ReactHtmlParser(
+                                          this.fixedContentDomain(
+                                            item.root.Detail
+                                          )
+                                        )}
+                                      </div>
+                                    </div>
+                                  </PageContent>
+                                </Sheet>
+                              </div>
+                            ) : (
+                              ""
+                            )}
+                            <ShopListServiceItem item={item} />
                           </div>
-                        ))}
-                    </div>
-                  )}
-                </>
-              ) : (
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          {isSearch && (
+            <div className="page-shop p-15px">
+              <div className="page-shop__service">
                 <div className="page-shop__service-list">
                   <div className="page-shop__service-item">
                     <div className="page-shop__service-item service-about">
@@ -372,17 +377,21 @@ export default class extends React.Component {
                           {arrSearch &&
                             arrSearch.map((item) => (
                               <li key={item.id}>
-                                <Link href={"/shop/detail/" + item.id + "?Type=Service"}>
+                                <Link
+                                  href={
+                                    "/shop/detail/" + item.id + "?Type=Service"
+                                  }
+                                >
                                   <div className="title">{item.title}</div>
                                   <div
                                     className={
                                       "price " +
                                       (item.source.IsDisplayPrice !== 0 &&
-                                        checkSale(
-                                          item.source.SaleBegin,
-                                          item.source.SaleEnd,
-                                          item.source.PriceSale
-                                        ) === true
+                                      checkSale(
+                                        item.source.SaleBegin,
+                                        item.source.SaleEnd,
+                                        item.source.PriceSale
+                                      ) === true
                                         ? "sale"
                                         : "")
                                     }
@@ -414,9 +423,9 @@ export default class extends React.Component {
                     </div>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <Toolbar tabbar position="bottom">
           <ToolBarBottom />

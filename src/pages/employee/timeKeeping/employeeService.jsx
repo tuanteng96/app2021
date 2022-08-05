@@ -338,16 +338,14 @@ export default class employeeService extends React.Component {
                               >
                                 Lịch trình
                               </ActionsButton>
-                              {
-                                !window?.GlobalConfig?.APP?.Staff?.hideHistoryMember && (
-                                  <ActionsButton
-                                    onClick={() => this.handleHistory(item)}
-                                  >
-                                    Lịch sử khách hàng
-                                  </ActionsButton>
-                                )
-                              }
-
+                              {!window?.GlobalConfig?.APP?.Staff
+                                ?.hideHistoryMember && (
+                                <ActionsButton
+                                  onClick={() => this.handleHistory(item)}
+                                >
+                                  Lịch sử khách hàng
+                                </ActionsButton>
+                              )}
                             </ActionsGroup>
                             <ActionsGroup>
                               <ActionsButton color="red">Đóng</ActionsButton>
@@ -382,14 +380,17 @@ export default class employeeService extends React.Component {
                                   {item?.FullName || item?.Member?.FullName}
                                 </span>
                               </li>
-                              <li>
-                                <span>Số điện thoại : </span>
-                                <span>
-                                  {item?.Phone ||
-                                    item?.Member?.MobilePhone ||
-                                    "Không có"}
-                                </span>
-                              </li>
+                              {!window?.GlobalConfig?.APP?.Staff
+                                ?.hidePhoneMember && (
+                                <li>
+                                  <span>Số điện thoại : </span>
+                                  <span>
+                                    {item?.Phone ||
+                                      item?.Member?.MobilePhone ||
+                                      "Không có"}
+                                  </span>
+                                </li>
+                              )}
                               <li>
                                 <span>Cơ sở : </span>
                                 <span>{item.Stock.Title}</span>
@@ -433,11 +434,14 @@ export default class employeeService extends React.Component {
                               >
                                 Nhật ký
                               </ActionsButton>
-                              <ActionsButton
-                                onClick={() => this.handleHistory(item)}
-                              >
-                                Lịch sử khách hàng
-                              </ActionsButton>
+                              {!window?.GlobalConfig?.APP?.Staff
+                                ?.hideHistoryMember && (
+                                <ActionsButton
+                                  onClick={() => this.handleHistory(item)}
+                                >
+                                  Lịch sử khách hàng
+                                </ActionsButton>
+                              )}
                             </ActionsGroup>
                             <ActionsGroup>
                               <ActionsButton color="red">Đóng</ActionsButton>
@@ -501,8 +505,9 @@ export default class employeeService extends React.Component {
                 </div>
                 <div className="sheet-pay-body__btn">
                   <button
-                    className={`page-btn-order btn-submit-order ${loadingSubmit && "loading"
-                      }`}
+                    className={`page-btn-order btn-submit-order ${
+                      loadingSubmit && "loading"
+                    }`}
                     onClick={() => this.searchSubmit()}
                   >
                     <span>Tìm dịch vụ</span>

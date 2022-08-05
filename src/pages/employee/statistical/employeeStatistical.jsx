@@ -527,8 +527,9 @@ export default class employeeStatistical extends React.Component {
                               {item.ProdTitle} - ({" "}
                               {moment(item.CreateDate).format("llll")} )
                               <div>
-                                {item?.Member?.FullName} -{" "}
-                                {item?.Member?.MobilePhone}
+                                {item?.Member?.FullName}
+                                {!window?.GlobalConfig?.APP?.Staff
+                                  ?.hidePhoneMember && ` - ${item?.Member?.MobilePhone}`}
                               </div>
                             </div>
                             <div className="td w-3">

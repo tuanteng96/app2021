@@ -25,7 +25,7 @@ function ScheduleService({
   const [notLoading, setNotLoading] = useState(false);
   const [Total, setTotal] = useState(0);
   const [listService, setListService] = useState([]);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(false);
   const [valueS, setValueS] = useState("");
   const typingTimeoutRef = useRef(null);
 
@@ -45,6 +45,7 @@ function ScheduleService({
     const lst =
       filters.Pi > 1 ? [...new Set([...listService, ...data.lst])] : data.lst;
     setLoading(false);
+    setHasMore(false);
     setTotal(data.total);
     setListService(lst);
     setNotLoading(false);
@@ -56,9 +57,9 @@ function ScheduleService({
 
   const fetchMoreData = () => {
     if (listService.length >= Total) {
-      setHasMore(false);
       return;
     }
+    setHasMore(true);
     setNotLoading(true);
     setFilters({
       ...filters,

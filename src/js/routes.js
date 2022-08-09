@@ -5,6 +5,8 @@ import SlideDetail from "../pages/home/components/BannerSlide/SlideDetail";
 import NewsListPage from '../pages/news/newsList.jsx';
 import NewsDetailPage from '../pages/news/newsDetail';
 
+import RulesListPage from '../pages/rules/rulesList.jsx';
+
 import ShopPage from '../pages/shop/shop';
 //import ShopCatePage from '../pages/shop/shopCate';
 import ShopListProductPage from '../pages/shop/shopListProduct';
@@ -115,6 +117,10 @@ var routes = [{
     {
         path: '/news/detail/:postId/',
         asyncComponent: () => NewsDetailPage,
+    },
+    {
+        path: '/rules-list/',
+        asyncComponent: () => RulesListPage,
     },
     {
         path: '/shop/',

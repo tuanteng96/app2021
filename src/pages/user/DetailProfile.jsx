@@ -178,7 +178,7 @@ export default class extends React.Component {
   getStockCurrent = () => {
     const StockCurrentName = getStockNameStorage();
     this.setState({
-      IDStockName: StockCurrentName,
+      IDStockName: StockCurrentName ?? "",
     });
   };
 
@@ -436,7 +436,8 @@ export default class extends React.Component {
               <div className="name">Cơ sở</div>
               <div className="content">
                 <div className="content-text">
-                  {IDStockName === "" ? "Chưa chọn điểm" : IDStockName}
+                  {console.log(IDStockName)}
+                  {!IDStockName ? "Chưa chọn điểm" : IDStockName}
                 </div>
                 <i className="las la-angle-right"></i>
               </div>

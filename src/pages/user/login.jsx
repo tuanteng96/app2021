@@ -77,8 +77,8 @@ export default class extends React.Component {
                 }, 300);
               });
             }
-            setStockIDStorage(userData.ByStockID);
-            setStockNameStorage(userData.StockName);
+            userData?.ByStockID && setStockIDStorage(userData.ByStockID);
+            userData?.StockName && setStockNameStorage(userData.StockName);
           });
         }
       })
@@ -150,6 +150,8 @@ export default class extends React.Component {
                   });
                 }
               });
+              data?.ByStockID && setStockIDStorage(data.ByStockID);
+              data?.StockName && setStockNameStorage(data.StockName);
             }
           })
           .catch((err) => self.$f7.dialog.close());

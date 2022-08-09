@@ -17,7 +17,6 @@ export default class ToolBarCustom extends React.Component {
   componentDidMount() {
     var $$ = this.Dom7;
     $$(".js-link-home").addClass("js-active");
-    
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -38,7 +37,12 @@ export default class ToolBarCustom extends React.Component {
           href
             .split("/")
             .filter((o) => o)
-            .some((x) => hrefLink.split("/").filter((k) => k).includes(x))
+            .some((x) =>
+              hrefLink
+                .split("/")
+                .filter((k) => k)
+                .includes(x)
+            )
         ) {
           _this.addClass("js-active");
         }
@@ -108,13 +112,16 @@ export default class ToolBarCustom extends React.Component {
               ]}
               href="/employee/statistical/"
             />
-            <PrivateNav
-              className="page-toolbar-bottom__link js-toolbar-link"
-              icon="las la-chart-bar"
-              text="Báo cáo"
-              roles={["director"]}
-              href="/report/"
-            />
+            {window?.GlobalConfig?.APP?.Staff?.RulesTitle && (
+              <Link
+                noLinkClass
+                href="/rules-list/"
+                className={`page-toolbar-bottom__link js-toolbar-link ${TYPE}`}
+              >
+                <i className="las la-certificate"></i>
+                <span>Nội quy</span>
+              </Link>
+            )}
             <PrivateNav
               className="page-toolbar-bottom__link js-toolbar-link"
               icon="las la-user-circle"
@@ -149,6 +156,16 @@ export default class ToolBarCustom extends React.Component {
               roles={[]}
               href="/report/"
             />
+            {window?.GlobalConfig?.APP?.Staff?.RulesTitle && (
+              <Link
+                noLinkClass
+                href="/rules-list/"
+                className={`page-toolbar-bottom__link js-toolbar-link ${TYPE}`}
+              >
+                <i className="las la-certificate"></i>
+                <span>Nội quy</span>
+              </Link>
+            )}
             <Link
               noLinkClass
               href="/detail-profile/"

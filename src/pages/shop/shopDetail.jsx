@@ -217,10 +217,10 @@ export default class extends React.Component {
           {
             ProdID: arrProduct.ID,
             Qty: quantity,
-            PriceOrder:
-              arrProduct.PriceSale < 0
-                ? arrProduct.PriceProduct
-                : arrProduct.PriceSale,
+            // PriceOrder:
+            //   arrProduct.PriceSale < 0
+            //     ? arrProduct.PriceProduct
+            //     : arrProduct.PriceSale,
           },
         ],
         forceStockID: getStock,

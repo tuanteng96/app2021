@@ -28,8 +28,10 @@ import { TiCameraOutline } from "react-icons/ti";
 import SkeletonDetail from "./skeleton/SkeletonDetail";
 import { CALL_PHONE, PHOTO_TO_SERVER } from "../../../constants/prom21";
 import Resizer from "react-image-file-resizer";
+
 import moment from "moment";
-import ToolBarBottom from "../../../components/ToolBarBottom";
+import "moment/locale/vi";
+moment.locale("vi");
 
 toast.configure();
 
@@ -416,42 +418,53 @@ export default class employeeServiceDetail extends React.Component {
                       itemDetail?.Member?.FullName}
                   </span>
                 </li>
+                <li>
+                  <span>Ngày sinh</span>
+                  <span>
+                    {itemDetail?.member?.FullName ||
+                    itemDetail?.Member?.FullName
+                      ? moment(
+                          itemDetail?.member?.BirthDate ||
+                            itemDetail?.Member?.BirthDate
+                        ).format("DD-MM-YYYY")
+                      : "Chưa có"}
+                  </span>
+                </li>
                 {!window?.GlobalConfig?.APP?.Staff?.hideAddressMember && (
                   <li>
                     <span>Địa chỉ</span>
                     <span>{itemDetail?.member?.HomeAddress || "Chưa có"}</span>
                   </li>
                 )}
-                {itemDetail?.member?.Present &&
-                  !window?.GlobalConfig?.APP?.Staff?.hideWalletCard && (
-                    <>
-                      <li>
-                        <span>Công nợ</span>
-                        <span>
-                          {formatPriceVietnamese(
-                            itemDetail && itemDetail.member.Present.no
-                          )}
-                        </span>
-                      </li>
-                      <li>
-                        <span>Ví</span>
-                        <span>
-                          {formatPriceVietnamese(
-                            itemDetail && itemDetail.member.Present.nap_vi
-                          )}
-                        </span>
-                      </li>
-                      <li>
-                        <span>Thẻ tiền</span>
-                        <span>
-                          {formatPriceVietnamese(
-                            itemDetail &&
-                              itemDetail.member.Present.the_tien_kha_dung
-                          )}
-                        </span>
-                      </li>
-                    </>
-                  )}
+                {!window?.GlobalConfig?.APP?.Staff?.hideWalletCard && (
+                  <>
+                    <li>
+                      <span>Công nợ</span>
+                      <span>
+                        {formatPriceVietnamese(
+                          itemDetail && itemDetail?.member?.Present?.no
+                        )}
+                      </span>
+                    </li>
+                    <li>
+                      <span>Ví</span>
+                      <span>
+                        {formatPriceVietnamese(
+                          itemDetail && itemDetail?.member?.Present?.nap_vi
+                        )}
+                      </span>
+                    </li>
+                    <li>
+                      <span>Thẻ tiền</span>
+                      <span>
+                        {formatPriceVietnamese(
+                          itemDetail &&
+                            itemDetail?.member?.Present?.the_tien_kha_dung
+                        )}
+                      </span>
+                    </li>
+                  </>
+                )}
 
                 {itemDetail && itemDetail.Status === "done" ? (
                   <li>

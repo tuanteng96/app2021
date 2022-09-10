@@ -442,7 +442,7 @@ export default class employeeServiceDetail extends React.Component {
                       <span>Công nợ</span>
                       <span>
                         {formatPriceVietnamese(
-                          itemDetail && itemDetail?.member?.Present?.no
+                          itemDetail && itemDetail?.member?.Present?.no || itemDetail && itemDetail?.Member?.Present?.no
                         )}
                       </span>
                     </li>
@@ -450,7 +450,7 @@ export default class employeeServiceDetail extends React.Component {
                       <span>Ví</span>
                       <span>
                         {formatPriceVietnamese(
-                          itemDetail && itemDetail?.member?.Present?.nap_vi
+                          itemDetail && itemDetail?.member?.Present?.nap_vi || itemDetail && itemDetail?.Member?.Present?.nap_vi
                         )}
                       </span>
                     </li>
@@ -458,8 +458,7 @@ export default class employeeServiceDetail extends React.Component {
                       <span>Thẻ tiền</span>
                       <span>
                         {formatPriceVietnamese(
-                          itemDetail &&
-                            itemDetail?.member?.Present?.the_tien_kha_dung
+                            itemDetail?.member?.Present?.the_tien_kha_dung || itemDetail?.Member?.Present?.the_tien_kha_dung
                         )}
                       </span>
                     </li>
@@ -498,7 +497,7 @@ export default class employeeServiceDetail extends React.Component {
                   <span>Thời gian</span>
                   <span>
                     {(itemDetail && itemDetail.BookStr) ||
-                      moment(itemDetail?.BookDate).format("HH:mm DD/MM/YYY")}
+                      moment(itemDetail?.BookDate).format("HH:mm DD/MM/YYYY")}
                   </span>
                 </li>
                 {"Minutes" in itemDetail && (

@@ -433,7 +433,11 @@ export default class employeeServiceDetail extends React.Component {
                 {!window?.GlobalConfig?.APP?.Staff?.hideAddressMember && (
                   <li>
                     <span>Địa chỉ</span>
-                    <span>{itemDetail?.member?.HomeAddress || "Chưa có"}</span>
+                    <span>
+                      {itemDetail?.member?.HomeAddress ||
+                        itemDetail?.Member?.HomeAddress ||
+                        "Chưa có"}
+                    </span>
                   </li>
                 )}
                 {!window?.GlobalConfig?.APP?.Staff?.hideWalletCard && (
@@ -442,7 +446,8 @@ export default class employeeServiceDetail extends React.Component {
                       <span>Công nợ</span>
                       <span>
                         {formatPriceVietnamese(
-                          itemDetail && itemDetail?.member?.Present?.no || itemDetail && itemDetail?.Member?.Present?.no
+                          (itemDetail && itemDetail?.member?.Present?.no) ||
+                            (itemDetail && itemDetail?.Member?.Present?.no)
                         )}
                       </span>
                     </li>
@@ -450,7 +455,8 @@ export default class employeeServiceDetail extends React.Component {
                       <span>Ví</span>
                       <span>
                         {formatPriceVietnamese(
-                          itemDetail && itemDetail?.member?.Present?.nap_vi || itemDetail && itemDetail?.Member?.Present?.nap_vi
+                          (itemDetail && itemDetail?.member?.Present?.nap_vi) ||
+                            (itemDetail && itemDetail?.Member?.Present?.nap_vi)
                         )}
                       </span>
                     </li>
@@ -458,7 +464,8 @@ export default class employeeServiceDetail extends React.Component {
                       <span>Thẻ tiền</span>
                       <span>
                         {formatPriceVietnamese(
-                            itemDetail?.member?.Present?.the_tien_kha_dung || itemDetail?.Member?.Present?.the_tien_kha_dung
+                          itemDetail?.member?.Present?.the_tien_kha_dung ||
+                            itemDetail?.Member?.Present?.the_tien_kha_dung
                         )}
                       </span>
                     </li>

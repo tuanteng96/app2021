@@ -421,8 +421,8 @@ export default class employeeServiceDetail extends React.Component {
                 <li>
                   <span>Ngày sinh</span>
                   <span>
-                    {itemDetail?.member?.FullName ||
-                    itemDetail?.Member?.FullName
+                    {itemDetail?.member?.BirthDate ||
+                    itemDetail?.Member?.BirthDate
                       ? moment(
                           itemDetail?.member?.BirthDate ||
                             itemDetail?.Member?.BirthDate

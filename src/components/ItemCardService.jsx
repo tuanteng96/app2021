@@ -8,6 +8,8 @@ import {
   checkAvt2,
 } from "../constants/format";
 import { Popover, Link } from "framework7-react";
+import NoProduct from "../assets/images/no-product.png";
+
 export default class ItemCardService extends React.Component {
   checkStatus = (status) => {
     return status;
@@ -17,7 +19,13 @@ export default class ItemCardService extends React.Component {
     return (
       <div className="cardservice-item__service">
         <div className="cardservice-item__service-img">
-          <img src={SERVER_APP + "/Upload/image/" + item.Product.Thumbnail} />
+          <img
+            className="w-100"
+            src={SERVER_APP + "/Upload/image/" + item.Product.Thumbnail}
+            onError={(e) => {
+              e.target.src = NoProduct; 
+            }}
+          />
           <div className="cardservice-item__service-text">
             <h4 className="title">
               {item.OrderItem.ProdTitle} <span>({item.Title})</span>

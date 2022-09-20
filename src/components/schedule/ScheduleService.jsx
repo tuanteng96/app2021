@@ -160,7 +160,7 @@ function ScheduleService({
                               : "Đang có thẻ liệu trình"}
                           </div>
                         )}
-                        {isSvHot(item) && item.SaleDecs && (
+                        {item.SaleDecs && (
                           <div className="item-desc">
                             {ReactHtmlParser(item.SaleDecs)}
                           </div>

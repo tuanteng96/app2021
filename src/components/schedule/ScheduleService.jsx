@@ -148,6 +148,10 @@ function ScheduleService({
                         <div className="item-title">
                           {item.Title} <label className="hot">HOT</label>
                         </div>
+                        <div className="font-size-xs text-muted">
+                          {item.ProdItems &&
+                            item.ProdItems.map((prod) => prod.Title).join(", ")}
+                        </div>
                         {treatmentCard(item) && (
                           <div className="item-desc item-treat">
                             <i className="las la-tag"></i>{" "}

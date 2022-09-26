@@ -20,6 +20,7 @@ import _ from "lodash";
 import SkeletonListService from "./components/Skeleton/SkeletonListService";
 import CategoriesList from "./components/CategoriesList/CategoriesList/CategoriesList";
 import ShopListServiceItem from "./shopListServiceItem";
+import NoProduct from "../../assets/images/no-product.png";
 
 export default class extends React.Component {
   constructor(props) {
@@ -285,6 +286,9 @@ export default class extends React.Component {
                                   item.root.Thumbnail
                                 }
                                 alt={item.root.Title}
+                                onError={(e) => {
+                                  e.target.src = NoProduct;
+                                }}
                               />
                               <Link
                                 href={`/schedule/?SelectedTitle=${item.root.Title}&SelectedId=${item.root.ID}`}

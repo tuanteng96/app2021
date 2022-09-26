@@ -22,7 +22,7 @@ const Products = forwardRef(({ MemberID }, ref) => {
     },
   }));
 
-  const getListProducts = (isLoading = SVGComponentTransferFunctionElement, callback) => {
+  const getListProducts = (isLoading = true, callback) => {
     isLoading && setLoading(true);
     UserService.getListProductMember(MemberID, 1000)
       .then(({ data }) => {

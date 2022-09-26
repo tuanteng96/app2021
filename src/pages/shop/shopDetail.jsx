@@ -24,6 +24,7 @@ import { Suspense } from "react";
 import Skeleton from "react-loading-skeleton";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import _ from "lodash";
+import NoProduct from "../../assets/images/no-product.png";
 
 export default class extends React.Component {
   constructor() {
@@ -493,6 +494,9 @@ export default class extends React.Component {
                       arrProductCurrent.Thumbnail
                     }
                     alt={arrProductCurrent.title}
+                    onError={(e) => {
+                      e.target.src = NoProduct;
+                    }}
                   />
                   <div className="count">1/{photos && photos.length}</div>
                 </div>

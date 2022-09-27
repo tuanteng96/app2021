@@ -1,6 +1,13 @@
 import React, { Fragment } from "react";
 import { SERVER_APP } from "./../../constants/config";
-import { setStockIDStorage, setStockNameStorage, setUserStorage } from "../../constants/user";
+import {
+  delete_cookie,
+  getUserLoginStorage,
+  setStockIDStorage,
+  setStockNameStorage,
+  setUserLoginStorage,
+  setUserStorage,
+} from "../../constants/user";
 import { Page, Link, Toolbar } from "framework7-react";
 import UserService from "../../service/user.service";
 import { toast } from "react-toastify";
@@ -18,16 +25,15 @@ export default class extends React.Component {
     super();
     this.state = {
       isLoading: false,
-      username: "",
-      password: "",
+      username: getUserLoginStorage().username,
+      password: getUserLoginStorage().username,
       arrNews: [],
       arrBanner: [],
     };
   }
 
   loginSubmit = () => {
-    const username = this.state.username;
-    const password = this.state.password;
+    const { username, password } = this.state;
     if (username === "" || password === "") {
       toast.error("Vui lòng nhập tài khoản & mật khẩu !", {
         position: toast.POSITION.TOP_LEFT,
@@ -79,6 +85,7 @@ export default class extends React.Component {
             }
             userData?.ByStockID && setStockIDStorage(userData.ByStockID);
             userData?.StockName && setStockNameStorage(userData.StockName);
+            setUserLoginStorage(username, password);
           });
         }
       })
@@ -160,7 +167,7 @@ export default class extends React.Component {
   };
 
   render() {
-    const { isLoading, password } = this.state;
+    const { isLoading, password, username } = this.state;
     return (
       <Page noNavbar noToolbar name="login">
         <div
@@ -196,11 +203,24 @@ export default class extends React.Component {
                 <div className="page-login__form-item">
                   <input
                     type="text"
+                    value={username}
                     name="username"
                     autoComplete="off"
                     onChange={this.handleChangeInput}
                     placeholder="Số điện thoại hoặc Email"
                   />
+                  {username && (
+                    <div
+                      className="clear-value"
+                      onClick={() => {
+                        delete_cookie("USN");
+                        delete_cookie("PWD");
+                        this.setState({ username: "" });
+                      }}
+                    >
+                      <i className="las la-times"></i>
+                    </div>
+                  )}
                 </div>
                 <div className="page-login__form-item">
                   <input
@@ -211,6 +231,17 @@ export default class extends React.Component {
                     onChange={this.handleChangeInput}
                     placeholder="Mật khẩu"
                   />
+                  {password && (
+                    <div
+                      className="clear-value"
+                      onClick={() => {
+                        delete_cookie("PWD");
+                        this.setState({ password: "" });
+                      }}
+                    >
+                      <i className="las la-times"></i>
+                    </div>
+                  )}
                 </div>
                 <div className="page-login__form-item">
                   <button

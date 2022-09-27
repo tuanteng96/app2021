@@ -1,8 +1,5 @@
 import React from "react";
-import {
-  App,
-  View,
-} from "framework7-react";
+import { App, f7, View } from "framework7-react";
 
 import { getUser, removeUserStorage, setUserStorage } from "../constants/user";
 import UserService from "../service/user.service";
@@ -44,7 +41,6 @@ import { CLOSE_APP } from "../constants/prom21";
 //   });
 // };
 
-
 export default class extends React.Component {
   constructor() {
     super();
@@ -61,35 +57,35 @@ export default class extends React.Component {
           init: function () {
             const infoUser = getUser();
             if (infoUser) {
-              UserService.getInfo().then((response) => {
-                if (response.data.error) {
+              UserService.getInfo().then(({ data }) => {
+                if (data?.error && data?.error.indexOf("TOKEN") > -1) {
                   removeUserStorage();
-                } else {
-                  const data = response.data;
+                } else if (data?.token_renew) {
+                  setUserStorage(data.token_renew, data);
+                } else if (data?.token) {
                   setUserStorage(data.token, data);
+                } else {
+                  // Không phải lỗi Token
                 }
               });
             }
             //console.log("Lần đầu mở App");
           },
-          pageInit: function () {
-            
-          },
+          pageInit: function () {},
         },
         view: {
           allowDuplicateUrls: true,
           routesBeforeEnter: function (to, from, resolve, reject) {
-            if(window.GlobalConfig) {
+            if (window.GlobalConfig) {
               resolve();
             }
           },
         },
-      }
+      },
     };
   }
 
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   render() {
     return (

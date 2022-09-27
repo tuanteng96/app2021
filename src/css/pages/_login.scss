@@ -181,6 +181,17 @@
         }
         &-item {
             margin-top: 15px;
+            position: relative;
+            .clear-value {
+                position: absolute;
+                top: 0;
+                right: 0;
+                height: 100%;
+                width: 35px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
             &:first-child {
                 margin-top: 0;
             }

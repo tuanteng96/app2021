@@ -529,7 +529,8 @@ export default class employeeStatistical extends React.Component {
                               <div>
                                 {item?.Member?.FullName}
                                 {!window?.GlobalConfig?.APP?.Staff
-                                  ?.hidePhoneMember && ` - ${item?.Member?.MobilePhone}`}
+                                  ?.hidePhoneMember &&
+                                  ` - ${item?.Member?.MobilePhone}`}
                               </div>
                             </div>
                             <div className="td w-3">
@@ -632,6 +633,23 @@ export default class employeeStatistical extends React.Component {
                         )}
                       </div>
                     </div>
+                    {dataSalary.THUONG_HOA_HONG_DOANH_SO &&
+                      dataSalary.THUONG_HOA_HONG_DOANH_SO.ApplyList &&
+                      dataSalary.THUONG_HOA_HONG_DOANH_SO.ApplyList.map(
+                        (appy, idx) => (
+                          <div className="tr" key={idx}>
+                            <div className="td">
+                              {appy.Type === 0
+                                ? "KPI Chung"
+                                : `KPI nhóm ${appy.Type}`}
+                            </div>
+                            <div className="td">
+                              {formatPriceVietnamese(appy.Value)}
+                            </div>
+                          </div>
+                        )
+                      )}
+
                     {dataSalary.CHI_LUONG && dataSalary.CHI_LUONG.length === 0 && (
                       <div className="tr">
                         <div className="td">Dự kiến thưởng KPI</div>

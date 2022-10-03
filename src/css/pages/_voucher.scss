@@ -10,8 +10,8 @@
             }
             .voucher-icon {
                 width: 100px;
-                background: -webkit-gradient(linear, left top, right top, color-stop(0, transparent), color-stop(.1875rem, transparent), color-stop(.1875rem, $color-app));
-                background: linear-gradient(90deg, transparent 0, transparent .1875rem, $color-app 0);
+                background: -webkit-gradient(linear, left top, right top, color-stop(0, transparent), color-stop(.1875rem, transparent), color-stop(.1875rem, var(--ezs-color-voucher, $color-app)));
+                background: linear-gradient(90deg, transparent 0, transparent .1875rem, var(--ezs-color-voucher, $color-app) 0);
                 position: relative;
                 &__text {
                     @include flexbox;
@@ -31,7 +31,7 @@
                     width: .25rem;
                     height: -webkit-calc(100% - .4375rem);
                     height: calc(100% - .4375rem);
-                    background: radial-gradient(circle at 0 .25rem, transparent 0, transparent .1875rem, $color-app 0);
+                    background: radial-gradient(circle at 0 .25rem, transparent 0, transparent .1875rem, var(--ezs-color-voucher, $color-app) 0);
                     background-size: .25rem .625rem;
                     background-repeat: repeat-y;
                     &:before {
@@ -40,7 +40,7 @@
                         top: -.3125rem;
                         width: 100%;
                         height: .3125rem;
-                        background: $color-app;
+                        background: var(--ezs-color-voucher, $color-app);
                         border-radius: .125rem 0 0 0;
                     }
                     &:after {
@@ -50,7 +50,7 @@
                         left: 0;
                         width: 100%;
                         height: .125rem;
-                        background: $color-app;
+                        background: var(--ezs-color-voucher, $color-app);
                         border-radius: 0 0 0 .125rem;
                     }
                 }

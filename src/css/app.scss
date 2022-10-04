@@ -352,3 +352,28 @@ blockquote {
         }
     }
 }
+
+body {
+    .select__control {
+        border-color: #E4E6EF;
+    }
+    .select__menu {
+        border: 0;
+        -webkit-box-shadow: 0px 0px 50px 0px rgb(82 63 105 / 15%);
+        box-shadow: 0px 0px 50px 0px rgb(82 63 105 / 15%);
+        margin-bottom: 3px;
+        margin-top: 3px;
+        .select__option {
+            padding: 5px 12px;
+            font-weight: 500;
+            text-transform: capitalize;
+            &.select__option--is-focused {
+                background: #F3F6F9;
+            }
+        }
+    }
+    .select__single-value {
+        color: #000;
+        font-weight: 500;
+    }
+}

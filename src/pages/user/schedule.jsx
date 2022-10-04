@@ -29,8 +29,29 @@ import moment from "moment";
 import "moment/locale/vi";
 import _ from "lodash";
 import { Animated } from "react-animated-css";
+import Select, { components } from "react-select";
+import staffService from "../../service/staff.service";
+import ReactStars from "react-rating-stars-component";
 
 moment.locale("vi");
+
+const CustomOption = ({ children, data, ...props }) => {
+  return (
+    <components.Option {...props}>
+      <div className="d-flex justify-content-between align-items-center">
+        {children}
+        <ReactStars
+          count={5}
+          size={20}
+          activeColor="#f3cd00"
+          value={data.source.AverRate}
+          edit={false}
+          isHalf={true}
+        />
+      </div>
+    </components.Option>
+  );
+};
 
 export default class extends React.Component {
   constructor() {
@@ -53,6 +74,8 @@ export default class extends React.Component {
         AtHome: false,
       },
       isParams: true,
+      options: [],
+      StaffSelected: ""
     };
   }
 
@@ -70,12 +93,15 @@ export default class extends React.Component {
     this.setState({ height });
     const self = this;
     // Check query từ Danh sách dịch vụ tới
-    if (this.$f7route?.query?.SelectedId && this.$f7route?.query?.SelectedTitle) {
+    if (
+      this.$f7route?.query?.SelectedId &&
+      this.$f7route?.query?.SelectedTitle
+    ) {
       const { SelectedTitle, SelectedId } = this.$f7route.query;
       this.handleService({
         ID: Number(SelectedId),
-        Title: SelectedTitle
-      })
+        Title: SelectedTitle,
+      });
     }
     //
     if (this.$f7route.params.ID && this.state.isParams) {
@@ -101,7 +127,37 @@ export default class extends React.Component {
         })
         .catch((error) => console.log(error));
     }
+
+    this.getListStaff();
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { stock } = this.state.DateTimeBook;
+    const stockPrev = prevState.DateTimeBook.stock;
+    if (stock !== stockPrev) {
+      this.getListStaff();
+    }
+  }
+
+  getListStaff = () => {
+    const { DateTimeBook } = this.state;
+    const stockid = DateTimeBook.stock;
+    staffService
+      .getListStaff(stockid)
+      .then(({ data }) => {
+        if (data.data && data.data.length > 0) {
+          const newData = data.data.map((item) => ({
+            ...item,
+            value: item.id,
+            label: item.text,
+          }));
+          this.setState({
+            options: newData,
+          });
+        }
+      })
+      .catch((error) => console.log(error));
+  };
 
   onResetStep = () => {
     this.setState({
@@ -152,7 +208,7 @@ export default class extends React.Component {
   };
 
   submitBooks = () => {
-    const { DateTimeBook, serviceNote, selectedService } = this.state;
+    const { DateTimeBook, serviceNote, selectedService, StaffSelected } = this.state;
     const infoUser = getUser();
     const self = this;
     if (!infoUser) {
@@ -162,12 +218,12 @@ export default class extends React.Component {
     const date =
       Array.isArray(dateSplit) && dateSplit.length > 0
         ? dateSplit[2] +
-        "-" +
-        dateSplit[1] +
-        "-" +
-        dateSplit[0] +
-        " " +
-        DateTimeBook.time
+          "-" +
+          dateSplit[1] +
+          "-" +
+          dateSplit[0] +
+          " " +
+          DateTimeBook.time
         : "";
     const dataSubmit = {
       booking: [
@@ -177,7 +233,8 @@ export default class extends React.Component {
           BookDate: date,
           Desc: serviceNote,
           StockID: DateTimeBook.stock || 0,
-          AtHome: DateTimeBook.AtHome
+          AtHome: DateTimeBook.AtHome,
+          UserServiceIDs: StaffSelected ? StaffSelected.value : "",
         },
       ],
     };
@@ -221,6 +278,7 @@ export default class extends React.Component {
               },
               serviceNote: "",
               isParams: false,
+              StaffSelected: ""
             });
             this.nextStep();
           }, 300);
@@ -246,14 +304,16 @@ export default class extends React.Component {
           <div className="schedule-toolbar">
             <button
               type="button"
-              className={`btn-submit-order btn-submit-order ${(DateTimeBook && !DateTimeBook["time"]) ||
-                  (DateTimeBook && !DateTimeBook.stock) ||
-                  !DateTimeBook ||
-                  !DateTimeBook.date
+              className={`btn-submit-order btn-submit-order ${
+                (DateTimeBook && !DateTimeBook["time"]) ||
+                (DateTimeBook && !DateTimeBook.stock) ||
+                !DateTimeBook ||
+                !DateTimeBook.date
                   ? "btn-no-click"
                   : ""
-                } ${!DateTimeBook && "btn-no-click"} ${isLoadingStep1 && "loading"
-                }`}
+              } ${!DateTimeBook && "btn-no-click"} ${
+                isLoadingStep1 && "loading"
+              }`}
               onClick={() => this.nextService()}
             >
               <span>Chọn dịch vụ</span>
@@ -272,9 +332,10 @@ export default class extends React.Component {
             <button
               type="button"
               className={`btn-submit-order btn-submit-order 
-              ${!selectedService ||
+              ${
+                !selectedService ||
                 (selectedService.length === 0 && "btn-no-click")
-                }`}
+              }`}
               onClick={() => this.nextSuccessService()}
             >
               <span>Đặt lịch ngay</span>
@@ -338,14 +399,16 @@ export default class extends React.Component {
       tabCurrent,
       height,
       serviceNote,
+      options,
+      StaffSelected
     } = this.state;
     return (
       <Page
         name="schedule"
-      // ptr
-      // infiniteDistance={50}
-      //infinitePreloader={showPreloader}
-      //onPtrRefresh={this.loadRefresh.bind(this)}
+        // ptr
+        // infiniteDistance={50}
+        //infinitePreloader={showPreloader}
+        //onPtrRefresh={this.loadRefresh.bind(this)}
       >
         <Navbar>
           <div className="page-navbar">
@@ -528,32 +591,49 @@ export default class extends React.Component {
                       ))}
                   </div>
                 </div>
-                {
-                  window.GlobalConfig?.APP?.Booking?.AtHome && (
-                    <div className="sheet-service-body__athome">
-                      <div>
-                        <i className="las la-home"></i> Sử dụng dịch vụ tại nhà
-                      </div>
-                      <label>
-                        <input
-                          type="checkbox"
-                          onChange={(evt) => {
-                            const isChecked = evt.target.checked;
-                            this.setState((prevState) => ({
-                              ...prevState,
-                              DateTimeBook: {
-                                ...prevState.DateTimeBook,
-                                AtHome: isChecked,
-                              },
-                            }));
-                          }}
-                          checked={DateTimeBook.AtHome}
-                        />
-                        <span />
-                      </label>
+                {window.GlobalConfig?.APP?.Booking?.AtHome && (
+                  <div className="sheet-service-body__athome">
+                    <div>
+                      <i className="las la-home"></i> Sử dụng dịch vụ tại nhà
                     </div>
-                  )
-                }
+                    <label>
+                      <input
+                        type="checkbox"
+                        onChange={(evt) => {
+                          const isChecked = evt.target.checked;
+                          this.setState((prevState) => ({
+                            ...prevState,
+                            DateTimeBook: {
+                              ...prevState.DateTimeBook,
+                              AtHome: isChecked,
+                            },
+                          }));
+                        }}
+                        checked={DateTimeBook.AtHome}
+                      />
+                      <span />
+                    </label>
+                  </div>
+                )}
+                {window.GlobalConfig?.APP?.Booking?.IsStaff && (
+                  <div className="sheet-service-body__content">
+                    <div className="fw-500 mb-5px font-size-xs">
+                      Nhân viên thực hiện
+                    </div>
+                    <Select
+                      isClearable
+                      classNamePrefix="select"
+                      options={options}
+                      menuPlacement="top"
+                      placeholder="Chọn nhân viên"
+                      value={StaffSelected}
+                      onChange={(value) =>
+                        this.setState({ StaffSelected: value })
+                      }
+                      components={{ Option: CustomOption }}
+                    />
+                  </div>
+                )}
                 <div className="sheet-service-body__note">
                   <textarea
                     onChange={this.handleNote}

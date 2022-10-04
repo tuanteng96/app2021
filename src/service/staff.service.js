@@ -42,6 +42,9 @@ class StaffService {
     getSalary(userID, mon) {
         return http.get(`api/v3/usersalary?cmd=salary&userid=${userID}&mon=${mon}`)
     }
+    getListStaff(stockid) {
+        return http.get(`/api/gl/select2?cmd=user&includeRoles=1&includeSource=1&crstockid=${stockid}&roles=DV`)
+    }
 }
 
 export default new StaffService();

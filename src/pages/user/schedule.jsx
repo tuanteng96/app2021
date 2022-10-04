@@ -44,7 +44,7 @@ const CustomOption = ({ children, data, ...props }) => {
           count={5}
           size={20}
           activeColor="#f3cd00"
-          value={data.source.AverRate}
+          value={data.source.AverRate > 5 ? 5 : Math.round(data.source.AverRate*2)/2}
           edit={false}
           isHalf={true}
         />
@@ -615,7 +615,7 @@ export default class extends React.Component {
                     </label>
                   </div>
                 )}
-                {window.GlobalConfig?.APP?.Booking?.IsStaff && (
+                {window.GlobalConfig?.Admin?.dat_lich_nhan_vien === 1 && (
                   <div className="sheet-service-body__content">
                     <div className="fw-500 mb-5px font-size-xs">
                       Nhân viên thực hiện

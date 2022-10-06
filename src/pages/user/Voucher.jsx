@@ -289,8 +289,8 @@ export default class extends React.Component {
                                               </span>
                                             </div>
                                           )}
-                                        {item.dieu_Kien.danh_muc &&
-                                          item.dieu_Kien.danh_muc.length >
+                                        {item.dieu_Kien.san_pham &&
+                                          item.dieu_Kien.san_pham.length >
                                             0 && (
                                             <div>
                                               Sản phẩm lẻ :{" "}

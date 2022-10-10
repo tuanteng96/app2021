@@ -430,20 +430,24 @@ export default class ScheduleSpa extends React.Component {
               />
             </Row>
           </div>
-          <div className="page-schedule__note">
-            <div className="page-schedule__note-item">
-              <div className="box box-not"></div>
-              <span>Hết chỗ</span>
-            </div>
-            <div className="page-schedule__note-item">
-              <div className="box box-no"></div>
-              <span>Còn chỗ</span>
-            </div>
-            <div className="page-schedule__note-item">
-              <div className="box box-succes"></div>
-              <span>Đang chọn</span>
-            </div>
-          </div>
+          {
+            window.GlobalConfig?.APP?.Booking?.hideNotTime && (
+              <div className="page-schedule__note">
+                <div className="page-schedule__note-item">
+                  <div className="box box-not"></div>
+                  <span>Hết chỗ</span>
+                </div>
+                <div className="page-schedule__note-item">
+                  <div className="box box-no"></div>
+                  <span>Còn chỗ</span>
+                </div>
+                <div className="page-schedule__note-item">
+                  <div className="box box-succes"></div>
+                  <span>Đang chọn</span>
+                </div>
+              </div>
+            )
+          }
           <Tabs>
             {arrListDate &&
               arrListDate.map((item, index) => (

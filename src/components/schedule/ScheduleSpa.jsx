@@ -431,7 +431,7 @@ export default class ScheduleSpa extends React.Component {
             </Row>
           </div>
           {
-            window.GlobalConfig?.APP?.Booking?.hideNotTime && (
+            window.GlobalConfig?.APP?.Booking?.hideNoteTime && (
               <div className="page-schedule__note">
                 <div className="page-schedule__note-item">
                   <div className="box box-not"></div>

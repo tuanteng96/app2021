@@ -26,3 +26,18 @@ export const validURL = (str) => {
         '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
     return !!pattern.test(str);
 }
+
+export const checkSLDisabled = (prodid) => {
+    const result = {
+        Disabled: false,
+        Text: ''
+    }
+    const SL = window?.GlobalConfig?.APP?.Prod?.SL;
+    if(!SL || !prodid) return result
+    let index = SL.split(',').findIndex(x => Number(x) === Number(prodid))
+    if(index > -1) {
+        result.Disabled = true;
+        result.Text = '(*) Chỉ áp dụng mua 1 SP/DV.'
+    }
+    return result
+}

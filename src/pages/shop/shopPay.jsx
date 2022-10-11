@@ -4,7 +4,7 @@ import {
   checkImageProduct,
 } from "../../constants/format";
 import { AiOutlineClose } from "react-icons/ai";
-import { iOS } from "../../constants/helpers";
+import { checkSLDisabled, iOS } from "../../constants/helpers";
 import imgCoupon from "../../assets/images/coupon_bg.svg";
 import { getStockIDStorage, getUser } from "../../constants/user";
 import ShopDataService from "./../../service/shop.service";
@@ -562,6 +562,7 @@ export default class extends React.Component {
                             <button
                               className="reduction"
                               onClick={() => this.DecreaseItem(item.ID)}
+                              disabled={checkSLDisabled(item?.ProdID).Disabled}
                             >
                               -
                             </button>
@@ -569,6 +570,7 @@ export default class extends React.Component {
                             <button
                               className="increase"
                               onClick={() => this.IncrementItem(item.ID)}
+                              disabled={checkSLDisabled(item?.ProdID).Disabled}
                             >
                               +
                             </button>

@@ -6,23 +6,23 @@ import {
   Button,
   Sheet,
   PageContent,
-} from "framework7-react";
-import React from "react";
-import IconSucces from "../../assets/images/box.svg";
-import NotificationIcon from "../../components/NotificationIcon";
-import ToolBarBottom from "../../components/ToolBarBottom";
-import userService from "../../service/user.service";
-import Skeleton from "react-loading-skeleton";
-import ReactHtmlParser from "react-html-parser";
-import { formatPriceVietnamese } from "../../constants/format";
+} from 'framework7-react'
+import React from 'react'
+import IconSucces from '../../assets/images/box.svg'
+import NotificationIcon from '../../components/NotificationIcon'
+import ToolBarBottom from '../../components/ToolBarBottom'
+import userService from '../../service/user.service'
+import Skeleton from 'react-loading-skeleton'
+import ReactHtmlParser from 'react-html-parser'
+import { formatPriceVietnamese } from '../../constants/format'
 
 export default class extends React.Component {
   constructor() {
-    super();
+    super()
     this.state = {
       loadingText: false,
-      textPay: ""
-    };
+      textPay: '',
+    }
   }
   componentDidMount() {
     // const userInfo = getUser();
@@ -37,19 +37,19 @@ export default class extends React.Component {
 
     this.setState({
       loadingText: true,
-    });
+    })
     userService
-      .getConfig("App.thanhtoan")
+      .getConfig('App.thanhtoan')
       .then(({ data }) => {
         this.setState({
           textPay: data.data && data.data[0]?.ValueLines,
           loadingText: false,
-        });
+        })
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error))
   }
   render() {
-    const { loadingText, textPay } = this.state;
+    const { loadingText, textPay } = this.state
     return (
       <Page
         onPageBeforeOut={this.onPageBeforeOut}
@@ -71,72 +71,41 @@ export default class extends React.Component {
             </div>
           </div>
         </Navbar>
-        <div className="page-render no-bg p-0">
-          <div className="page-pay no-bg">
-            <div className="page-pay-success">
-              <div className="image">
-                <img src={IconSucces} alt="Đơn hàng được gửi thành công!" />
-              </div>
-              <div className="text">
-                Đơn hàng <span>#{this.$f7route.params.orderID}</span> của bạn đã
-                được gửi thành công. Cảm ơn quý khách !
-              </div>
-              <div className="btn">
-                <Link href="/order/">Đơn hàng của bạn</Link>
-                <Link href="/shop/">Tiếp tục mua hàng</Link>
-                <Button sheetOpen={`.demo-sheet`} className="show-more">
-                  Hướng dẫn thanh toán
-                </Button>
-              </div>
-              <Sheet
-                className={`demo-sheet sheet-detail sheet-detail-order`}
-                style={{
-                  height: "auto !important",
-                  "--f7-sheet-bg-color": "#fff",
-                }}
-                swipeToClose
-                backdrop
-              >
-                <Button sheetClose={`.demo-sheet`} className="show-more">
-                  <i className="las la-times"></i>
-                </Button>
-                <PageContent>
-                  <div className="page-shop__service-detail">
-                    <div className="title">
-                      <h4>Thanh toán đơn hàng #</h4>
-                    </div>
-                    <div className="content">
-                      {loadingText && <Skeleton count={6} />}
-                      {!loadingText &&
-                        textPay &&
-                        ReactHtmlParser(
-                          textPay
-                            .replaceAll(
-                              "ID_ĐH",
-                              `#${this.$f7route.params.orderID}`
-                            )
-                            .replaceAll(
-                              "MONEY",
-                              `${formatPriceVietnamese(
-                                Math.abs(this.$f7route.query.money)
-                              )} ₫`
-                            )
-                            .replaceAll(
-                              "ID_DH",
-                              `${this.$f7route.params.orderID}`
-                            )
-                        )}
-                    </div>
-                  </div>
-                </PageContent>
-              </Sheet>
-            </div>
+        <div className="page-pay-success bg-white min-h-100 p-20px bz-bb">
+          <div className="image mb-20px">
+            <img className="w-125px" src={IconSucces} alt="Đơn hàng được gửi thành công!" />
+          </div>
+          {/* <div className="text">
+            Đơn hàng <span>#{this.$f7route.params.orderID}</span> của bạn đã
+            được gửi thành công.
+          </div> */}
+          <div className="text-center mb-20px">
+            {
+              loadingText && <Skeleton count={5} />
+            }
+            {!loadingText &&
+              textPay &&
+              ReactHtmlParser(
+                textPay
+                  .replaceAll('ID_ĐH', `<b class="fw-600 text-danger">#${this.$f7route.params.orderID}</b>`)
+                  .replaceAll(
+                    'MONEY',
+                    `<b class="fw-600 text-danger">${formatPriceVietnamese(
+                      Math.abs(this.$f7route.query.money),
+                    )} ₫</b>`,
+                  )
+                  .replaceAll('ID_DH', `<b class="fw-600 text-danger">#${this.$f7route.params.orderID}</b>`),
+              )}
+          </div>
+          <div className="btn">
+            <Link href="/order/">Đơn hàng của bạn</Link>
+            <Link className="mb-0"href="/shop/">Tiếp tục mua hàng</Link>
           </div>
         </div>
         <Toolbar tabbar position="bottom">
           <ToolBarBottom />
         </Toolbar>
       </Page>
-    );
+    )
   }
 }

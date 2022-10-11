@@ -221,9 +221,17 @@ export default class extends React.Component {
                                     <div className="item-sub__box">
                                       <h5>Số lần sử dụng / Tổng số lần</h5>
                                       <div className="price">
-                                        {item.gioi_han_so_lan_su_dung === -1
-                                          ? `${item.so_lan_su_dung} / Không giới hạn`
-                                          : `${item.so_lan_su_dung} / ${item.gioi_han_so_lan_su_dung} lần`}
+                                        {item.gioi_han_so_lan_su_dung === -1 ? (
+                                          `${item.so_lan_su_dung} / Không giới hạn`
+                                        ) : (
+                                          <>
+                                            {Number(
+                                              item.gioi_han_so_lan_su_dung
+                                            ) <= Number(item.so_lan_su_dung)
+                                              ? "Hết lượt sử dụng"
+                                              : `${item.so_lan_su_dung} / ${item.gioi_han_so_lan_su_dung} lần`}
+                                          </>
+                                        )}
                                       </div>
                                     </div>
                                   </div>
@@ -295,8 +303,9 @@ export default class extends React.Component {
                                             <div>
                                               Sản phẩm lẻ :{" "}
                                               <span>
-                                                {item.dieu_Kien.san_pham && item
-                                                  .dieu_Kien.san_pham.length > 0
+                                                {item.dieu_Kien.san_pham &&
+                                                item.dieu_Kien.san_pham.length >
+                                                  0
                                                   ? item.dieu_Kien.san_pham
                                                       .map((item) => item.Title)
                                                       .join(", ")

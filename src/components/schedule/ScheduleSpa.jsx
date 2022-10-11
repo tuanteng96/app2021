@@ -66,17 +66,17 @@ export default class ScheduleSpa extends React.Component {
     var min = -1;
     var now = new Date().getTime();
 
-    const { TimeOpen, TimeClose, TimeNext } = window?.GlobalConfig?.APP?.Booking;
+    const { TimeOpen, TimeClose, TimeNext } =
+      window?.GlobalConfig?.APP?.Booking;
 
     let startdate = moment().set(TimeOpen);
     let closingDate = moment().set(TimeClose);
     var duration = moment.duration(closingDate.diff(startdate));
     var MinutesTotal = duration.asMinutes();
     for (let day = 0; day <= MinutesTotal; day += TimeNext) {
-      
       var time = moment().set(TimeOpen).add(day, "m").format("LT");
       var timeFull = moment().set(TimeOpen).add(day, "m").format("LTS");
-      
+
       var d = new Date();
       d.setHours(TimeOpen.hour);
       d.setMinutes(TimeOpen.minute);
@@ -284,8 +284,8 @@ export default class ScheduleSpa extends React.Component {
       renderBottomCenterControls: () => false,
       renderCenterLeftControls: null,
       renderCenterRightControls: null,
-      afterChange: (current) => { },
-      beforeChange: (current, next) => { },
+      afterChange: (current) => {},
+      beforeChange: (current, next) => {},
     };
     const settings = {
       //wrapAround: true,
@@ -296,8 +296,8 @@ export default class ScheduleSpa extends React.Component {
       renderBottomCenterControls: () => false,
       renderCenterLeftControls: null,
       renderCenterRightControls: null,
-      afterChange: (current) => { },
-      beforeChange: (current, next) => { },
+      afterChange: (current) => {},
+      beforeChange: (current, next) => {},
     };
 
     const dateConfig = {
@@ -370,7 +370,7 @@ export default class ScheduleSpa extends React.Component {
         </div>
         <div className="page-schedule__time">
           <h5>2. Chọn thời gian</h5>
-          <div className="page-schedule__date">
+          <div className="page-schedule__date mb-15px">
             <Row>
               {arrListDate &&
                 arrListDate.map((item, index) => {
@@ -387,15 +387,15 @@ export default class ScheduleSpa extends React.Component {
                                 ? "active"
                                 : ""
                               : item.name === "other"
-                                ? "active"
-                                : ""
+                              ? "active"
+                              : ""
                           }
                         >
                           {item.name !== "other"
                             ? item.dateFormat
                             : DateTimeBook.date && DateTimeBook.isOther
-                              ? DateTimeBook.date
-                              : item.dateFormat}
+                            ? DateTimeBook.date
+                            : item.dateFormat}
                         </span>
                       </div>
                     </Col>
@@ -430,24 +430,22 @@ export default class ScheduleSpa extends React.Component {
               />
             </Row>
           </div>
-          {
-            window.GlobalConfig?.APP?.Booking?.hideNoteTime && (
-              <div className="page-schedule__note">
-                <div className="page-schedule__note-item">
-                  <div className="box box-not"></div>
-                  <span>Hết chỗ</span>
-                </div>
-                <div className="page-schedule__note-item">
-                  <div className="box box-no"></div>
-                  <span>Còn chỗ</span>
-                </div>
-                <div className="page-schedule__note-item">
-                  <div className="box box-succes"></div>
-                  <span>Đang chọn</span>
-                </div>
+          {!window.GlobalConfig?.APP?.Booking?.hideNoteTime && (
+            <div className="page-schedule__note mb-25px">
+              <div className="page-schedule__note-item">
+                <div className="box box-not"></div>
+                <span>Hết chỗ</span>
               </div>
-            )
-          }
+              <div className="page-schedule__note-item">
+                <div className="box box-no"></div>
+                <span>Còn chỗ</span>
+              </div>
+              <div className="page-schedule__note-item">
+                <div className="box box-succes"></div>
+                <span>Đang chọn</span>
+              </div>
+            </div>
+          )}
           <Tabs>
             {arrListDate &&
               arrListDate.map((item, index) => (
@@ -461,7 +459,7 @@ export default class ScheduleSpa extends React.Component {
                       : item.name === "other"
                   }
                 >
-                  <div className="page-schedule__time-list">
+                  <div className="page-schedule__time-list mt-0">
                     <Carousel
                       {...(index === 0 ? settingsIndex : settings)}
                       className={index === 0 ? "slide-time-first" : ""}
@@ -474,10 +472,10 @@ export default class ScheduleSpa extends React.Component {
                         >
                           {children.map((sub, i) => (
                             <div
-                              className={`group-time__item ${item.name === "today" && this.checkTime(
-                                item.date,
-                                sub.fullTime
-                              )}`}
+                              className={`group-time__item ${
+                                item.name === "today" &&
+                                this.checkTime(item.date, sub.fullTime)
+                              }`}
                               key={i}
                               onClick={() => this.handleTime(sub.time)}
                             >

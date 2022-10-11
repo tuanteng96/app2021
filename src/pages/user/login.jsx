@@ -26,7 +26,7 @@ export default class extends React.Component {
     this.state = {
       isLoading: false,
       username: getUserLoginStorage().username,
-      password: getUserLoginStorage().username,
+      password: getUserLoginStorage().password,
       arrNews: [],
       arrBanner: [],
     };

@@ -156,7 +156,7 @@ export default class extends React.Component {
     const PriceOrder = items[indexUpdate].PriceOrder;
 
     if (hisQty === 1) {
-      this.onDelete(ID)
+      this.onDelete(ID);
     } else {
       const indexUpdate2 = editsOrder.findIndex((obj) => obj.ID === ID);
       const Qty = (items[indexUpdate].Qty = hisQty - 1);
@@ -239,21 +239,36 @@ export default class extends React.Component {
       .then((response) => {
         const data = response.data.data;
         if (response.data.success) {
-          //Total
-          setTimeout(() => {
-            this.TotalProduct(data.items);
+          if (data.errors && data.errors.length > 0) {
             this.setState({
-              dfItem: data.dfItem,
-              items: data.items.reverse(),
-              order: data.order,
-              popupOpened: false,
-              VDiscount: data.order?.Voucher?.Discount,
-              VCode: vcode,
-              deleteds: [],
-              edits: [],
+              voucherList: this.state.voucherList.filter(
+                (o) => o.Code !== vcode
+              ),
             });
+            toast.error(
+              "Mã giảm giá đã hết hạn, Vui lòng chọn mã giảm giá khác !",
+              {
+                position: toast.POSITION.TOP_LEFT,
+                autoClose: 1500,
+              }
+            );
             self.$f7.preloader.hide();
-          }, 1000);
+          } else {
+            setTimeout(() => {
+              this.TotalProduct(data.items);
+              this.setState({
+                dfItem: data.dfItem,
+                items: data.items.reverse(),
+                order: data.order,
+                popupOpened: false,
+                VDiscount: data.order?.Voucher?.Discount,
+                VCode: vcode,
+                deleteds: [],
+                edits: [],
+              });
+              self.$f7.preloader.hide();
+            }, 300);
+          }
         }
       })
       .catch((er) => console.log(er));
@@ -459,7 +474,7 @@ export default class extends React.Component {
       isLoading,
       isBtn,
       VDiscount,
-      Preloaders
+      Preloaders,
     } = this.state;
 
     return (

@@ -496,6 +496,12 @@ export default class ScheduleSpa extends React.Component {
               ))}
           </Tabs>
         </div>
+        {!window.GlobalConfig?.APP?.Booking?.hideNoteWarning && (
+          <div className="text-danger bg-white p-15px font-size-xs line-height-sm">
+            (*) Nếu khung giờ bạn chọn đã kín lịch, chúng tôi sẽ liên hệ trực
+            tiếp để thông báo.
+          </div>
+        )}
       </div>
     );
   }

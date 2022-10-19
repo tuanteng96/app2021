@@ -6,6 +6,8 @@ import NewsDataService from "../../service/news.service";
 import { Page, Link, Navbar, Toolbar } from "framework7-react";
 import ToolBarBottom from "../../components/ToolBarBottom";
 import NotificationIcon from "../../components/NotificationIcon";
+import Dom7 from "dom7";
+import { OPEN_LINK } from "../../constants/prom21";
 
 export default class extends React.Component {
   constructor() {
@@ -84,9 +86,42 @@ export default class extends React.Component {
                 </div>
                 <div className="page-news__detail-content">
                   <div className="page-news__detail-shadow">
-                    {ReactHtmlParser(this.fixedContentDomain(arrayItem.Desc))}
+                    {ReactHtmlParser(this.fixedContentDomain(arrayItem.Desc), {
+                      transform: (node) => {
+                        if (
+                          node.type === "tag" &&
+                          node.attribs.class === "external"
+                        ) {
+                          return (
+                            <Link
+                              class="external"
+                              onClick={() => OPEN_LINK(node.attribs.href)}
+                            >
+                              {node.children[0].data}
+                            </Link>
+                          );
+                        }
+                      },
+                    })}
                     {ReactHtmlParser(
-                      this.fixedContentDomain(arrayItem.Content)
+                      this.fixedContentDomain(arrayItem.Content),
+                      {
+                        transform: (node) => {
+                          if (
+                            node.type === "tag" &&
+                            node.attribs.class === "external"
+                          ) {
+                            return (
+                              <Link
+                                class="external"
+                                onClick={() => OPEN_LINK(node.attribs.href)}
+                              >
+                                {node.children[0].data}
+                              </Link>
+                            );
+                          }
+                        },
+                      }
                     )}
                   </div>
                 </div>

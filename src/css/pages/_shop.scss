@@ -790,6 +790,9 @@
                         text-align: center;
                         height: 30px;
                         font-size: 13px;
+                        &:read-only {
+                            background: #f1f1f1;
+                        }
                     }
                     button {
                         outline: none;
@@ -798,6 +801,11 @@
                         background: transparent;
                         font-size: 18px;
                         color: #333;
+                        &:disabled {
+                            background: #f1f1f1;
+                            opacity: .4;
+                            cursor: no-drop;
+                        }
                         &.reduction {
                             border-right: 0;
                         }

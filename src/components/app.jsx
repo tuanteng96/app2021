@@ -126,6 +126,7 @@ export default class extends React.Component {
     } else {
       this.$f7.views.main.router.back();
     }
+    this.$f7.views.main.app.sheet.close();
   };
 
   componentDidMount() {

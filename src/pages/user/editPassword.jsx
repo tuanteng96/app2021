@@ -2,7 +2,7 @@ import React from "react";
 import { Page, Link, Navbar } from "framework7-react";
 import bgImage from "../../assets/images/headerbottombgapp.png";
 import IconChangePassword from "../../assets/images/edit-password.svg";
-import { getUser, getPassword } from "../../constants/user";
+import { getUser } from "../../constants/user";
 import UserService from "../../service/user.service";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -30,11 +30,6 @@ export default class extends React.Component {
     const crpwd = this.state.crpwd;
     const infoMember = getUser();
     if (!infoMember) return false;
-    const username =
-      infoMember.acc_type === "M"
-        ? infoMember?.MobilePhone
-        : infoMember?.UserName;
-    const password = getPassword();
     var bodyData = new FormData();
     bodyData.append("pwd", pwd); // New Password
     bodyData.append("repwd", repwd); // Nhập lại mật khẩu mới
@@ -71,7 +66,7 @@ export default class extends React.Component {
     }
 
     if (isSubmit === true) {
-      UserService.updatePassword(username, password, bodyData)
+      UserService.updatePassword(bodyData)
         .then((response) => {
           setTimeout(() => {
             self.$f7.preloader.hide();
@@ -86,7 +81,7 @@ export default class extends React.Component {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 1000,
               });
-              localStorage.setItem("password", pwd);
+              setUserLoginStorage(null, pwd);
               self.resetValue();
               self.$f7router.back();
             }

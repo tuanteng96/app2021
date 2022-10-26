@@ -61,7 +61,8 @@
         "sass": "^1.49.7",
         "slick-carousel": "^1.8.1",
         "swiper": "^6.3.2",
-        "template7": "^1.4.2"
+        "template7": "^1.4.2",
+        "yup": "^0.32.11"
     },
     "devDependencies": {
         "@babel/core": "^7.11.6",

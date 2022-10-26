@@ -1,8 +1,10 @@
 import React, { Suspense } from "react";
 import bgHeaderTop from "../../assets/images/bg-header-home.png";
-import { Page, Link, Toolbar, f7 } from "framework7-react";
+import { Page, Link, Toolbar, f7, Sheet, Button } from "framework7-react";
 import UserService from "../../service/user.service";
 import IconSearch from "../../assets/images/icon-search.png";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { FaRegUser, FaMapMarkerAlt, FaChevronDown } from "react-icons/fa";
 // const ModalReviews = React.lazy(() => import("../../components/ModalReviews"));
 // const SelectStock = React.lazy(() => import("../../components/SelectStock"));
@@ -18,6 +20,8 @@ import {
   setStockNameStorage,
   getStockNameStorage,
   removeStockNameStorage,
+  setUserLoginStorage,
+  setUserStorage,
 } from "../../constants/user";
 import ListService from "./components/Service/ListService";
 import SlideList from "../home/components/BannerSlide/SlideList";
@@ -35,6 +39,7 @@ import QuickAction from "../../components/quickAction";
 //   import("../home/components/Product/ProductList")
 // );
 import ProductList from "../home/components/Product/ProductList";
+import ModalChangePWD from "../../components/ModalChangePWD";
 
 export default class extends React.Component {
   constructor() {
@@ -45,11 +50,18 @@ export default class extends React.Component {
       width: window.innerWidth,
       showPreloader: false,
       isReload: 0,
+      opened: false,
     };
   }
 
   componentDidMount() {
     const stockName = getStockNameStorage();
+    const userCurent = getUser();
+    if (userCurent && userCurent.RequirePwd && userCurent.acc_type === "M") {
+      this.setState({
+        opened: true,
+      });
+    }
     this.setState({
       stockName: stockName,
     });
@@ -112,6 +124,41 @@ export default class extends React.Component {
     this.$f7router.navigate("/search/");
   };
 
+  onChangePWD = (values) => {
+    const self = this;
+    const userCurent = getUser();
+    self.$f7.preloader.show();
+    const crpwd = "1234";
+    var bodyData = new FormData();
+    bodyData.append("pwd", values.password); // New Password
+    bodyData.append("repwd", values.re_password); // Nhập lại mật khẩu mới
+    bodyData.append("crpwd", crpwd); // Mật khẩu hiện tai
+
+    UserService.updatePassword(bodyData)
+      .then((response) => {
+        setTimeout(() => {
+          self.$f7.preloader.hide();
+          if (response.error || response.data.error) {
+            toast.error(response.error || response.data.error, {
+              position: toast.POSITION.TOP_LEFT,
+              autoClose: 2000,
+            });
+          } else {
+            toast.success("Cập nhập mật khẩu mới công !", {
+              position: toast.POSITION.TOP_CENTER,
+              autoClose: 1000,
+            });
+            setUserLoginStorage(null, values.password);
+            this.setState({
+              opened: false,
+            });
+            setUserStorage(null, { ...userCurent, RequirePwd: false });
+          }
+        }, 1000);
+      })
+      .catch((err) => console.log(err));
+  };
+
   loadRefresh(done) {
     setTimeout(() => {
       this.$f7.views.main.router.navigate(this.$f7.views.main.router.url, {
@@ -125,7 +172,7 @@ export default class extends React.Component {
   }
 
   render() {
-    const { isOpenStock, stockName, isReload } = this.state;
+    const { isOpenStock, stockName, isReload, opened } = this.state;
     return (
       <Page
         noNavbar
@@ -136,6 +183,14 @@ export default class extends React.Component {
         infinitePreloader={this.state.showPreloader}
         onPtrRefresh={this.loadRefresh.bind(this)}
       >
+        <Sheet
+          opened={opened}
+          style={{ height: "auto", "--f7-sheet-bg-color": "#fff" }}
+          backdrop
+          closeByBackdropClick={false}
+        >
+          <ModalChangePWD onChangePWD={this.onChangePWD} />
+        </Sheet>
         <div className="page-wrapper">
           <div className="page-render p-0">
             <div className="home-page">

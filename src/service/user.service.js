@@ -40,7 +40,7 @@ class UserService {
             }
         })
     }
-    updatePassword(username, password, data) {
+    updatePassword(data) {
         return http.post(`/app/index.aspx?cmd=chgpwd&token=${getToken()}`, data);
     }
     getStock() {

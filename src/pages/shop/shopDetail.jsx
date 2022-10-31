@@ -1,13 +1,13 @@
-import React from 'react'
-import { SERVER_APP } from './../../constants/config'
+import React from "react";
+import { SERVER_APP } from "./../../constants/config";
 import {
   formatPriceVietnamese,
   checkSale,
   percentagesSale,
-} from '../../constants/format'
-import { getUser, setViewed, getStockIDStorage } from '../../constants/user'
-import ShopDataService from './../../service/shop.service'
-import CartToolBar from '../../components/CartToolBar'
+} from "../../constants/format";
+import { getUser, setViewed, getStockIDStorage } from "../../constants/user";
+import ShopDataService from "./../../service/shop.service";
+import CartToolBar from "../../components/CartToolBar";
 import {
   Page,
   Link,
@@ -15,21 +15,21 @@ import {
   Navbar,
   PhotoBrowser,
   Sheet,
-} from 'framework7-react'
-import ReactHtmlParser from 'react-html-parser'
-import { toast } from 'react-toastify'
-import SkeletonThumbnail from './components/Detail/SkeletonThumbnail'
-import SelectStock from '../../components/SelectStock'
-import { Suspense } from 'react'
-import Skeleton from 'react-loading-skeleton'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
-import _ from 'lodash'
-import NoProduct from '../../assets/images/no-product.png'
-import { checkSLDisabled } from '../../constants/helpers'
+} from "framework7-react";
+import ReactHtmlParser from "react-html-parser";
+import { toast } from "react-toastify";
+import SkeletonThumbnail from "./components/Detail/SkeletonThumbnail";
+import SelectStock from "../../components/SelectStock";
+import { Suspense } from "react";
+import Skeleton from "react-loading-skeleton";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import _ from "lodash";
+import NoProduct from "../../assets/images/no-product.png";
+import { checkSLDisabled } from "../../constants/helpers";
 
 export default class extends React.Component {
   constructor() {
-    super()
+    super();
     this.state = {
       arrProductCurrent: [],
       arrProduct: [],
@@ -49,36 +49,36 @@ export default class extends React.Component {
       isOpenStock: false,
       copied: false,
       showPreloader: false,
-    }
+    };
   }
 
   getDetialProduct = async () => {
-    const infoUser = getUser()
-    const userId = infoUser ? infoUser.ID : ''
-    const cateID = this.$f7route.params.cateId
+    const infoUser = getUser();
+    const userId = infoUser ? infoUser.ID : "";
+    const cateID = this.$f7route.params.cateId;
 
     try {
       const { data: result } = await ShopDataService.getDetailFull(
         cateID,
-        userId,
-      )
-      const resultRes = result.data
-      const { images, combos } = resultRes
+        userId
+      );
+      const resultRes = result.data;
+      const { images, combos } = resultRes;
 
-      let ptotosNew = []
+      let ptotosNew = [];
       for (let photo in images) {
-        var itemPhoho = {}
-        itemPhoho.url = SERVER_APP + '/Upload/image/' + images[photo].Value
-        itemPhoho.caption = images[photo].Title
-        ptotosNew.push(itemPhoho)
+        var itemPhoho = {};
+        itemPhoho.url = SERVER_APP + "/Upload/image/" + images[photo].Value;
+        itemPhoho.caption = images[photo].Title;
+        ptotosNew.push(itemPhoho);
       }
 
       ptotosNew.filter(
         (item) =>
-          item.Role === 'other' ||
-          item.Role === 'thumb' ||
-          item.Role === 'opt_thumb',
-      )
+          item.Role === "other" ||
+          item.Role === "thumb" ||
+          item.Role === "opt_thumb"
+      );
 
       this.setState({
         arrProductCurrent: resultRes.product,
@@ -94,123 +94,122 @@ export default class extends React.Component {
           aff_value: resultRes.aff_value,
         },
         OriginalCurrent: combos && combos.length > 0 ? combos[0].Product : null,
-      })
-      setViewed(resultRes.product)
+      });
+      setViewed(resultRes.product);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   componentDidMount() {
-    this.getDetialProduct()
+    this.getDetialProduct();
   }
   openSheet = () => {
-    const { arrProduct, isOpenStock } = this.state
-    const getStock = getStockIDStorage()
+    const { arrProduct, isOpenStock } = this.state;
+    const getStock = getStockIDStorage();
     if (!getStock) {
       this.setState({
         isOpenStock: !isOpenStock,
-      })
+      });
     } else {
       this.setState({
         sheetOpened: true,
         arrProductCopy: arrProduct,
-      })
+      });
     }
-  }
+  };
   closeSheet = () => {
-    const { arrProductCopy } = this.state
+    const { arrProductCopy } = this.state;
     this.setState({
       sheetOpened: false,
       arrProduct: arrProductCopy,
       quantity: 1,
-    })
-  }
+    });
+  };
 
   handleOption = (item) => {
-    const { arrOptions } = this.state
+    const { arrOptions } = this.state;
     arrOptions.map((opt) => {
       if (opt.ID === item.ID) {
         this.setState({
           arrProduct: opt,
           activeID: item.ID,
           quantity: 1,
-        })
+        });
       }
-    })
-  }
+    });
+  };
   handleChangeQty = (event) => {
     this.setState({
       quantity: event.target.value,
-    })
-  }
+    });
+  };
   IncrementItem = () => {
     this.setState((prevState) => {
       if (prevState.quantity < 9) {
         return {
           quantity: prevState.quantity + 1,
-        }
+        };
       } else {
-        return null
+        return null;
       }
-    })
-  }
+    });
+  };
   DecreaseItem = () => {
     this.setState((prevState) => {
       if (prevState.quantity > 1) {
         return {
           quantity: prevState.quantity - 1,
-        }
+        };
       } else {
-        return null
+        return null;
       }
-    })
-  }
+    });
+  };
 
   onPageBeforeOut = () => {
-    const self = this
+    const self = this;
     // Close opened sheets on page out
-    self.$f7.sheet.close()
-  }
+    self.$f7.sheet.close();
+  };
   onPageBeforeRemove = () => {
-    const self = this
+    const self = this;
     // Destroy sheet modal when page removed
-    if (self.sheet) self.sheet.destroy()
-  }
+    if (self.sheet) self.sheet.destroy();
+  };
 
   setStateLoading = (isloading) => {
     this.setState({
       isLoading: isloading,
-    })
-  }
+    });
+  };
   closeProbablySheet = () => {
     this.setState({
       isProbably: false,
-    })
-  }
+    });
+  };
   openProbablySheet = () => {
     this.setState({
       isProbably: true,
-    })
-  }
+    });
+  };
   orderSubmit = () => {
     //code here
-    const infoUser = getUser()
-    const getStock = getStockIDStorage()
+    const infoUser = getUser();
+    const getStock = getStockIDStorage();
 
     if (!infoUser) {
-      this.$f7router.navigate('/login/')
-      return false
+      this.$f7router.navigate("/login/");
+      return false;
     } else {
-      const { arrProduct, quantity } = this.state
-      const self = this
-      self.$f7.preloader.show()
-      this.setStateLoading(true)
+      const { arrProduct, quantity } = this.state;
+      const self = this;
+      self.$f7.preloader.show();
+      this.setStateLoading(true);
       const data = {
         order: {
           ID: 0,
           SenderID: infoUser.ID,
-          VCode: '',
           Tinh: 5,
           Huyen: 37,
           MethodPayID: 1,
@@ -226,46 +225,55 @@ export default class extends React.Component {
           },
         ],
         forceStockID: getStock,
-      }
+      };
 
       ShopDataService.getUpdateOrder(data)
         .then((response) => {
+          const { errors } = response.data.data;
+
           if (response.data.success) {
-            self.$f7.preloader.hide()
-            self.setStateLoading(false)
-            toast.success('Thêm mặt hàng vào giỏ hàng thành công !', {
-              position: toast.POSITION.TOP_LEFT,
-              autoClose: 3000,
-            })
-            this.$f7router.navigate('/pay/')
+            self.$f7.preloader.hide();
+            self.setStateLoading(false);
+            if (errors && errors.length > 0) {
+              toast.error(errors.join(", "), {
+                position: toast.POSITION.TOP_LEFT,
+                autoClose: 1500,
+              });
+            } else {
+              toast.success(`Thêm mặt hàng vào giỏ hàng thành công !`, {
+                position: toast.POSITION.TOP_LEFT,
+                autoClose: 3000,
+              });
+            }
+            this.$f7router.navigate("/pay/");
           }
         })
         .catch((e) => {
-          console.log(e)
-        })
+          console.log(e);
+        });
     }
-  }
+  };
 
   nameStock = (name) => {
     this.setState({
       stockName: name,
-    })
-  }
+    });
+  };
 
   handleProbably = (item) => {
     //code here
-    const infoUser = getUser()
+    const infoUser = getUser();
     if (!infoUser) {
-      this.$f7router.navigate('/login/')
+      this.$f7router.navigate("/login/");
     } else {
-      const self = this
-      self.$f7.preloader.show()
-      this.setStateLoading(true)
+      const self = this;
+      self.$f7.preloader.show();
+      this.setStateLoading(true);
       const data = {
         order: {
           ID: 0,
           SenderID: infoUser.ID,
-          VCode: '',
+          VCode: "",
           Tinh: 5,
           Huyen: 37,
           MethodPayID: 1,
@@ -277,28 +285,28 @@ export default class extends React.Component {
             PriceOrder: item.PriceSale < 0 ? item.PriceProduct : item.PriceSale,
           },
         ],
-      }
+      };
 
       ShopDataService.getUpdateOrder(data)
         .then((response) => {
           if (response.data.success) {
-            self.$f7.preloader.hide()
-            self.setStateLoading(false)
-            toast.success('Thêm mặt hàng vào giỏ hàng thành công !', {
+            self.$f7.preloader.hide();
+            self.setStateLoading(false);
+            toast.success("Thêm mặt hàng vào giỏ hàng thành công !", {
               position: toast.POSITION.TOP_LEFT,
               autoClose: 3000,
-            })
-            this.$f7router.navigate('/pay/')
+            });
+            this.$f7router.navigate("/pay/");
           }
         })
         .catch((e) => {
-          console.log(e)
-        })
+          console.log(e);
+        });
     }
-  }
+  };
 
   probablyHTML = () => {
-    const { arrRelProds } = this.state
+    const { arrRelProds } = this.state;
 
     return (
       <li className="size" onClick={() => this.openProbablySheet()}>
@@ -309,14 +317,14 @@ export default class extends React.Component {
         <div className="probably-list">
           {arrRelProds &&
             arrRelProds.map((item, index) => {
-              if (index > 1) return
+              if (index > 1) return;
               return (
                 <div className="probably-list__item" key={index}>
                   <div className="title">{item.Title}</div>
                   <div className="option">
                     <div
                       className={
-                        'option-price ' + (item.PriceSale > 0 ? 'sale' : '')
+                        "option-price " + (item.PriceSale > 0 ? "sale" : "")
                       }
                     >
                       <span className="price">
@@ -331,22 +339,22 @@ export default class extends React.Component {
                     <div className="option-btn">Mua Ngay</div>
                   </div>
                 </div>
-              )
+              );
             })}
           {arrRelProds && arrRelProds.length > 2 ? (
             <div className="show-more">
               <span>Xem thêm</span>
             </div>
           ) : (
-            ''
+            ""
           )}
         </div>
       </li>
-    )
-  }
+    );
+  };
 
   classifiHTML = () => {
-    const { arrOptions, activeID } = this.state
+    const { arrOptions, activeID } = this.state;
     return (
       <div className="sheet-pay-body__size">
         <h4>Phân loại</h4>
@@ -357,16 +365,16 @@ export default class extends React.Component {
                 <li
                   key={index}
                   onClick={() => this.handleOption(item)}
-                  className={activeID === item.ID ? 'active' : ''}
+                  className={activeID === item.ID ? "active" : ""}
                 >
                   <span>{item.Opt1}</span>
                 </li>
-              )
+              );
             })}
         </ul>
       </div>
-    )
-  }
+    );
+  };
 
   htmlSize = (arrOptions) => {
     if (arrOptions.length > 0) {
@@ -378,18 +386,18 @@ export default class extends React.Component {
           </div>
           <div
             className={
-              'size-list ' + (arrOptions.length > 2 ? 'size-list--full' : '')
+              "size-list " + (arrOptions.length > 2 ? "size-list--full" : "")
             }
           >
             <div className="size-list--box">
               {arrOptions &&
                 arrOptions.map((item, index) => {
-                  if (index > 1) return
+                  if (index > 1) return;
                   return (
                     <div key={index} className="size-list__item">
                       <span>{item.Opt1}</span>
                     </div>
-                  )
+                  );
                 })}
               <div className="size-list__total">
                 <span>+{arrOptions.length - 2}</span>
@@ -397,33 +405,33 @@ export default class extends React.Component {
             </div>
           </div>
         </li>
-      )
+      );
     }
-  }
+  };
 
   fixedContentDomain = (content) => {
-    if (!content) return ''
-    return content.replace(/src=\"\//g, 'src="' + SERVER_APP + '/')
-  }
+    if (!content) return "";
+    return content.replace(/src=\"\//g, 'src="' + SERVER_APP + "/");
+  };
 
   loadRefresh(done) {
     setTimeout(() => {
       this.$f7.views.main.router.navigate(this.$f7.views.main.router.url, {
         reloadCurrent: true,
-      })
+      });
       this.setState({
         showPreloader: true,
-      })
-      done()
-    }, 600)
+      });
+      done();
+    }, 600);
   }
 
   shorten(str) {
-    if (!str) return str
-    let parts = str.split(' ')
-    parts.shift()
-    let last = parts.join(' ')
-    return last
+    if (!str) return str;
+    let parts = str.split(" ");
+    parts.shift();
+    let last = parts.join(" ");
+    return last;
   }
 
   render() {
@@ -443,7 +451,7 @@ export default class extends React.Component {
       aff,
       copied,
       OriginalCurrent,
-    } = this.state
+    } = this.state;
 
     return (
       <Page
@@ -464,7 +472,7 @@ export default class extends React.Component {
             </div>
             <div className="page-navbar__title">
               <span className="title">
-                {!statusLoading ? arrProductCurrent.Title : 'Đang tải ...'}
+                {!statusLoading ? arrProductCurrent.Title : "Đang tải ..."}
               </span>
             </div>
             <div className="page-navbar__cart">
@@ -478,7 +486,7 @@ export default class extends React.Component {
           popupCloseLinkText="Đóng"
           navbarOfText="/"
           ref={(el) => {
-            this.standaloneDark = el
+            this.standaloneDark = el;
           }}
         />
         <div className="page-render no-bg p-0">
@@ -491,12 +499,12 @@ export default class extends React.Component {
                     onClick={() => this.standaloneDark.open(0)}
                     src={
                       SERVER_APP +
-                      '/Upload/image/' +
+                      "/Upload/image/" +
                       arrProductCurrent.Thumbnail
                     }
                     alt={arrProductCurrent.title}
                     onError={(e) => {
-                      e.target.src = NoProduct
+                      e.target.src = NoProduct;
                     }}
                   />
                   <div className="count">1/{photos && photos.length}</div>
@@ -505,15 +513,15 @@ export default class extends React.Component {
 
               <div
                 className={
-                  'page-shop__detail-list ' +
+                  "page-shop__detail-list " +
                   (arrProductCurrent.IsDisplayPrice !== 0 &&
                   checkSale(
                     arrProductCurrent.SaleBegin,
                     arrProductCurrent.SaleEnd,
-                    arrProductCurrent.PriceSale,
+                    arrProductCurrent.PriceSale
                   ) === true
-                    ? 'sale'
-                    : '')
+                    ? "sale"
+                    : "")
                 }
               >
                 <ul>
@@ -531,19 +539,19 @@ export default class extends React.Component {
                       checkSale(
                         arrProductCurrent.SaleBegin,
                         arrProductCurrent.SaleEnd,
-                        arrProductCurrent.PriceSale,
+                        arrProductCurrent.PriceSale
                       ) === true
-                        ? ' gốc'
-                        : ''}
+                        ? " gốc"
+                        : ""}
                     </div>
                     <div className="text">
                       {arrProductCurrent.IsDisplayPrice === 1 && (
                         <React.Fragment>
                           {!statusLoading
                             ? formatPriceVietnamese(
-                                arrProductCurrent.PriceProduct,
+                                arrProductCurrent.PriceProduct
                               )
-                            : '...'}
+                            : "..."}
                           <b>₫</b>
                         </React.Fragment>
                       )}
@@ -601,7 +609,7 @@ export default class extends React.Component {
                                 <img
                                   src={
                                     SERVER_APP +
-                                    '/Upload/image/' +
+                                    "/Upload/image/" +
                                     item.Product.Thumbnail
                                   }
                                   alt={item.Product.Title}
@@ -620,14 +628,14 @@ export default class extends React.Component {
                   {this.htmlSize(arrOptions)}
                   {arrRelProds && arrRelProds.length > 0
                     ? this.probablyHTML()
-                    : ''}
+                    : ""}
                   {aff && aff.aff_link && aff.aff_value && (
                     <li className="content">
                       <div className="content-title">Hoa hồng giới thiệu</div>
                       <div className="content-post">
                         <div className="content-bonus">
                           <span>
-                            Nguyên giá :{' '}
+                            Nguyên giá :{" "}
                             <b>
                               {aff.aff_value.NG > 100
                                 ? `${formatPriceVietnamese(aff.aff_value.NG)}`
@@ -635,9 +643,9 @@ export default class extends React.Component {
                             </b>
                           </span>
                           <span>
-                            Khuyến mãi :{' '}
+                            Khuyến mãi :{" "}
                             <b>
-                              {' '}
+                              {" "}
                               {aff.aff_value.KM > 100
                                 ? `${formatPriceVietnamese(aff.aff_value.KM)}`
                                 : `${aff.aff_value.KM}%`}
@@ -647,22 +655,22 @@ export default class extends React.Component {
                         <CopyToClipboard
                           text={aff.aff_link}
                           onCopy={() => {
-                            this.setState({ copied: true })
+                            this.setState({ copied: true });
                             setTimeout(() => {
-                              toast.success('Copy đường dẫn thành công !', {
+                              toast.success("Copy đường dẫn thành công !", {
                                 position: toast.POSITION.TOP_LEFT,
                                 autoClose: 1000,
-                              })
-                              this.setState({ copied: false })
-                            }, 1000)
+                              });
+                              this.setState({ copied: false });
+                            }, 1000);
                           }}
                         >
                           <button
-                            className={`btn-share ${copied && 'btn-no-click'}`}
+                            className={`btn-share ${copied && "btn-no-click"}`}
                             disabled={copied}
                           >
-                            <i className="las la-share-alt"></i>{' '}
-                            {copied ? 'Đang Copy ...' : 'Copy đường dẫn'}
+                            <i className="las la-share-alt"></i>{" "}
+                            {copied ? "Đang Copy ..." : "Copy đường dẫn"}
                           </button>
                         </CopyToClipboard>
                       </div>
@@ -685,19 +693,19 @@ export default class extends React.Component {
                         <>
                           <div className="content-post">
                             {ReactHtmlParser(
-                              arrProduct.Desc || OriginalCurrent?.Desc,
+                              arrProduct.Desc || OriginalCurrent?.Desc
                             )}
                             {ReactHtmlParser(
                               this.fixedContentDomain(
-                                arrProduct.Detail || OriginalCurrent?.Detail,
-                              ),
+                                arrProduct.Detail || OriginalCurrent?.Detail
+                              )
                             )}
                           </div>
                         </>
                       )}
                     </li>
                   ) : (
-                    ''
+                    ""
                   )}
                 </ul>
               </div>
@@ -707,7 +715,7 @@ export default class extends React.Component {
 
         <Sheet
           className="sheet-swipe-product"
-          style={{ height: 'auto', '--f7-sheet-bg-color': '#fff' }}
+          style={{ height: "auto", "--f7-sheet-bg-color": "#fff" }}
           opened={sheetOpened}
           onSheetClosed={() => this.closeSheet()}
           swipeToClose
@@ -720,7 +728,7 @@ export default class extends React.Component {
               <div className="sheet-pay-head">
                 <div className="image">
                   <img
-                    src={SERVER_APP + '/Upload/image/' + arrProduct.Thumbnail}
+                    src={SERVER_APP + "/Upload/image/" + arrProduct.Thumbnail}
                     alt={arrProduct.Title}
                   />
                 </div>
@@ -728,15 +736,15 @@ export default class extends React.Component {
                   <h3>{arrProduct.Title}</h3>
                   <div
                     className={
-                      'price ' +
+                      "price " +
                       (arrProduct.IsDisplayPrice === 1 &&
                       checkSale(
                         arrProduct.SaleBegin,
                         arrProduct.SaleEnd,
-                        arrProduct.PriceSale,
+                        arrProduct.PriceSale
                       ) === true
-                        ? 'hasSale'
-                        : '')
+                        ? "hasSale"
+                        : "")
                     }
                   >
                     {arrProduct.IsDisplayPrice === 1 ? (
@@ -757,7 +765,7 @@ export default class extends React.Component {
                 </div>
               </div>
               <div className="sheet-pay-body">
-                {arrOptions.length > 0 ? this.classifiHTML() : ''}
+                {arrOptions.length > 0 ? this.classifiHTML() : ""}
                 <div className="sheet-pay-body__qty">
                   <div>
                     <h4>Số lượng</h4>
@@ -793,8 +801,8 @@ export default class extends React.Component {
                 <div className="sheet-pay-body__btn">
                   <button
                     className={
-                      'page-btn-order btn-submit-order ' +
-                      (isLoading ? 'loading' : '')
+                      "page-btn-order btn-submit-order " +
+                      (isLoading ? "loading" : "")
                     }
                     onClick={() => this.orderSubmit()}
                   >
@@ -814,7 +822,7 @@ export default class extends React.Component {
 
         <Sheet
           className="sheet-swipe-product sheet-swipe-probably"
-          style={{ height: 'auto', '--f7-sheet-bg-color': '#fff' }}
+          style={{ height: "auto", "--f7-sheet-bg-color": "#fff" }}
           opened={isProbably}
           onSheetClosed={() => this.closeProbablySheet()}
           swipeToClose
@@ -840,8 +848,8 @@ export default class extends React.Component {
                         <div className="option">
                           <div
                             className={
-                              'option-price ' +
-                              (item.PriceSale > 0 ? 'sale' : '')
+                              "option-price " +
+                              (item.PriceSale > 0 ? "sale" : "")
                             }
                           >
                             <span className="price">
@@ -868,8 +876,8 @@ export default class extends React.Component {
             <div className="page-toolbar__order">
               <button
                 className={`page-btn-order btn-submit-order ${
-                  statusLoading ? 'loading' : ''
-                } ${arrProductCurrent.IsDisplayPrice === 0 && 'btn-no-click'}`}
+                  statusLoading ? "loading" : ""
+                } ${arrProductCurrent.IsDisplayPrice === 0 && "btn-no-click"}`}
                 onClick={() => this.openSheet()}
               >
                 <span>Đặt hàng</span>
@@ -891,6 +899,6 @@ export default class extends React.Component {
           />
         </Suspense>
       </Page>
-    )
+    );
   }
 }

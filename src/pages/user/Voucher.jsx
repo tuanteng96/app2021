@@ -235,6 +235,35 @@ export default class extends React.Component {
                                       </div>
                                     </div>
                                   </div>
+                                  {item.so_luong_mua_tung_don ? (
+                                    <div className="item-sub">
+                                      <div className="item-sub__box">
+                                        <h5>
+                                          Giới hạn số lượng SP / DV trên cả đơn
+                                          hàng
+                                        </h5>
+                                        <div className="price">
+                                          {item.so_luong_mua_tung_don}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    ""
+                                  )}
+                                  {item.so_luong_mua_tung_san_pham ? (
+                                    <div className="item-sub">
+                                      <div className="item-sub__box">
+                                        <h5>
+                                          Giới hạn số lượng trên từng SP / DV
+                                        </h5>
+                                        <div className="price">
+                                          {item.so_luong_mua_tung_san_pham}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    ""
+                                  )}
                                   {item.aff && (
                                     <div className="item-sub">
                                       <div className="item-sub__box">

@@ -82,13 +82,21 @@ export default class extends React.Component {
         SenderAddress: SenderAddress,
       },
       forceStockID: stockid,
+      cmd: "GUI_DON_HANG"
     };
     self.$f7.preloader.show();
     ShopDataService.getUpdateOrder(data)
       .then((response) => {
         const data = response.data.data;
         if (response.data.success) {
-          setTimeout(() => {
+          if (data.errors && data.errors.length > 0) {
+            toast.error(data.errors.join(", "), {
+              position: toast.POSITION.TOP_LEFT,
+              autoClose: 1500,
+            });
+            this.$f7router.navigate("/pay/");
+          }
+          else {
             toast.success("Đặt hàng thành công !", {
               position: toast.POSITION.TOP_LEFT,
               autoClose: 3000,
@@ -96,8 +104,8 @@ export default class extends React.Component {
             this.$f7router.navigate(
               "/pay-success/" + data.order.ID + `/?money=${data.order.ToPay}`
             );
-            self.$f7.preloader.hide();
-          }, 1000);
+          }
+          self.$f7.preloader.hide();
         }
       })
       .catch((er) => console.log(er));

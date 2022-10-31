@@ -42,6 +42,7 @@ export default class extends React.Component {
       isUpdate: false, // Trạng thái update đơn hàng
       showPreloader: false,
       Preloaders: false,
+      TotalOrder: 0,
     };
   }
 
@@ -134,14 +135,18 @@ export default class extends React.Component {
       });
     } else {
       editsOrder[indexEdits].Qty = Qty;
+      newItemEdits = editsOrder;
       this.setState({
-        editsOrder: editsOrder,
+        editsOrder: newItemEdits,
         items: items,
       });
     }
 
     this.TotalProduct(items);
-    this.delayedClick();
+    this.saveChangeCount({
+      ItemsEdit: newItemEdits,
+    });
+    //this.delayedClick();
   };
 
   DecreaseItem = (ID) => {
@@ -176,13 +181,17 @@ export default class extends React.Component {
         });
       } else {
         editsOrder[indexUpdate2].Qty = Qty;
+        newItemEdits = editsOrder;
         this.setState({
-          editsOrder: editsOrder,
+          editsOrder: newItemEdits,
           items: items,
         });
       }
       this.TotalProduct(items);
-      this.delayedClick();
+      this.saveChangeCount({
+        ItemsEdit: newItemEdits,
+      });
+      //this.delayedClick();
     }
   };
 
@@ -233,6 +242,7 @@ export default class extends React.Component {
       deleteds: deletedsOrder,
       edits: editsOrder,
     };
+    //if(!data.order.VCode) delete data.order.VCode;
     const self = this;
     self.$f7.preloader.show();
     ShopDataService.getUpdateOrder(data)
@@ -245,13 +255,11 @@ export default class extends React.Component {
                 (o) => o.Code !== vcode
               ),
             });
-            toast.error(
-              "Mã giảm giá đã hết hạn, Vui lòng chọn mã giảm giá khác !",
-              {
+            vcode &&
+              toast.error(data.errors.join(", "), {
                 position: toast.POSITION.TOP_LEFT,
                 autoClose: 1500,
-              }
-            );
+              });
             self.$f7.preloader.hide();
           } else {
             setTimeout(() => {
@@ -265,6 +273,7 @@ export default class extends React.Component {
                 VCode: vcode,
                 deleteds: [],
                 edits: [],
+                TotalOrder: data.order?.ToPay,
               });
               self.$f7.preloader.hide();
             }, 300);
@@ -317,7 +326,14 @@ export default class extends React.Component {
             VDiscount: data.order?.Voucher?.Discount,
             WalletMe: data.mm,
             voucherList: data.vouchers,
+            TotalOrder: data.order?.ToPay,
           });
+          if (data.errors && data.errors.length > 0) {
+            toast.error(data.errors.join(", "), {
+              position: toast.POSITION.TOP_LEFT,
+              autoClose: 1500,
+            });
+          }
         }
       })
       .catch((er) => console.log(er));
@@ -339,6 +355,7 @@ export default class extends React.Component {
         membermoney: WalletPaySuccess,
       },
       forceStockID: getStock,
+      cmd: "THANH_TOAN"
     };
     this.setState({
       isBtn: true,
@@ -347,34 +364,56 @@ export default class extends React.Component {
     self.$f7.preloader.show();
     ShopDataService.getUpdateOrder(data)
       .then((response) => {
+        const data = response?.data?.data;
         if (response.data.success) {
-          setTimeout(() => {
-            self.$f7.preloader.hide();
-            this.$f7router.navigate("/pay-info/");
-            this.setState({
-              isBtn: false,
+          if (data.errors && data.errors.length > 0) {
+            toast.error(data.errors.join(", "), {
+              position: toast.POSITION.TOP_LEFT,
+              autoClose: 1500,
             });
-          }, 1000);
+            this.setState({
+              dfItem: data.dfItem,
+              items: data.items.reverse(),
+              order: data.order,
+              deletedsOrder: [],
+              editsOrder: [],
+              isUpdate: false,
+              voucherList: data.vouchers,
+              TotalOrder: data.order?.ToPay,
+              VCode: "",
+            });
+          } else {
+            this.$f7router.navigate("/pay-info/");
+          }
+          self.$f7.preloader.hide();
+          this.setState({
+            isBtn: false,
+          });
         }
       })
       .catch((er) => console.log(er));
   };
 
-  saveChangeCount = () => {
-    const { deletedsOrder, editsOrder } = this.state;
+  saveChangeCount = (
+    obj = {
+      ItemsEdit: null,
+    },
+    callback
+  ) => {
+    const { ItemsEdit } = obj;
+    const { deletedsOrder, editsOrder, items } = this.state;
     const infoUser = getUser();
 
     this.setState({
       isUpdate: true,
     });
-
     const data = {
       order: {
         ID: 0,
         SenderID: infoUser.ID,
       },
       deleteds: deletedsOrder,
-      edits: editsOrder,
+      edits: ItemsEdit || editsOrder,
       addProps: "ProdTitle",
     };
 
@@ -382,11 +421,6 @@ export default class extends React.Component {
       .then((response) => {
         const data = response.data.data;
         if (response.data.success) {
-          //Total
-          // toast.success("Cập nhập đơn hàng thành công !", {
-          //   position: toast.POSITION.TOP_LEFT,
-          //   autoClose: 3000,
-          // });
           this.TotalProduct(data.items);
           this.setState({
             dfItem: data.dfItem,
@@ -396,7 +430,18 @@ export default class extends React.Component {
             editsOrder: [],
             isUpdate: false,
             voucherList: data.vouchers,
+            TotalOrder: data.order?.ToPay,
           });
+          if (data.errors && data.errors.length > 0) {
+            toast.error(data.errors.join(", "), {
+              position: toast.POSITION.TOP_LEFT,
+              autoClose: 1500,
+            });
+            this.setState({
+              VCode: "",
+            });
+          }
+          callback && callback();
         }
       })
       .catch((er) => {
@@ -475,6 +520,7 @@ export default class extends React.Component {
       isBtn,
       VDiscount,
       Preloaders,
+      TotalOrder,
     } = this.state;
 
     return (
@@ -786,7 +832,7 @@ export default class extends React.Component {
                   <div className="title">
                     Tổng tiền :
                     <span>
-                      {formatPriceVietnamese(TotalPay)}
+                      {formatPriceVietnamese(TotalOrder)}
                       <b>₫</b>
                     </span>
                   </div>

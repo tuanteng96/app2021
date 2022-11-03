@@ -202,48 +202,6 @@ export default class ScheduleSpa extends React.Component {
     return time.replace(":", "h");
   };
 
-  checkTime = (date, time) => {
-    if (!date) return false;
-    const dateOne = date.split("/");
-    const timeOne = time.split(":");
-    //dateOne[0] Date
-    //dateOne[1] Month
-    //dateOne[2] Year
-    //timeOne[0] Hour
-    //timeOne[1] Min
-
-    const dateTwo = moment(new Date()).format("L").split("/");
-    const timeTwo = moment(new Date()).format("LTS").split(":");
-    var dateFullOne = new Date(
-      dateOne[2],
-      dateOne[1],
-      dateOne[0],
-      timeOne[0],
-      timeOne[1],
-      timeOne[2]
-    );
-    var dateFullTwo = new Date(
-      dateTwo[2],
-      dateTwo[1],
-      dateTwo[0],
-      timeTwo[0],
-      timeTwo[1],
-      timeTwo[2]
-    );
-    if (dateFullOne < dateFullTwo) {
-      return " not-time";
-    } else {
-      return "";
-    }
-  };
-
-  handStyle = () => {
-    const _width = this.state.width / 4 - 12;
-    return Object.assign({
-      width: _width,
-    });
-  };
-
   onDateChanged = (date) => {
     this.props.handleTime({
       ...this.props.DateTimeBook,

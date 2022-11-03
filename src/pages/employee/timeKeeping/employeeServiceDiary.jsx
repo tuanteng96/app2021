@@ -3,7 +3,7 @@ import { Link, Navbar, Page, Sheet, Toolbar } from "framework7-react";
 import NotificationIcon from "../../../components/NotificationIcon";
 import PageNoData from "../../../components/PageNoData";
 import ReactHtmlParser from "react-html-parser";
-
+import DatePicker from "react-mobile-datepicker";
 import {
   getPassword,
   getStockIDStorage,
@@ -15,17 +15,54 @@ import moment from "moment";
 import { SERVER_APP } from "../../../constants/config";
 moment.locale("vi");
 
+const dateConfig = {
+  hour: {
+    format: "hh",
+    caption: "Giờ",
+    step: 1,
+  },
+  minute: {
+    format: "mm",
+    caption: "Phút",
+    step: 1,
+  },
+  date: {
+    caption: "Ngày",
+    format: "D",
+    step: 1,
+  },
+  month: {
+    caption: "Tháng",
+    format: "M",
+    step: 1,
+  },
+  year: {
+    caption: "Năm",
+    format: "YYYY",
+    step: 1,
+  },
+};
+
 export default class employeeServiceDiary extends React.Component {
   constructor() {
     super();
     this.state = {
       loadingSubmit: false,
       sheetOpened: false,
+      isOpen: false,
     };
   }
 
   componentDidMount() {
     this.getNotificationStaff();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.IsNoti !== this.state.IsNoti) {
+      this.setState({
+        notiDate: "",
+      });
+    }
   }
 
   getNotificationStaff = () => {
@@ -62,6 +99,10 @@ export default class employeeServiceDiary extends React.Component {
   closeSheet = () => {
     this.setState({
       sheetOpened: false,
+      Note: "",
+      isPublic: false,
+      IsNoti: false,
+      notiDate: "",
     });
   };
 
@@ -75,10 +116,9 @@ export default class employeeServiceDiary extends React.Component {
   };
 
   orderSubmit = () => {
-    
     var isPublics = false;
     const cateID = this.$f7route.params.id;
-    const { Note, isPublic } = this.state;
+    const { Note, isPublic, IsNoti, notiDate } = this.state;
     this.setState({
       loadingSubmit: true,
     });
@@ -102,6 +142,8 @@ export default class employeeServiceDiary extends React.Component {
       mid: cateID,
       note: Note,
       public: isPublics,
+      IsNoti: IsNoti ? 1 : 0,
+      notiDate: notiDate,
     };
     staffService
       .addNotiStaff(user, data)
@@ -114,6 +156,8 @@ export default class employeeServiceDiary extends React.Component {
             sheetOpened: false,
             Note: "",
             isPublic: false,
+            IsNoti: false,
+            notiDate: "",
           });
         };
         asyncCall();
@@ -133,7 +177,16 @@ export default class employeeServiceDiary extends React.Component {
   };
 
   render() {
-    const { arrNoti, loadingSubmit, sheetOpened, Note, isPublic } = this.state;
+    const {
+      arrNoti,
+      loadingSubmit,
+      sheetOpened,
+      Note,
+      isPublic,
+      IsNoti,
+      notiDate,
+      isOpen,
+    } = this.state;
     return (
       <Page
         name="employee-diary"
@@ -163,7 +216,9 @@ export default class employeeServiceDiary extends React.Component {
             <ul>
               {arrNoti.map((item, index) => (
                 <li key={index} className={item.IsPublic > 0 ? "public" : ""}>
-                  <div className="content">{ReactHtmlParser(this.fixedContentDomain(item.Content))}</div>
+                  <div className="content">
+                    {ReactHtmlParser(this.fixedContentDomain(item.Content))}
+                  </div>
                   <div className="time">
                     {moment(item.CreateDate).fromNow()}
                   </div>
@@ -188,7 +243,7 @@ export default class employeeServiceDiary extends React.Component {
             <div className="sheet-modal-swipe__close"></div>
             <div className="sheet-swipe-product__content">
               <div className="sheet-pay-body">
-                <div className="sheet-pay-body__form">
+                <div className="sheet-pay-body__form pb-0">
                   <div className="item">
                     <label>Ghi chú</label>
                     <textarea
@@ -201,7 +256,7 @@ export default class employeeServiceDiary extends React.Component {
                       }}
                     ></textarea>
                   </div>
-                  <div className="item">
+                  <div className="item pb-0">
                     <div className="item-checkbox">
                       <input
                         id="view"
@@ -215,6 +270,64 @@ export default class employeeServiceDiary extends React.Component {
                       </label>
                     </div>
                   </div>
+                  <div className="item mb-0 pb-0">
+                    <div className="item-checkbox">
+                      <input
+                        id="IsNoti"
+                        type="checkbox"
+                        name="IsNoti"
+                        onChange={this.handleNote}
+                        checked={IsNoti || false}
+                      />
+                      <label htmlFor="IsNoti">
+                        <span>Đặt lịch nhắc</span>
+                      </label>
+                    </div>
+                    {IsNoti && (
+                      <div
+                        className="h-42px border mb-12px d-flex align-items-center position-relative"
+                        style={{
+                          background: "#f3f6f9",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        <div
+                          className="pr-50px pl-15px"
+                          onClick={() =>
+                            this.setState({
+                              isOpen: true,
+                            })
+                          }
+                        >
+                          {notiDate
+                            ? moment(notiDate).format("HH:mm DD-MM-YYYY")
+                            : "Chọn thời gian nhắc lịch"}
+                        </div>
+                        {notiDate && (
+                          <div
+                            className="position-absolute h-100 w-40px d-flex align-items-center justify-content-center top-0 right-0"
+                            onClick={() => this.setState({ notiDate: "" })}
+                          >
+                            <i class="las la-times"></i>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <DatePicker
+                    theme="ios"
+                    cancelText="Đóng"
+                    confirmText="Chọn"
+                    headerFormat="hh:mm DD/MM/YYYY"
+                    showCaption={true}
+                    dateConfig={dateConfig}
+                    value={notiDate ? new Date(notiDate) : new Date()}
+                    isOpen={isOpen}
+                    onSelect={(value) =>
+                      this.setState({ isOpen: false, notiDate: value })
+                    }
+                    onCancel={() => this.setState({ isOpen: false })}
+                  />
                 </div>
                 <div className="sheet-pay-body__btn">
                   <button

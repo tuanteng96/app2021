@@ -9,3 +9,8 @@ $color in $theme-colors {
 .bg-ezs {
     background-color: $color-app !important;
 }
+
+.Modal-Portal {
+    position: relative;
+    z-index: 100000;
+}

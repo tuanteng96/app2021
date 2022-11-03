@@ -39,7 +39,7 @@ export default class ModalChangePWD extends React.Component {
             <Form>
               <div className="p-15px">
                 <div className="text-danger font-size-xs line-height-sm">
-                  Bạn cần thay đổi mật khẩu mặc định để đảm báo thông tin cá
+                  Bạn cần thay đổi mật khẩu mặc định để đảm bảo thông tin cá
                   nhân được bảo mật.
                 </div>
                 <div className="mt-12px">

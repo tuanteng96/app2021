@@ -72,6 +72,7 @@ export default class extends React.Component {
         stock: getStockIDStorage(),
         nameStock: getStockNameStorage(),
         AtHome: false,
+        time: ""
       },
       isParams: true,
       options: [],

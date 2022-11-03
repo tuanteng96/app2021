@@ -6,14 +6,54 @@ import SkeletonStock from "./SkeletonStock";
 import Carousel from "nuka-carousel";
 import DatePicker from "react-mobile-datepicker";
 import _ from "lodash";
+import { clsx } from "clsx";
+import ConfigServiceAPI from "../../service/config.service";
 import moment from "moment";
 import "moment/locale/vi";
 moment.locale("vi");
+
+const dateConfig = {
+  // hour: {
+  //   format: "hh",
+  //   caption: "Giờ",
+  //   step: 1,
+  // },
+  // minute: {
+  //   format: "mm",
+  //   caption: "Phút",
+  //   step: 1,
+  // },
+  date: {
+    caption: "Ngày",
+    format: "D",
+    step: 1,
+  },
+  month: {
+    caption: "Tháng",
+    format: "M",
+    step: 1,
+  },
+  year: {
+    caption: "Năm",
+    format: "YYYY",
+    step: 1,
+  },
+};
+
+const GroupByCount = (List, Count) => {
+  return List.reduce((acc, x, i) => {
+    const idx = Math.floor(i / Count);
+    acc[idx] = [...(acc[idx] || []), x];
+    return acc;
+  }, []);
+};
 
 export default class ScheduleSpa extends React.Component {
   constructor() {
     super();
     this.state = {
+      ListChoose: [],
+      ListDisableChoose: [],
       arrListDate: [], // Hiển thị 3 ngày từ ngày today next
       arrStock: [], // List Stock
       timeSelected: "",
@@ -26,12 +66,27 @@ export default class ScheduleSpa extends React.Component {
   }
 
   componentDidMount() {
-    this.listDate();
     this.getStock();
     this.setState({
       width: window.innerWidth,
     });
+    this.getListChoose();
+    this.getDisableTime();
   }
+
+  getDisableTime = async () => {
+    ConfigServiceAPI.getConfigName("giocam")
+      .then(({ data }) => {
+        if (data && data.data && data?.data.length > 0) {
+          const result = JSON.parse(data.data[0].Value);
+          this.getListChoose("", result);
+          this.setState({
+            ListDisableChoose: result,
+          });
+        }
+      })
+      .catch((error) => console.log(error));
+  };
 
   group = (items, n) =>
     items.reduce((acc, x, i) => {
@@ -58,106 +113,88 @@ export default class ScheduleSpa extends React.Component {
     });
   };
 
-  listDate = () => {
-    const gettoday = moment();
-    const arrListDate = [];
-    const arrListTime = [];
-    let slideActive = -1;
-    var min = -1;
-    var now = new Date().getTime();
-
+  getListChoose = (DateChoose, DisableTime) => {
     const { TimeOpen, TimeClose, TimeNext } =
       window?.GlobalConfig?.APP?.Booking;
+    const newListChoose = [];
 
-    let startdate = moment().set(TimeOpen);
-    let closingDate = moment().set(TimeClose);
-    var duration = moment.duration(closingDate.diff(startdate));
-    var MinutesTotal = duration.asMinutes();
-    for (let day = 0; day <= MinutesTotal; day += TimeNext) {
-      var time = moment().set(TimeOpen).add(day, "m").format("LT");
-      var timeFull = moment().set(TimeOpen).add(day, "m").format("LTS");
+    for (let index = 0; index < 3; index++) {
+      let day = moment().add(index, "days").toDate();
+      if (DateChoose && index === 2) {
+        day = DateChoose;
+      }
+      let startDate = moment(day).set(TimeOpen);
+      let closeDate = moment(day).set(TimeClose);
+      var duration = moment.duration(closeDate.diff(startDate));
+      var MinutesTotal = duration.asMinutes();
+      let newListTime = [];
+      for (let minute = 0; minute <= MinutesTotal; minute += TimeNext) {
+        const datetime = moment(startDate).add(minute, "minute").toDate();
+        let isDayOff = false;
+        if (DisableTime && DisableTime.length > 0) {
+          
+          const indexDayOf =
+            DisableTime &&
+            DisableTime.findIndex(
+              (day) =>
+                moment(day.Date).format("DD/MM/YYYY") ===
+                moment(datetime).format("DD/MM/YYYY")
+            );
+          if (indexDayOf > -1) {
+            if (
+              DisableTime[indexDayOf].TimeClose &&
+              DisableTime[indexDayOf].TimeClose.length > 0
+            ) {
+              isDayOff = DisableTime[indexDayOf].TimeClose.some((time) => {
+                const DateStartDayOf = moment(DisableTime[indexDayOf].Date).set(
+                  {
+                    hour: time.Start.split(":")[0],
+                    minute: time.Start.split(":")[1],
+                  }
+                );
+                const DateEndDayOf = moment(DisableTime[indexDayOf].Date).set({
+                  hour: time.End.split(":")[0],
+                  minute: time.End.split(":")[1],
+                });
+                let isStart =
+                  moment(datetime, "HH:mm").isSameOrAfter(
+                    moment(DateStartDayOf, "HH:mm")
+                  ) ||
+                  moment(datetime).format("HH:mm") ===
+                    moment(DateStartDayOf).format("HH:mm");
+                let isEnd =
+                  moment(datetime, "HH:mm").isSameOrBefore(
+                    moment(DateEndDayOf, "HH:mm")
+                  ) ||
+                  moment(datetime).format("HH:mm") ===
+                    moment(DateEndDayOf).format("HH:mm");
+                return isStart && isEnd;
+              });
+            } else {
+              isDayOff = true;
+            }
+          }
+        }
+        newListTime.push({
+          Time: datetime,
+          Disable: moment().diff(datetime, "minutes") > 0 || isDayOff,
+        });
+      }
 
-      var d = new Date();
-      d.setHours(TimeOpen.hour);
-      d.setMinutes(TimeOpen.minute);
-      d.setSeconds(TimeOpen.second);
+      const TotalDisable = newListTime.filter((o) => o.Disable);
+      const slideIndex =
+        TotalDisable.length > 0 ? Math.floor((TotalDisable.length - 1) / 4) : 0;
 
-      d.setMinutes(d.getMinutes() + day);
-
-      var tick = Math.abs(now - d.getTime());
-      min = min == -1 ? tick : min > tick ? tick : min;
-
-      var item = {
-        time: time,
-        fullTime: timeFull,
-        tick: tick,
+      let newObj = {
+        day: day,
+        children: newListTime,
+        childrenGroup: GroupByCount(newListTime, 4),
+        slideIndex: slideIndex,
       };
-      arrListTime.push(item);
+      newListChoose.push(newObj);
     }
-    arrListTime.forEach(function (x, index) {
-      if (x.tick === min) {
-        x.active = true;
-        slideActive = Math.floor(index / 4);
-      }
-    });
-
-    for (let day = 0; day <= 2; day++) {
-      switch (day) {
-        case 0:
-          var todayFormat = moment(gettoday).add(day, "days").format("DD/MM");
-          var today = moment(gettoday).add(day, "days").format("DD/MM/YYYY");
-          var item = {
-            dateFormat: "Hôm nay " + todayFormat,
-            date: today,
-            name: "today",
-            arrtime: arrListTime,
-          };
-          arrListDate.push(item);
-          break;
-        case 1:
-          var tomorrowFormat = moment(gettoday)
-            .add(day, "days")
-            .format("DD/MM");
-          var tomorrow = moment(gettoday).add(day, "days").format("DD/MM/YYYY");
-          var item = {
-            dateFormat: "Ngày mai " + tomorrowFormat,
-            date: tomorrow,
-            name: "tomorrow",
-            arrtime: arrListTime,
-          };
-          arrListDate.push(item);
-          break;
-        case 2:
-          var item = {
-            dateFormat: "Ngày khác",
-            date: null,
-            name: "other",
-            arrtime: arrListTime,
-          };
-          arrListDate.push(item);
-          break;
-
-        default:
-          var tomorrowAfterFormat = moment(gettoday)
-            .add(day, "days")
-            .format("DD/MM");
-          var tomorrowAfter = moment(gettoday)
-            .add(day, "days")
-            .format("DD/MM/YYYY");
-          var item = {
-            dateFormat: "Ngày kia " + tomorrowAfterFormat,
-            date: tomorrowAfter,
-            name: "tomorrowAfter",
-            arrtime: arrListTime,
-          };
-          arrListDate.push(item);
-          break;
-      }
-    }
-
     this.setState({
-      arrListDate: arrListDate,
-      indexCurrent: slideActive,
+      ListChoose: newListChoose,
     });
   };
 
@@ -231,30 +268,20 @@ export default class ScheduleSpa extends React.Component {
   handleTime = (time) => {
     this.props.handleTime({
       ...this.props.DateTimeBook,
-      time: time,
+      time: moment(time).format("HH:mm"),
     });
   };
-
-  handleShowDate = () => {
-    this.setState({
-      isOpen: true,
-    });
-    this.props.handleTime({
-      ...this.props.DateTimeBook,
-      isOther: true,
-      date: "",
-      time: "",
-    });
-  };
-
   handleSelectDate = (datetime) => {
     const date = moment(datetime).format("DD/MM/YYYY");
     this.props.handleTime({
       ...this.props.DateTimeBook,
       date,
+      time: "",
     });
+    this.getListChoose(datetime, this.state.ListDisableChoose);
     this.setState({
       isOpen: false,
+      isActive: 2,
     });
   };
 
@@ -266,12 +293,12 @@ export default class ScheduleSpa extends React.Component {
 
   render() {
     const {
-      arrListDate,
       arrStock,
       isLoadingStock,
       isOpen,
-      otherBook,
       indexCurrent,
+      isActive,
+      ListChoose,
     } = this.state;
     const { DateTimeBook } = this.props;
     const settingsIndex = {
@@ -300,33 +327,6 @@ export default class ScheduleSpa extends React.Component {
       beforeChange: (current, next) => {},
     };
 
-    const dateConfig = {
-      // hour: {
-      //   format: "hh",
-      //   caption: "Giờ",
-      //   step: 1,
-      // },
-      // minute: {
-      //   format: "mm",
-      //   caption: "Phút",
-      //   step: 1,
-      // },
-      date: {
-        caption: "Ngày",
-        format: "D",
-        step: 1,
-      },
-      month: {
-        caption: "Tháng",
-        format: "M",
-        step: 1,
-      },
-      year: {
-        caption: "Năm",
-        format: "YYYY",
-        step: 1,
-      },
-    };
     return (
       <div className="page-schedule__box">
         <div className="pt-8px"></div>
@@ -372,124 +372,105 @@ export default class ScheduleSpa extends React.Component {
           <h5>2. Chọn thời gian</h5>
           <div className="page-schedule__date mb-15px">
             <Row>
-              {arrListDate &&
-                arrListDate.map((item, index) => {
-                  return (
-                    <Col width="33" key={index}>
+              {ListChoose &&
+                ListChoose.map((item, index) => (
+                  <Col width="33" key={index}>
+                    {index === ListChoose.length - 1 ? (
                       <div
-                        onClick={() => this.onDateChanged(item.date)}
                         className="date-day"
+                        onClick={() => {
+                          this.setState({ isOpen: true });
+                        }}
                       >
-                        <span
-                          className={
-                            !DateTimeBook.isOther
-                              ? DateTimeBook.date === item.date
-                                ? "active"
-                                : ""
-                              : item.name === "other"
-                              ? "active"
-                              : ""
-                          }
-                        >
-                          {item.name !== "other"
-                            ? item.dateFormat
-                            : DateTimeBook.date && DateTimeBook.isOther
-                            ? DateTimeBook.date
-                            : item.dateFormat}
+                        <span className={clsx(index === isActive && "active")}>
+                          {index === isActive ? DateTimeBook.date : "Ngày khác"}
                         </span>
                       </div>
-                    </Col>
-                  );
-                })}
-              {/* <Col width="33">
-                <div
-                  className="date-day"
-                  onClick={() => this.handleShowDate()}
-                >
-                  <span className={DateTimeBook.isOther ? "active" : ""}>
-                    {DateTimeBook.isOther && DateTimeBook.date
-                      ? DateTimeBook.date
-                      : "Ngày khác"}
-                  </span>
-                </div>
-              </Col> */}
-              <DatePicker
-                theme="ios"
-                cancelText="Đóng"
-                confirmText="Chọn"
-                headerFormat="Ngày DD/MM/YYYY"
-                showCaption={true}
-                dateConfig={dateConfig}
-                value={
-                  DateTimeBook.date ? new Date(DateTimeBook.date) : new Date()
-                }
-                isOpen={isOpen}
-                onSelect={this.handleSelectDate}
-                onCancel={this.handleCancelDate}
-                min={new Date()}
-              />
+                    ) : (
+                      <div
+                        className="date-day"
+                        onClick={() => {
+                          const date = moment(item.day).format("DD/MM/YYYY");
+                          this.props.handleTime({
+                            ...this.props.DateTimeBook,
+                            date,
+                            time: "",
+                          });
+                          this.setState({ isActive: index });
+                        }}
+                      >
+                        <span className={clsx(index === isActive && "active")}>
+                          {moment(item.day).calendar({
+                            sameDay: (now) =>
+                              `[Hôm nay] ${moment(item.day).format("DD/MM")}`,
+                            nextDay: (now) =>
+                              `[Ngày mai] ${moment(item.day).format("DD/MM")}`,
+                          })}
+                        </span>
+                      </div>
+                    )}
+                  </Col>
+                ))}
             </Row>
+            <DatePicker
+              theme="ios"
+              cancelText="Đóng"
+              confirmText="Chọn"
+              headerFormat="Ngày DD/MM/YYYY"
+              showCaption={true}
+              dateConfig={dateConfig}
+              value={
+                DateTimeBook.date ? new Date(DateTimeBook.date) : new Date()
+              }
+              isOpen={isOpen}
+              onSelect={this.handleSelectDate}
+              onCancel={this.handleCancelDate}
+              min={new Date()}
+            />
           </div>
-          {!window.GlobalConfig?.APP?.Booking?.hideNoteTime && (
-            <div className="page-schedule__note mb-25px">
-              <div className="page-schedule__note-item">
-                <div className="box box-not"></div>
-                <span>Hết chỗ</span>
-              </div>
-              <div className="page-schedule__note-item">
-                <div className="box box-no"></div>
-                <span>Còn chỗ</span>
-              </div>
-              <div className="page-schedule__note-item">
-                <div className="box box-succes"></div>
-                <span>Đang chọn</span>
-              </div>
-            </div>
-          )}
           <Tabs>
-            {arrListDate &&
-              arrListDate.map((item, index) => (
+            {ListChoose &&
+              ListChoose.map((item, index) => (
                 <Tab
                   key={index}
-                  id={"tab-" + item.name}
+                  id={"tab-" + index}
                   className="page-tab-location"
-                  tabActive={
-                    !DateTimeBook.isOther
-                      ? DateTimeBook.date === item.date
-                      : item.name === "other"
-                  }
+                  tabActive={index === isActive}
                 >
                   <div className="page-schedule__time-list mt-0">
-                    <Carousel
-                      {...(index === 0 ? settingsIndex : settings)}
-                      className={index === 0 ? "slide-time-first" : ""}
-                    >
-                      {this.group(item.arrtime, 4).map((children, k) => (
-                        <div
-                          className="group-time"
-                          //style={this.handStyle()}
-                          key={k}
-                        >
-                          {children.map((sub, i) => (
-                            <div
-                              className={`group-time__item ${
-                                item.name === "today" &&
-                                this.checkTime(item.date, sub.fullTime)
-                              }`}
-                              key={i}
-                              onClick={() => this.handleTime(sub.time)}
-                            >
-                              <label
-                                className={
-                                  DateTimeBook.time === sub.time ? "active" : ""
-                                }
-                              >
-                                {this.formatTime(sub.time)}
-                              </label>
-                            </div>
-                          ))}
-                        </div>
-                      ))}
+                    <Carousel {...{ ...settings, slideIndex: item.slideIndex }}>
+                      {item.childrenGroup &&
+                        item.childrenGroup.map((group, groupIndex) => (
+                          <div key={groupIndex}>
+                            {group &&
+                              group.map((time, timeIndex) => (
+                                <div
+                                  className="font-number mb-10px date-time-radio position-relative"
+                                  key={timeIndex}
+                                >
+                                  <div
+                                    className={clsx(
+                                      "h-40px border rounded-sm d-flex align-items-center justify-content-center fw-600 time",
+                                      time.Disable && "disabled",
+                                      moment(time.Time).format("HH:mm") ===
+                                        DateTimeBook.time &&
+                                        DateTimeBook.date ===
+                                          moment(item.day).format(
+                                            "DD/MM/YYYY"
+                                          ) &&
+                                        "bg-ezs text-white"
+                                    )}
+                                    onClick={() =>
+                                      !time.Disable &&
+                                      this.handleTime(time.Time)
+                                    }
+                                  >
+                                    {moment(time.Time).format("HH:mm A")}
+                                  </div>
+                                </div>
+                              ))}
+                          </div>
+                        ))}
                     </Carousel>
                   </div>
                 </Tab>

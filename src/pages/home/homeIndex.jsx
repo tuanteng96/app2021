@@ -22,6 +22,7 @@ import {
   removeStockNameStorage,
   setUserLoginStorage,
   setUserStorage,
+  getUserLoginStorage,
 } from "../../constants/user";
 import ListService from "./components/Service/ListService";
 import SlideList from "../home/components/BannerSlide/SlideList";
@@ -123,12 +124,12 @@ export default class extends React.Component {
   searchPage = () => {
     this.$f7router.navigate("/search/");
   };
-
+  
   onChangePWD = (values) => {
     const self = this;
     const userCurent = getUser();
     self.$f7.preloader.show();
-    const crpwd = "1234";
+    const crpwd = getUserLoginStorage().password || "1234";
     var bodyData = new FormData();
     bodyData.append("pwd", values.password); // New Password
     bodyData.append("repwd", values.re_password); // Nhập lại mật khẩu mới

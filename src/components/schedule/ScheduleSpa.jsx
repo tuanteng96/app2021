@@ -423,7 +423,7 @@ export default class ScheduleSpa extends React.Component {
                                 >
                                   <div
                                     className={clsx(
-                                      "h-40px border rounded-sm d-flex align-items-center justify-content-center fw-600 time",
+                                      "font-size-xs h-40px border rounded-sm d-flex align-items-center justify-content-center fw-600 time",
                                       time.Disable && "disabled",
                                       moment(time.Time).format("HH:mm") ===
                                         DateTimeBook.time &&

@@ -74,6 +74,17 @@ export default class ScheduleSpa extends React.Component {
     this.getDisableTime();
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.DateTimeBook.stock !== prevProps.DateTimeBook.stock) {
+      if (prevProps.DateTimeBook.date) {
+        this.getListChoose(
+          prevProps.DateTimeBook.date,
+          this.state.ListDisableChoose
+        );
+      }
+    }
+  }
+
   getDisableTime = async () => {
     ConfigServiceAPI.getConfigName("giocam")
       .then(({ data }) => {
@@ -113,11 +124,19 @@ export default class ScheduleSpa extends React.Component {
     });
   };
 
-  getListChoose = (DateChoose, DisableTime) => {
+  getListChoose = (DateChoose, ListLock) => {
     const { TimeOpen, TimeClose, TimeNext } =
       window?.GlobalConfig?.APP?.Booking;
+    const indexLock =
+      ListLock &&
+      ListLock.findIndex(
+        (lock) => Number(lock.StockID) === Number(this.props.DateTimeBook.stock)
+      );
     const newListChoose = [];
-
+    let DisableTime = [];
+    if (indexLock > -1) {
+      DisableTime = ListLock[indexLock].ListDisable;
+    }
     for (let index = 0; index < 3; index++) {
       let day = moment().add(index, "days").toDate();
       if (DateChoose && index === 2) {
@@ -132,7 +151,6 @@ export default class ScheduleSpa extends React.Component {
         const datetime = moment(startDate).add(minute, "minute").toDate();
         let isDayOff = false;
         if (DisableTime && DisableTime.length > 0) {
-          
           const indexDayOf =
             DisableTime &&
             DisableTime.findIndex(
@@ -236,7 +254,6 @@ export default class ScheduleSpa extends React.Component {
       date,
       time: "",
     });
-    this.getListChoose(datetime, this.state.ListDisableChoose);
     this.setState({
       isOpen: false,
       isActive: 2,
@@ -249,6 +266,11 @@ export default class ScheduleSpa extends React.Component {
     });
   };
 
+  configDate = (date) => {
+    const dateSplit = date.split("/");
+    return dateSplit[1] + "/" + dateSplit[0] + "/" + dateSplit[2];
+  };
+
   render() {
     const {
       arrStock,
@@ -259,6 +281,7 @@ export default class ScheduleSpa extends React.Component {
       ListChoose,
     } = this.state;
     const { DateTimeBook } = this.props;
+
     const settingsIndex = {
       //wrapAround: true,
       speed: 500,
@@ -378,7 +401,9 @@ export default class ScheduleSpa extends React.Component {
               showCaption={true}
               dateConfig={dateConfig}
               value={
-                DateTimeBook.date ? new Date(DateTimeBook.date) : new Date()
+                DateTimeBook.date
+                  ? new Date(this.configDate(DateTimeBook.date))
+                  : new Date()
               }
               isOpen={isOpen}
               onSelect={this.handleSelectDate}

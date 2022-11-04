@@ -76,9 +76,9 @@ export default class ScheduleSpa extends React.Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (this.props.DateTimeBook.stock !== prevProps.DateTimeBook.stock) {
-      if (prevProps.DateTimeBook.date) {
+      if (prevProps.DateTimeBook.toDate) {
         this.getListChoose(
-          prevProps.DateTimeBook.date,
+          prevProps.DateTimeBook.toDate,
           this.state.ListDisableChoose
         );
       }
@@ -154,8 +154,8 @@ export default class ScheduleSpa extends React.Component {
           const indexDayOf =
             DisableTime &&
             DisableTime.findIndex(
-              (day) =>
-                moment(day.Date).format("DD/MM/YYYY") ===
+              (x) =>
+                moment(x.Date).format("DD/MM/YYYY") ===
                 moment(datetime).format("DD/MM/YYYY")
             );
           if (indexDayOf > -1) {
@@ -216,29 +216,13 @@ export default class ScheduleSpa extends React.Component {
     });
   };
 
-  formatTime = (time) => {
-    return time.replace(":", "h");
-  };
-
-  onDateChanged = (date) => {
-    this.props.handleTime({
-      ...this.props.DateTimeBook,
-      date,
-      time: "",
-      isOther: !date ? true : false,
-    });
-
-    this.setState({
-      isOpen: !date ? true : false,
-    });
-  };
-
   handleStock = (item) => {
     this.props.handleTime({
       ...this.props.DateTimeBook,
       stock: item.ID,
       nameStock: item.Title,
     });
+    this.handleCancelDate();
   };
 
   handleTime = (time) => {
@@ -253,7 +237,12 @@ export default class ScheduleSpa extends React.Component {
       ...this.props.DateTimeBook,
       date,
       time: "",
+      toDate: datetime
     });
+    this.getListChoose(
+      datetime,
+      this.state.ListDisableChoose
+    );
     this.setState({
       isOpen: false,
       isActive: 2,
@@ -376,8 +365,9 @@ export default class ScheduleSpa extends React.Component {
                             ...this.props.DateTimeBook,
                             date,
                             time: "",
+                            toDate: item.day
                           });
-                          this.setState({ isActive: index });
+                          this.setState({ isActive: index, isOpen: false });
                         }}
                       >
                         <span className={clsx(index === isActive && "active")}>
@@ -408,7 +398,7 @@ export default class ScheduleSpa extends React.Component {
               isOpen={isOpen}
               onSelect={this.handleSelectDate}
               onCancel={this.handleCancelDate}
-              min={new Date()}
+              min={moment().subtract(1, 'days').toDate()}
             />
           </div>
           <Tabs>

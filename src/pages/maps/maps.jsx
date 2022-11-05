@@ -15,6 +15,7 @@ export default class extends React.Component {
       showPreloader: false,
     };
   }
+
   componentDidMount() {
     this.setState({ width: window.innerWidth });
 
@@ -128,7 +129,7 @@ export default class extends React.Component {
                       <ul>
                         <li className="address">
                           <i className="las la-map-marked-alt"></i>
-                          {ReactHtmlParser(item.Desc)}
+                          <div className="min-h-40px">{ReactHtmlParser(item.Desc)}</div>
                         </li>
                         <li className="phone">
                           <i className="las la-phone-volume"></i>

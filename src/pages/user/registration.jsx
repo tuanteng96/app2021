@@ -166,7 +166,7 @@ export default class extends React.Component {
             </div>
           </div>
           <div className="page-login__alert">
-            Bạn chưa có tài khoản ? <Link href="/login/">Đăng nhập</Link>
+            Bạn đã có tài khoản ? <Link href="/login/">Đăng nhập</Link>
           </div>
         </div>
         <SelectStock

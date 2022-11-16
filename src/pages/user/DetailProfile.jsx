@@ -436,7 +436,6 @@ export default class extends React.Component {
               <div className="name">Cơ sở</div>
               <div className="content">
                 <div className="content-text">
-                  {console.log(IDStockName)}
                   {!IDStockName ? "Chưa chọn điểm" : IDStockName}
                 </div>
                 <i className="las la-angle-right"></i>

@@ -16,22 +16,37 @@ export default class ToolBarCustom extends React.Component {
   }
   componentDidMount() {
     var $$ = this.Dom7;
-    $$(".js-link-home").addClass("js-active");
+    const TYPE = checkRole();
+    if (TYPE && TYPE === "ADMIN") {
+      $$(".js-toolbar-bottom").find("a").eq(1).addClass("js-active");
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
     var href = this.$f7.views.main.router.url;
     var $$ = this.Dom7;
+    const TYPE = checkRole();
+    
     $$(".js-toolbar-link").removeClass("js-active");
     if (prevState.currentUrl !== href) {
       $$(".js-toolbar-link").each(function () {
         const _this = $$(this);
         const hrefLink = _this.attr("href");
         if (href === "/") {
-          $$(".js-link-home").addClass("js-active");
+          if (!TYPE || TYPE === "M") {
+            $$(".js-toolbar-bottom").find("a").eq(0).addClass("js-active");
+            $$(".page-current .js-toolbar-bottom")
+              .find("a")
+              .eq(0)
+              .addClass("js-active");
+          }
+          if (TYPE === "STAFF") {
+            $$(".js-toolbar-bottom").find("a").eq(0).addClass("js-active");
+          }
+          if (TYPE === "ADMIN") {
+            $$(".js-toolbar-bottom").find("a").eq(1).addClass("js-active");
+          }
         }
-        //console.log(hrefLink);
-        //console.log(href);
         if (
           hrefLink === href ||
           href
@@ -91,7 +106,7 @@ export default class ToolBarCustom extends React.Component {
         return (
           <React.Fragment>
             <PrivateNav
-              className="page-toolbar-bottom__link js-toolbar-link js-link-home"
+              className="page-toolbar-bottom__link js-toolbar-link"
               icon="las la-hand-holding-heart"
               text="Dịch vụ"
               roles={["service"]}
@@ -111,6 +126,13 @@ export default class ToolBarCustom extends React.Component {
                 "accountant",
               ]}
               href="/employee/statistical/"
+            />
+            <PrivateNav
+              className="page-toolbar-bottom__link js-toolbar-link"
+              icon="las la-chart-bar"
+              text="Báo cáo"
+              roles={["director"]}
+              href="/report/"
             />
             {window?.GlobalConfig?.APP?.Staff?.RulesTitle && (
               <Link
@@ -150,7 +172,7 @@ export default class ToolBarCustom extends React.Component {
               href="/employee/statistical/"
             />
             <PrivateNav
-              className="page-toolbar-bottom__link js-toolbar-link js-link-home"
+              className="page-toolbar-bottom__link js-toolbar-link"
               icon="las la-chart-bar"
               text="Báo cáo"
               roles={[]}
@@ -182,7 +204,7 @@ export default class ToolBarCustom extends React.Component {
             <Link
               noLinkClass
               href="/news/"
-              className="page-toolbar-bottom__link js-toolbar-link js-link-home"
+              className="page-toolbar-bottom__link js-toolbar-link"
             >
               <i className="las la-newspaper"></i>
             </Link>
@@ -225,7 +247,7 @@ export default class ToolBarCustom extends React.Component {
             <Link
               noLinkClass
               href="/news/"
-              className="page-toolbar-bottom__link js-toolbar-link js-link-home"
+              className="page-toolbar-bottom__link js-toolbar-link"
             >
               <i className="las la-newspaper"></i>
             </Link>

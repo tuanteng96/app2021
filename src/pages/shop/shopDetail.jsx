@@ -145,15 +145,9 @@ export default class extends React.Component {
     });
   };
   IncrementItem = () => {
-    this.setState((prevState) => {
-      if (prevState.quantity < 9) {
-        return {
-          quantity: prevState.quantity + 1,
-        };
-      } else {
-        return null;
-      }
-    });
+    this.setState((prevState) => ({
+      quantity: prevState.quantity + 1,
+    }));
   };
   DecreaseItem = () => {
     this.setState((prevState) => {

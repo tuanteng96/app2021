@@ -129,11 +129,12 @@ export default class extends React.Component {
     const self = this;
     const userCurent = getUser();
     self.$f7.preloader.show();
-    const crpwd = getUserLoginStorage().password || "1234";
+    //const crpwd = getUserLoginStorage().password || "1234";
     var bodyData = new FormData();
     bodyData.append("pwd", values.password); // New Password
     bodyData.append("repwd", values.re_password); // Nhập lại mật khẩu mới
-    bodyData.append("crpwd", crpwd); // Mật khẩu hiện tai
+    //bodyData.append("crpwd", crpwd); // Mật khẩu hiện tai
+    bodyData.append("remove_repwd", true);
 
     UserService.updatePassword(bodyData)
       .then((response) => {

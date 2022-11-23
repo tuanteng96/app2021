@@ -1,86 +1,112 @@
-import React from "react";
-import { Link, Navbar, Page, Sheet, Toolbar } from "framework7-react";
-import NotificationIcon from "../../../components/NotificationIcon";
-import PageNoData from "../../../components/PageNoData";
-import ToolBarBottom from "../../../components/ToolBarBottom";
+import React, { useEffect, useRef, useState } from 'react'
+import { Button, Link, Navbar, Page, PhotoBrowser, Sheet, Toolbar } from 'framework7-react'
+import NotificationIcon from '../../../components/NotificationIcon'
+import PageNoData from '../../../components/PageNoData'
+import ToolBarBottom from '../../../components/ToolBarBottom'
 import {
   getPassword,
   getStockIDStorage,
   getUser,
-} from "../../../constants/user";
-import staffService from "../../../service/staff.service";
-import "moment/locale/vi";
-import moment from "moment";
-moment.locale("vi");
+} from '../../../constants/user'
+import staffService from '../../../service/staff.service'
+import 'moment/locale/vi'
+import moment from 'moment'
+import LoadingChart from '../../../components/Loading/LoadingChart'
+import { SERVER_APP } from '../../../constants/config'
+moment.locale('vi')
+
+const Photos = ({PhotoList}) => {
+  const refPhotoWeb = useRef();
+  const [PhotoWeb, setPhotoWeb] = useState([]);
+
+  useEffect(() => {
+    if(PhotoList) {
+      setPhotoWeb(() => PhotoList.map(item => `${SERVER_APP}/upload/image/${item.Src}`))
+    }
+  }, [PhotoList])
+
+  return (
+    <>
+      <Button fill onClick={() => refPhotoWeb?.current?.open()}>Xem hình ảnh</Button>
+      <PhotoBrowser
+        photos={PhotoWeb}
+        ref={refPhotoWeb}
+        popupCloseLinkText="Đóng"
+      />
+    </>
+  )
+}
 
 export default class employeeServiceSchedule extends React.Component {
   constructor() {
-    super();
+    super()
     this.state = {
       loadingSubmit: false,
       sheetOpened: false,
-    };
+      loading: true,
+    }
   }
 
   componentDidMount() {
-    this.getScheduleStaff();
+    this.getScheduleStaff()
   }
 
   getScheduleStaff = () => {
-    if (!getUser()) return false;
-    const infoMember = getUser();
+    if (!getUser()) return false
+    const infoMember = getUser()
     const user = {
       USN: infoMember.UserName,
       Pwd: getPassword(),
       StockID: getStockIDStorage(),
-    };
-    const OrderItemID = this.$f7route.params.orderItem;
+    }
+    const OrderItemID = this.$f7route.params.orderItem
     const data = {
-      cmd: "booklist",
+      cmd: 'booklist',
       OrderItemID: OrderItemID,
-    };
+    }
 
     staffService
       .getBookStaff(user, data)
       .then((response) => {
-        const arrBook = response.data;
+        const arrBook = response.data
         this.setState({
           arrBook: arrBook,
-        });
+          loading: false,
+        })
       })
-      .catch((error) => console.log(error));
-  };
+      .catch((error) => console.log(error))
+  }
 
   checkStatus = (status) => {
     switch (status) {
-      case "done":
+      case 'done':
         return (
           <span className="label-inline label-light-success">Hoàn thành</span>
-        );
-      case "doing":
+        )
+      case 'doing':
         return (
           <span className="label-inline label-light-warning">
             Đang thực hiện
           </span>
-        );
+        )
       default:
         return (
           <span className="label-inline label-light-info">Chưa thực hiện</span>
-        );
+        )
     }
-  };
+  }
 
   async loadRefresh(done) {
-    await this.getScheduleStaff();
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await this.getScheduleStaff()
+    await new Promise((resolve) => setTimeout(resolve, 1000))
     this.setState({
       showPreloader: true,
-    });
-    done();
+    })
+    done()
   }
 
   render() {
-    const { arrBook } = this.state;
+    const { arrBook, loading } = this.state
     return (
       <Page
         name="employee-diary"
@@ -97,7 +123,7 @@ export default class employeeServiceSchedule extends React.Component {
             </div>
             <div className="page-navbar__title">
               <span className="title">
-                Lịch trình{" "}
+                Lịch trình{' '}
                 {arrBook && arrBook.length > 0 && `(${arrBook.length})`}
               </span>
             </div>
@@ -107,33 +133,39 @@ export default class employeeServiceSchedule extends React.Component {
           </div>
         </Navbar>
         <div className="employee-diary">
-          {arrBook && arrBook.length > 0 ? (
-            <ul>
-              {arrBook.map((item, index) => (
-                <li
-                  key={index}
-                  className={item.Status ? item.Status : "unfulfilled"}
-                >
-                  <div className="status">
-                    {item.BookDate && (
-                      <div className="time">
-                        {moment(item.BookDate).format("LLL")}
+          {loading && <LoadingChart />}
+          {!loading && (
+            <>
+              {arrBook && arrBook.length > 0 ? (
+                <ul>
+                  {arrBook.map((item, index) => (
+                    <li
+                      key={index}
+                      className={item.Status ? item.Status : 'unfulfilled'}
+                    >
+                      <div className="status">
+                        {item.BookDate && (
+                          <div className="time">
+                            {moment(item.BookDate).format('LLL')}
+                          </div>
+                        )}
+                        {this.checkStatus(item.Status)}
                       </div>
-                    )}
-                    {this.checkStatus(item.Status)}
-                  </div>
-                  <div className="content">{item.Title}</div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <PageNoData text="Không có lịch trình." />
+                      <div className="content mb-10px">{item.Title}</div>
+                      {item?.PhotoList && item?.PhotoList.length > 0 && <Photos PhotoList={item?.PhotoList} />}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <PageNoData text="Không có lịch trình." />
+              )}
+            </>
           )}
         </div>
         <Toolbar tabbar position="bottom">
           <ToolBarBottom />
         </Toolbar>
       </Page>
-    );
+    )
   }
 }

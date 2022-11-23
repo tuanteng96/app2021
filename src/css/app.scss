@@ -353,6 +353,18 @@ blockquote {
     }
 }
 
+.photo-browser-page {
+    .title {
+        color: #fff;
+    }
+    .right {
+        padding-right: 10px;
+        a {
+            color: #fff;
+        }
+    }
+}
+
 body {
     .select__control {
         border-color: #E4E6EF;

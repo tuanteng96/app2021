@@ -237,12 +237,9 @@ export default class ScheduleSpa extends React.Component {
       ...this.props.DateTimeBook,
       date,
       time: "",
-      toDate: datetime
+      toDate: datetime,
     });
-    this.getListChoose(
-      datetime,
-      this.state.ListDisableChoose
-    );
+    this.getListChoose(datetime, this.state.ListDisableChoose);
     this.setState({
       isOpen: false,
       isActive: 2,
@@ -271,28 +268,30 @@ export default class ScheduleSpa extends React.Component {
     } = this.state;
     const { DateTimeBook } = this.props;
 
-    const settingsIndex = {
-      //wrapAround: true,
-      speed: 500,
-      slidesToShow: 4,
-      slidesToScroll: 4,
-      slideIndex: indexCurrent,
-      cellSpacing: 10,
-      renderBottomCenterControls: () => false,
-      renderCenterLeftControls: null,
-      renderCenterRightControls: null,
-      afterChange: (current) => {},
-      beforeChange: (current, next) => {},
-    };
     const settings = {
-      //wrapAround: true,
+      wrapAround: true,
       speed: 500,
       slidesToShow: 4,
       slidesToScroll: 4,
       cellSpacing: 10,
       renderBottomCenterControls: () => false,
       renderCenterLeftControls: null,
-      renderCenterRightControls: null,
+      renderCenterRightControls: ({ nextDisabled, nextSlide }) => (
+        <div
+          className={`support-scroll && ${nextDisabled ? "d-none" : ""}`}
+          onClick={nextSlide}
+        >
+          <div className="support-scroll__text">
+            Chọn khung giờ khác {nextDisabled}
+          </div>
+          <div className="support-scroll__icon">
+            <div className="line"></div>
+            <div className="arrow">
+              <i className="fas fa-chevron-right"></i>
+            </div>
+          </div>
+        </div>
+      ),
       afterChange: (current) => {},
       beforeChange: (current, next) => {},
     };
@@ -365,7 +364,7 @@ export default class ScheduleSpa extends React.Component {
                             ...this.props.DateTimeBook,
                             date,
                             time: "",
-                            toDate: item.day
+                            toDate: item.day,
                           });
                           this.setState({ isActive: index, isOpen: false });
                         }}
@@ -398,7 +397,7 @@ export default class ScheduleSpa extends React.Component {
               isOpen={isOpen}
               onSelect={this.handleSelectDate}
               onCancel={this.handleCancelDate}
-              min={moment().subtract(1, 'days').toDate()}
+              min={moment().subtract(1, "days").toDate()}
             />
           </div>
           <Tabs>
@@ -449,6 +448,13 @@ export default class ScheduleSpa extends React.Component {
                 </Tab>
               ))}
           </Tabs>
+          {/* <div className="support-scroll">
+            <div className="support-scroll__text">Chọn khung giờ khác</div>
+            <div className="support-scroll__icon">
+              <div className="line"></div>
+              <div className="arrow"></div>
+            </div>
+          </div> */}
         </div>
         {!window.GlobalConfig?.APP?.Booking?.hideNoteWarning && (
           <div className="text-danger bg-white p-15px font-size-xs line-height-sm">
